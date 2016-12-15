@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.task.app.timestamp;
+package org.springframework.cloud.task.app.googleplay;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = TimestampTaskApplication.class)
-public class TimestampTaskApplicationTests {
 
-	@Test
-	public void contextLoads() {
+@SpringBootApplication
+@Import(org.springframework.cloud.task.app.googleplay.GooglePlayTaskConfiguration.class)
+public class GooglePlayTaskApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(GooglePlayTaskApplication.class, args);
 	}
-
 }

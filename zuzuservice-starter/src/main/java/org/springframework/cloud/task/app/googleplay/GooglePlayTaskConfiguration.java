@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.task.app.timestamp;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+package org.springframework.cloud.task.app.googleplay;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -30,13 +25,17 @@ import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * A commandline runner that prints a timestamp.
  */
 @EnableTask
 @Configuration
-@EnableConfigurationProperties({ TimestampTaskProperties.class })
-public class TimestampTaskConfiguration {
+@EnableConfigurationProperties({ GooglePlayTaskProperties.class })
+public class GooglePlayTaskConfiguration {
 
     @Bean
     public TimestampTask timeStampTask() {
@@ -50,7 +49,7 @@ public class TimestampTaskConfiguration {
         private final Log logger = LogFactory.getLog(TimestampTask.class);
 
         @Autowired
-        private TimestampTaskProperties config;
+        private GooglePlayTaskProperties config;
 
         @Override
         public void run(String... strings) throws Exception {

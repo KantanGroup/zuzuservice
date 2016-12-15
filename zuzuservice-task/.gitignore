@@ -13,4 +13,4 @@ buildNumber.properties
 !/.mvn/wrapper/maven-wrapper.jar
 .idea/
 .mvn/
-zuzuservice-task.iml
+google-play-task.iml

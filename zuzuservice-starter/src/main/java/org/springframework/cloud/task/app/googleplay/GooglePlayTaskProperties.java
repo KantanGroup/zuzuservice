@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.task.app.timestamp;
+package org.springframework.cloud.task.app.googleplay;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.Assert;
@@ -23,7 +23,7 @@ import org.springframework.util.Assert;
  * @author Glenn Renfro
  */
 @ConfigurationProperties("timestamp")
-public class TimestampTaskProperties {
+public class GooglePlayTaskProperties {
 
 	/**
 	 * The timestamp format, "yyyy-MM-dd HH:mm:ss.SSS" by default.
