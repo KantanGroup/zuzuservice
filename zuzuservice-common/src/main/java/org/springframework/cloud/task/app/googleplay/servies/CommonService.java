@@ -6,18 +6,19 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 /**
  * @author tuanta17
  */
+@Service
 public class CommonService<T> {
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Value("${google.play.uri:http://localhost:5000}")
     private static String GOOGLE_PLAY_BASE_URI;
+    @Autowired
+    private RestTemplate restTemplate;
 
     private HttpEntity<String> addHeaders() {
         HttpHeaders headers = new HttpHeaders();

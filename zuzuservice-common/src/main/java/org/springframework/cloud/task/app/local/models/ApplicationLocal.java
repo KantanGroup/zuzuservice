@@ -1,54 +1,78 @@
 package org.springframework.cloud.task.app.local.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.util.List;
+import javax.persistence.*;
 
 /**
  * @author tuanta17
  */
 @Entity
 @Table(name = "applications")
-@org.hibernate.annotations.Cache(region = "common", usage = CacheConcurrencyStrategy.READ_WRITE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApplicationLocal {
+    @Id
+    @Column(name = "app_id")
     private String appId;
     private String url;
     private String title;
     private String summary;
-    private DeveloperLocal developer;
     private String icon;
     private int score;
     private int price;
     private boolean free;
+    @Column(name = "developer_email")
     private String developerEmail;
+    @Column(name = "developer_website")
     private String developerWebsite;
     private String updated;
     private String version;
+    @Column(name = "min_installs")
     private int minInstalls;
+    @Column(name = "max_installs")
     private int maxInstalls;
     private String genre;
+    @Column(name = "genre_id")
     private String genreId;
     private String description;
+    @Column(name = "description_html")
     private String descriptionHTML;
     // histogram: { type: new List(IntType) },
+    @Column(name = "offers_iap")
     private boolean offersIAP;
+    @Column(name = "ad_supported")
     private boolean adSupported;
+    @Column(name = "android_version_text")
     private String androidVersionText;
+    @Column(name = "android_version")
     private String androidVersion;
+    @Column(name = "content_rating")
     private String contentRating;
-    private List<ScreenshootLocal> screenshots;
+
     // comments: { type: new List(StringType) },
     //    recentChanges:
     private boolean preregister;
+    @Column(name = "playstore_url")
     private String playstoreUrl;
     private String permissions;
     private String similar;
     private String reviews;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "devId", nullable = false, insertable = false, updatable = false)
+    private DeveloperLocal developer;
+
+    /*
+    private List<ScreenshootLocal> screenshots;
+
+    public List<ScreenshootLocal> getScreenshots() {
+        return screenshots;
+    }
+
+    public void setScreenshots(List<ScreenshootLocal> screenshots) {
+        this.screenshots = screenshots;
+    }
+    */
     public String getAppId() {
         return appId;
     }
@@ -239,14 +263,6 @@ public class ApplicationLocal {
 
     public void setContentRating(String contentRating) {
         this.contentRating = contentRating;
-    }
-
-    public List<ScreenshootLocal> getScreenshots() {
-        return screenshots;
-    }
-
-    public void setScreenshots(List<ScreenshootLocal> screenshots) {
-        this.screenshots = screenshots;
     }
 
     public boolean isPreregister() {

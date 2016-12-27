@@ -1,19 +1,18 @@
 package org.springframework.cloud.task.app.local.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author tuanta17
  */
 @Entity
 @Table(name = "screenshoots")
-@org.hibernate.annotations.Cache(region = "common", usage = CacheConcurrencyStrategy.READ_WRITE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ScreenshootLocal {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String source;
     private String local;

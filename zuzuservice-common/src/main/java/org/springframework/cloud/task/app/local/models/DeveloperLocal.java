@@ -1,9 +1,10 @@
 package org.springframework.cloud.task.app.local.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -11,20 +12,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "developments")
-@org.hibernate.annotations.Cache(region = "common", usage = CacheConcurrencyStrategy.READ_WRITE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DeveloperLocal {
-    private long id;
+    @Id
+    @Column(name = "developer_id")
     private String devId;
     private String url;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getDevId() {
         return devId;

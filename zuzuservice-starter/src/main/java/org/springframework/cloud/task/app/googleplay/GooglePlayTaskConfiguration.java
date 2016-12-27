@@ -34,7 +34,7 @@ import java.util.Date;
  */
 @EnableTask
 @Configuration
-@EnableConfigurationProperties({ GooglePlayTaskProperties.class })
+@EnableConfigurationProperties({GooglePlayTaskProperties.class})
 public class GooglePlayTaskConfiguration {
 
     @Bean

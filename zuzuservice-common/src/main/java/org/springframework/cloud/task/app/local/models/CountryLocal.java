@@ -1,10 +1,8 @@
 package org.springframework.cloud.task.app.local.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -12,13 +10,20 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "countries")
-@org.hibernate.annotations.Cache(region = "common", usage = CacheConcurrencyStrategy.READ_WRITE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CountryLocal {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    @Column(name = "language_code")
     private String languageCode;
+    @Column(name = "language_name")
+    private String languageName;
+    @Column(name = "country_code")
     private String countryCode;
+    @Column(name = "country_name")
     private String countryName;
+    @Column(name = "create_at")
     private Date createAt;
     private boolean type;
 
@@ -36,6 +41,14 @@ public class CountryLocal {
 
     public void setLanguageCode(String languageCode) {
         this.languageCode = languageCode;
+    }
+
+    public String getLanguageName() {
+        return languageName;
+    }
+
+    public void setLanguageName(String languageName) {
+        this.languageName = languageName;
     }
 
     public String getCountryCode() {

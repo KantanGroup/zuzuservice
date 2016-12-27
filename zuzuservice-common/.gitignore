@@ -13,3 +13,4 @@ buildNumber.properties
 !/.mvn/wrapper/maven-wrapper.jar
 .idea/
 google-play-common.iml
+zuzuservice-google-play-common.iml

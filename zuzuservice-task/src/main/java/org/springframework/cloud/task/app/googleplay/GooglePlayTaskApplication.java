@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Import;
 @Import(org.springframework.cloud.task.app.googleplay.GooglePlayTaskConfiguration.class)
 public class GooglePlayTaskApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GooglePlayTaskApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(GooglePlayTaskApplication.class, args);
+    }
 }
