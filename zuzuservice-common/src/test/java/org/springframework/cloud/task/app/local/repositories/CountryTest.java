@@ -1,12 +1,12 @@
-package org.springframework.cloud.task.app;
+package org.springframework.cloud.task.app.local.repositories;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.cloud.task.app.GooglePlayCommonConfiguration;
 import org.springframework.cloud.task.app.local.models.CountryLocal;
-import org.springframework.cloud.task.app.local.repositories.CountryRepository;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.BufferedReader;
