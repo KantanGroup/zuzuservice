@@ -23,7 +23,7 @@ import java.util.List;
  * @author tuanta17
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(Application.class)
+@SpringApplicationConfiguration(GooglePlayCommonConfiguration.class)
 public class CountryTest {
     @Autowired
     CountryRepository countryRepository;

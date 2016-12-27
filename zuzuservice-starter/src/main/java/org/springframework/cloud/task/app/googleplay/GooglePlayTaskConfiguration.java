@@ -24,6 +24,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,6 +36,7 @@ import java.util.Date;
 @EnableTask
 @Configuration
 @EnableConfigurationProperties({GooglePlayTaskProperties.class})
+@Import(org.springframework.cloud.task.app.GooglePlayCommonConfiguration.class)
 public class GooglePlayTaskConfiguration {
 
     @Bean
