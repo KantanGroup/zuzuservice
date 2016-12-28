@@ -9,29 +9,32 @@ import java.util.Date;
  * @author tuanta17
  */
 @Entity
-@Table(name = "app_country_language_s",
+@Table(name = "app_application_language_s",
         indexes = {
                 @Index(name = "create_at_index", columnList = "create_at"),
                 @Index(name = "update_at_index", columnList = "update_at"),
-                @Index(name = "country_language_index", columnList = "country_code,language_code"),
-                @Index(name = "country_index", columnList = "country_code"),
-                @Index(name = "language_index", columnList = "language_code")
+                @Index(name = "app_language_index", columnList = "app_id,language_code"),
+                @Index(name = "title_index", columnList = "title")
         }
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CountryLocal {
+public class ApplicationLanguageLocal {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(name = "app_id")
+    private String appId;
     @Column(name = "language_code")
     private String languageCode;
-    @Column(name = "language_name")
-    private String languageName;
-    @Column(name = "country_code")
-    private String countryCode;
-    @Column(name = "country_name")
-    private String countryName;
-    private int type;
+
+    private String title;
+    private String summary;
+    private String description;
+    @Column(name = "description_html")
+    private String descriptionHTML;
+
     @Column(name = "create_at")
     private Date createAt;
     @Column(name = "update_at")
@@ -45,6 +48,14 @@ public class CountryLocal {
         this.id = id;
     }
 
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
     public String getLanguageCode() {
         return languageCode;
     }
@@ -53,36 +64,36 @@ public class CountryLocal {
         this.languageCode = languageCode;
     }
 
-    public String getLanguageName() {
-        return languageName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setLanguageName(String languageName) {
-        this.languageName = languageName;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getCountryCode() {
-        return countryCode;
+    public String getSummary() {
+        return summary;
     }
 
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
-    public String getCountryName() {
-        return countryName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public int getType() {
-        return type;
+    public String getDescriptionHTML() {
+        return descriptionHTML;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setDescriptionHTML(String descriptionHTML) {
+        this.descriptionHTML = descriptionHTML;
     }
 
     public Date getCreateAt() {

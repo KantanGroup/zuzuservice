@@ -6,25 +6,31 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * @author tuanta17
  */
 @Entity
-@Table(name = "developments")
+@Table(name = "app_application_developer_s")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DeveloperLocal {
     @Id
     @Column(name = "developer_id")
-    private String devId;
+    private String developerId;
     private String url;
 
-    public String getDevId() {
-        return devId;
+    @Column(name = "create_at")
+    private Date createAt;
+    @Column(name = "update_at")
+    private Date updateAt;
+
+    public String getDeveloperId() {
+        return developerId;
     }
 
-    public void setDevId(String devId) {
-        this.devId = devId;
+    public void setDeveloperId(String developerId) {
+        this.developerId = developerId;
     }
 
     public String getUrl() {
@@ -33,5 +39,21 @@ public class DeveloperLocal {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
+    public Date getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(Date updateAt) {
+        this.updateAt = updateAt;
     }
 }

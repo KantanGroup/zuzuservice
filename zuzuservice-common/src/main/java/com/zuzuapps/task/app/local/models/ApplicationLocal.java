@@ -3,20 +3,30 @@ package com.zuzuapps.task.app.local.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author tuanta17
  */
 @Entity
-@Table(name = "applications")
+@Table(name = "app_application_s",
+        indexes = {
+                @Index(name = "app_id_index", columnList = "app_id"),
+                @Index(name = "create_at_index", columnList = "create_at"),
+                @Index(name = "update_at_index", columnList = "update_at"),
+                @Index(name = "score_index", columnList = "score"),
+                @Index(name = "price_index", columnList = "price"),
+                @Index(name = "free_index", columnList = "free")
+        }
+)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApplicationLocal {
     @Id
     @Column(name = "app_id")
     private String appId;
     private String url;
-    private String title;
-    private String summary;
     private String icon;
     private int score;
     private int price;
@@ -34,10 +44,6 @@ public class ApplicationLocal {
     private String genre;
     @Column(name = "genre_id")
     private String genreId;
-    private String description;
-    @Column(name = "description_html")
-    private String descriptionHTML;
-    // histogram: { type: new List(IntType) },
     @Column(name = "offers_iap")
     private boolean offersIAP;
     @Column(name = "ad_supported")
@@ -48,9 +54,6 @@ public class ApplicationLocal {
     private String androidVersion;
     @Column(name = "content_rating")
     private String contentRating;
-
-    // comments: { type: new List(StringType) },
-    //    recentChanges:
     private boolean preregister;
     @Column(name = "playstore_url")
     private String playstoreUrl;
@@ -58,21 +61,26 @@ public class ApplicationLocal {
     private String similar;
     private String reviews;
 
+    @Column(name = "create_at")
+    private Date createAt;
+    @Column(name = "update_at")
+    private Date updateAt;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "devId", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "developerId", nullable = false, insertable = false, updatable = false)
     private DeveloperLocal developer;
 
-    /*
-    private List<ScreenshootLocal> screenshots;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "appId", orphanRemoval = true)
+    private Set<ScreenshootLocal> screenshots = new HashSet<>();
 
-    public List<ScreenshootLocal> getScreenshots() {
+    public Set<ScreenshootLocal> getScreenshots() {
         return screenshots;
     }
 
-    public void setScreenshots(List<ScreenshootLocal> screenshots) {
+    public void setScreenshots(Set<ScreenshootLocal> screenshots) {
         this.screenshots = screenshots;
     }
-    */
+
     public String getAppId() {
         return appId;
     }
@@ -87,22 +95,6 @@ public class ApplicationLocal {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
     }
 
     public DeveloperLocal getDeveloper() {
@@ -207,22 +199,6 @@ public class ApplicationLocal {
 
     public void setGenreId(String genreId) {
         this.genreId = genreId;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getDescriptionHTML() {
-        return descriptionHTML;
-    }
-
-    public void setDescriptionHTML(String descriptionHTML) {
-        this.descriptionHTML = descriptionHTML;
     }
 
     public boolean isOffersIAP() {
