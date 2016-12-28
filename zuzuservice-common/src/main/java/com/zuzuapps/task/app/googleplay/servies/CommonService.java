@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URISyntaxException;
+
 /**
  * @author tuanta17
  */
@@ -22,7 +24,7 @@ public class CommonService<T> {
         return new HttpEntity<String>(headers);
     }
 
-    public ResponseEntity<T> get(String url, Class type) {
+    public ResponseEntity<T> get(String url, Class type) throws URISyntaxException {
         return restTemplate.exchange(url, HttpMethod.GET, addHeaders(), type);
     }
 

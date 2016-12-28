@@ -1,31 +1,29 @@
 package com.zuzuapps.task.app.googleplay.servies;
 
+import com.zuzuapps.task.app.common.CategoryEnum;
+import com.zuzuapps.task.app.common.CollectionEnum;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
+import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.zuzuapps.task.app.common.CategoryEnum;
-import com.zuzuapps.task.app.common.CollectionEnum;
-import com.zuzuapps.task.app.googleplay.models.ApplicationPlays;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.net.URLEncoder;
-
 /**
  * @author tuanta17
  */
 @Service
-public class ApplicationPlayService {
-    private final Log logger = LogFactory.getLog(ApplicationPlayService.class);
+public class SummaryApplicationPlayService {
+    private final Log logger = LogFactory.getLog(SummaryApplicationPlayService.class);
 
     @Autowired
-    private CommonService<ApplicationPlays> applicationPlaysCommonService;
+    private CommonService<SummaryApplicationPlays> applicationPlaysCommonService;
 
-    public ApplicationPlays getApplications(CategoryEnum category, CollectionEnum collection, String language, String country, int page) throws GooglePlayRuntimeException {
+    public SummaryApplicationPlays getSummaryApplications(CategoryEnum category, CollectionEnum collection, String language, String country, int page) throws GooglePlayRuntimeException {
         try {
             StringBuilder url = new StringBuilder("http://localhost:3000/api/apps");
             url = url.append("?start=").append(page);
@@ -34,7 +32,7 @@ public class ApplicationPlayService {
             url = url.append("&country=").append(country);
             url = url.append("&lang=").append(language);
             logger.debug("URL request: " + url.toString());
-            ResponseEntity<ApplicationPlays> responseEntity = applicationPlaysCommonService.get(URLEncoder.encode(url.toString()), ApplicationPlays.class);
+            ResponseEntity<SummaryApplicationPlays> responseEntity = applicationPlaysCommonService.get(url.toString(), SummaryApplicationPlays.class);
             if (responseEntity == null) {
                 throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, "Can't get data from url " + url.toString());
             }
@@ -43,7 +41,7 @@ public class ApplicationPlayService {
                 throw new GooglePlayRuntimeException(ExceptionCodes.GOOGLE_PLAY_SERVER_EXCEPTION, "Get apps from page " + (page + 1) + " . HTTP Status: " + statusCode.value() + " HTTP Message: " + statusCode.getReasonPhrase());
             }
             HttpHeaders header = responseEntity.getHeaders(); // (3)
-            ApplicationPlays applicationPlays = responseEntity.getBody(); // (4)
+            SummaryApplicationPlays applicationPlays = responseEntity.getBody(); // (4)
             if (applicationPlays == null) {
                 throw new GooglePlayRuntimeException(ExceptionCodes.GOOGLE_PLAY_SERVER_EXCEPTION, "Apps not found");
             } else {
