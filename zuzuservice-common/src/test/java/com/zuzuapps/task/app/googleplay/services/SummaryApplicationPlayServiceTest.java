@@ -9,8 +9,8 @@ import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
 import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
-import com.zuzuapps.task.app.local.models.ApplicationIndexLocal;
-import com.zuzuapps.task.app.local.repositories.IndexRepository;
+import com.zuzuapps.task.app.queue.models.AppIndexQueue;
+import com.zuzuapps.task.app.queue.repositories.AppIndexQueueRepository;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,17 +31,17 @@ public class SummaryApplicationPlayServiceTest {
     @Autowired
     SummaryApplicationPlayService applicationPlayService;
     @Autowired
-    IndexRepository indexRepository;
+    AppIndexQueueRepository indexRepository;
 
     @Test
     public void testGetApplicationByPage() throws GooglePlayRuntimeException, JsonProcessingException {
         SummaryApplicationPlays applications = applicationPlayService.getSummaryApplications(CategoryEnum.GAME, CollectionEnum.topselling_free, "vi", "vn", 0);
         Assert.assertEquals(60,applications.getResults().size());
         final ObjectMapper mapper = new ObjectMapper();
-        List<ApplicationIndexLocal> indexs = new ArrayList<>();
+        List<AppIndexQueue> indexs = new ArrayList<>();
         int i=0;
         for(SummaryApplicationPlay summary: applications.getResults()) {
-            ApplicationIndexLocal indexLocal =  new ApplicationIndexLocal();
+            AppIndexQueue indexLocal =  new AppIndexQueue();
             indexLocal.setAppId(summary.getAppId());
             indexLocal.setCategory(CategoryEnum.GAME);
             indexLocal.setCollection(CollectionEnum.topselling_free);
