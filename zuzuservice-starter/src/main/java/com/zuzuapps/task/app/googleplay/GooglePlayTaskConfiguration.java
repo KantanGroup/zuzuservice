@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.task.app.googleplay;
+package com.zuzuapps.task.app.googleplay;
 
+import com.zuzuapps.task.app.GooglePlayCommonConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,7 +36,8 @@ import java.util.Date;
  */
 @EnableTask
 @Configuration
-@EnableConfigurationProperties({ GooglePlayTaskProperties.class })
+@EnableConfigurationProperties({GooglePlayTaskProperties.class})
+@Import(GooglePlayCommonConfiguration.class)
 public class GooglePlayTaskConfiguration {
 
     @Bean

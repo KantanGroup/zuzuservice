@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.task.app.googleplay;
+package com.zuzuapps.task.app.googleplay;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,10 +22,10 @@ import org.springframework.context.annotation.Import;
 
 
 @SpringBootApplication
-@Import(org.springframework.cloud.task.app.googleplay.GooglePlayTaskConfiguration.class)
+@Import(GooglePlayTaskConfiguration.class)
 public class GooglePlayTaskApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GooglePlayTaskApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(GooglePlayTaskApplication.class, args);
+    }
 }
