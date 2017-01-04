@@ -10,6 +10,7 @@
     <modules>
         <module>zuzuservice-common</module>
         <module>zuzuservice-starter</module>
+        <module>zuzuservice-processor</module>
         <module>zuzuservice-task</module>
     </modules>
 

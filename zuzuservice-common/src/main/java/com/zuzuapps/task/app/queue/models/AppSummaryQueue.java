@@ -1,7 +1,6 @@
 package com.zuzuapps.task.app.queue.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.zuzuapps.task.app.master.models.AppDeveloperMaster;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,7 +9,7 @@ import java.util.Date;
  * @author tuanta17
  */
 @Entity
-@Table(name = "app_summary_queue_s",
+@Table(name = "queue_app_summary_s",
         indexes = {
                 @Index(name = "create_at_index", columnList = "create_at"),
                 @Index(name = "update_at_index", columnList = "update_at"),

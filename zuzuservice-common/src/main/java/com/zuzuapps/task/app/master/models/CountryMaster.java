@@ -9,7 +9,7 @@ import java.util.Date;
  * @author tuanta17
  */
 @Entity
-@Table(name = "app_country_language_master_s",
+@Table(name = "master_country_language_s",
         indexes = {
                 @Index(name = "create_at_index", columnList = "create_at"),
                 @Index(name = "update_at_index", columnList = "update_at"),

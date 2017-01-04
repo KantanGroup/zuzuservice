@@ -12,7 +12,7 @@ import java.util.Date;
  * @author tuanta17
  */
 @Entity
-@Table(name = "app_application_developer_master_s")
+@Table(name = "master_application_developer_s")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppDeveloperMaster {
     @Id

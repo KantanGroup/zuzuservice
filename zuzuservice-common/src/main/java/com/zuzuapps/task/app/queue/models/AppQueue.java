@@ -1,18 +1,15 @@
 package com.zuzuapps.task.app.queue.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.zuzuapps.task.app.master.models.AppDeveloperMaster;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author tuanta17
  */
 @Entity
-@Table(name = "app_application_log_queue_s",
+@Table(name = "queue_application_log_s",
         indexes = {
                 @Index(name = "app_id_index", columnList = "app_id"),
                 @Index(name = "create_at_index", columnList = "create_at"),
@@ -132,7 +129,7 @@ public class AppQueue {
     }
 
     public String getUpdated() {
-        return updated;
+        return updated.toUpperCase();
     }
 
     public void setUpdated(String updated) {

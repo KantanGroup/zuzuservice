@@ -8,7 +8,7 @@ import javax.persistence.*;
  * @author tuanta17
  */
 @Entity
-@Table(name = "app_application_comment_master_s")
+@Table(name = "master_application_comment_s")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppCommentMaster {
     @Id

@@ -1,7 +1,6 @@
 package com.zuzuapps.task.app.master.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.zuzuapps.task.app.logs.models.AppScreenshootLog;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,7 +11,7 @@ import java.util.Set;
  * @author tuanta17
  */
 @Entity
-@Table(name = "app_application_master_s",
+@Table(name = "master_application_s",
         indexes = {
                 @Index(name = "app_id_index", columnList = "app_id"),
                 @Index(name = "create_at_index", columnList = "create_at"),
