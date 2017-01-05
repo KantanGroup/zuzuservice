@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zuzuapps.task.app</groupId>
-    <artifactId>zuzuservice-google-play-processor</artifactId>
+    <artifactId>zuzuservice-google-play-screenshoot-sink</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
-    <name>google-play-processor</name>
-    <description>Google Play Processor</description>
+    <name>google-play-screenshoot-sink</name>
+    <description>Google Play Screen Shoot Sink</description>
 
     <parent>
         <groupId>org.springframework.cloud</groupId>

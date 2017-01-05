@@ -11,6 +11,7 @@
         <module>zuzuservice-common</module>
         <module>zuzuservice-starter</module>
         <module>zuzuservice-processor</module>
+        <module>zuzuservice-screenshoot-sink</module>
         <module>zuzuservice-task</module>
     </modules>
 

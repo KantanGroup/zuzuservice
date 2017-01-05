@@ -16,36 +16,45 @@
 
 package com.zuzuapps.task.app.googleplay;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzuapps.task.app.GooglePlayCommonConfiguration;
+import com.zuzuapps.task.app.master.models.CountryMaster;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Processor;
+import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.context.annotation.Import;
-import org.springframework.integration.annotation.Transformer;
 import org.springframework.messaging.Message;
 
 /**
- * A commandline runner that prints a timestamp.
+ * @author Dave Syer
+ * @author Marius Bogoevici
+ * @author Gary Russell
  */
 @SpringBootApplication
-@EnableBinding(Processor.class)
-@EnableConfigurationProperties({GooglePlayProcessorProperties.class})
+@EnableBinding(Sink.class)
+@EnableConfigurationProperties(ScreenshootSinkProperties.class)
 @Import(GooglePlayCommonConfiguration.class)
-public class GooglePlayProcessorConfiguration {
+public class ScreenshootSinkApplication {
 
     @Autowired
-    private GooglePlayProcessorProperties properties;
+    private ScreenshootSinkProperties properties;
 
-    @Transformer(inputChannel = Processor.INPUT, outputChannel = Processor.OUTPUT)
-    public Object transform(Message<?> message) {
-        return message;
+    @StreamListener(Sink.INPUT)
+    public void handlerMessage(Message<Object> data) throws Exception {
+        final ObjectMapper mapper = new ObjectMapper();
+        System.out.println(mapper.writeValueAsString(data.getPayload()));
+        //JSON from String to Object
+        CountryMaster country = mapper.readValue(mapper.writeValueAsString(data.getPayload()), CountryMaster.class);
+        System.out.println(country.getCountryCode().toUpperCase());
+        System.out.println(country.getLanguageCode().toUpperCase());
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(GooglePlayProcessorConfiguration.class, args);
+        SpringApplication.run(ScreenshootSinkApplication.class, args);
     }
 
 }
