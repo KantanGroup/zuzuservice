@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zuzuapps.task.app</groupId>
-    <artifactId>zuzuservice-google-play-starter</artifactId>
+    <artifactId>google-play-screenshoot-starter</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
-    <name>google-play-starter</name>
-    <description>Google Play Starter</description>
+    <name>google-play-screenshoot-starter</name>
+    <description>Google Play Screenshoot Starter</description>
 
     <parent>
         <groupId>org.springframework.cloud</groupId>

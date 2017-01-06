@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zuzuapps.task.app</groupId>
-    <artifactId>zuzuservice-google-play-starter</artifactId>
+    <artifactId>google-play-common-log</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
-    <name>google-play-starter</name>
-    <description>Google Play Starter</description>
+    <name>google-play-common-log</name>
+    <description>Google Play Common Log</description>
 
     <parent>
         <groupId>org.springframework.cloud</groupId>
@@ -19,13 +19,8 @@
     <dependencies>
         <dependency>
             <groupId>com.zuzuapps.task.app</groupId>
-            <artifactId>zuzuservice-google-play-common</artifactId>
+            <artifactId>google-play-common</artifactId>
             <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-task-core</artifactId>
-            <version>1.1.0.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -39,6 +34,26 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.8</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/net.dongliu/apk-parser -->
+        <dependency>
+            <groupId>net.dongliu</groupId>
+            <artifactId>apk-parser</artifactId>
+            <version>2.1.7</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -63,6 +78,34 @@
         </dependency>
 
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud.task.app</groupId>
+                <artifactId>spring-cloud-task-app-dependencies</artifactId>
+                <version>1.0.1.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- Add Spring repositories -->
+    <!-- (you don't need this if you are using a .RELEASE version) -->
+    <repositories>
+        <repository>
+            <id>spring-releases</id>
+            <url>http://repo.spring.io/release</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/milestone</url>
+        </repository>
+    </repositories>
 
     <build>
         <pluginManagement>

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zuzuapps.task.app</groupId>
-    <artifactId>zuzuservice-google-play-common</artifactId>
+    <artifactId>google-play-common</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
     <name>google-play-common</name>

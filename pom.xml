@@ -8,11 +8,17 @@
     <name>google-play-parent</name>
 
     <modules>
+        <module>zuzuservice-app-master-sink</module>
+        <module>zuzuservice-app-log-sink</module>
+        <module>zuzuservice-common-master</module>
+        <module>zuzuservice-common-log</module>
+        <module>zuzuservice-common-queue</module>
         <module>zuzuservice-common</module>
         <module>zuzuservice-starter</module>
-        <module>zuzuservice-processor</module>
-        <module>zuzuservice-screenshoot-sink</module>
         <module>zuzuservice-task</module>
+        <module>zuzuservice-processor</module>
+        <module>zuzuservice-screenshoot-starter</module>
+        <module>zuzuservice-screenshoot-task</module>
     </modules>
 
     <build>

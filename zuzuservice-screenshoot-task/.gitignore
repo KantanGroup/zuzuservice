@@ -12,4 +12,5 @@ buildNumber.properties
 # Exclude maven wrapper
 !/.mvn/wrapper/maven-wrapper.jar
 .idea/
-google-play-common.iml
+.mvn/
+google-play-screenshoot-task.iml
