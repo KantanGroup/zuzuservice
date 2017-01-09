@@ -12,8 +12,8 @@ public class ApplicationPlay {
     private String summary;
     private DeveloperPlay developer;
     private String icon;
-    private int score;
-    private int price;
+    private float score;
+    private String price;
     private boolean free;
     private String developerEmail;
     private String developerWebsite;
@@ -88,19 +88,19 @@ public class ApplicationPlay {
         this.icon = icon;
     }
 
-    public int getScore() {
+    public float getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(float score) {
         this.score = score;
     }
 
-    public int getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 

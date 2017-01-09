@@ -27,6 +27,7 @@ public class SummaryApplicationPlayService {
         try {
             StringBuilder url = new StringBuilder("http://localhost:3000/api/apps");
             url = url.append("?start=").append(page);
+            url = url.append("&num=120");
             url = url.append("&category=").append(category.name());
             url = url.append("&collection=").append(collection.name());
             url = url.append("&country=").append(country);

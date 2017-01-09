@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zuzuapps.task.app</groupId>
-    <artifactId>zuzuservice-google-play-processor</artifactId>
+    <artifactId>google-play-processor</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
     <name>google-play-processor</name>
@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.zuzuapps.task.app</groupId>
-            <artifactId>zuzuservice-google-play-common</artifactId>
+            <artifactId>google-play-common</artifactId>
             <version>1.0.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-stream -->

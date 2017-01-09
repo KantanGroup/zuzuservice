@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zuzuapps.task.app</groupId>
-    <artifactId>zuzuservice-google-play-task</artifactId>
+    <artifactId>google-play-task</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
     <name>google-play-task</name>
@@ -37,7 +37,7 @@
     <dependencies>
         <dependency>
             <groupId>com.zuzuapps.task.app</groupId>
-            <artifactId>zuzuservice-google-play-starter</artifactId>
+            <artifactId>google-play-starter</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>

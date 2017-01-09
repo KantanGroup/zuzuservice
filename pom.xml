@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.zuzuapps.task.app</groupId>
     <artifactId>zuzuservice-google-play-parent</artifactId>
@@ -8,6 +8,8 @@
     <name>google-play-parent</name>
 
     <modules>
+        <module>zuzuservice-app-summary-task</module>
+        <module>zuzuservice-app-summary-source</module>
         <module>zuzuservice-app-master-sink</module>
         <module>zuzuservice-app-log-sink</module>
         <module>zuzuservice-common-master</module>
@@ -17,8 +19,11 @@
         <module>zuzuservice-starter</module>
         <module>zuzuservice-task</module>
         <module>zuzuservice-processor</module>
+        <module>zuzuservice-screenshoot-extract-processor</module>
+        <module>zuzuservice-screenshoot-file-sink</module>
         <module>zuzuservice-screenshoot-starter</module>
         <module>zuzuservice-screenshoot-task</module>
+        <module>zuzuservice-scheduled</module>
     </modules>
 
     <build>

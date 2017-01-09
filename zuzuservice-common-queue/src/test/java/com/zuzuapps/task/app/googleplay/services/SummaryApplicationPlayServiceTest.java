@@ -36,12 +36,12 @@ public class SummaryApplicationPlayServiceTest {
     @Test
     public void testGetApplicationByPage() throws GooglePlayRuntimeException, JsonProcessingException {
         SummaryApplicationPlays applications = applicationPlayService.getSummaryApplications(CategoryEnum.GAME, CollectionEnum.topselling_free, "vi", "vn", 0);
-        Assert.assertEquals(60,applications.getResults().size());
+        Assert.assertEquals(60, applications.getResults().size());
         final ObjectMapper mapper = new ObjectMapper();
         List<AppIndexQueue> indexs = new ArrayList<>();
-        int i=0;
-        for(SummaryApplicationPlay summary: applications.getResults()) {
-            AppIndexQueue indexLocal =  new AppIndexQueue();
+        int i = 0;
+        for (SummaryApplicationPlay summary : applications.getResults()) {
+            AppIndexQueue indexLocal = new AppIndexQueue();
             indexLocal.setAppId(summary.getAppId());
             indexLocal.setCategory(CategoryEnum.GAME);
             indexLocal.setCollection(CollectionEnum.topselling_free);

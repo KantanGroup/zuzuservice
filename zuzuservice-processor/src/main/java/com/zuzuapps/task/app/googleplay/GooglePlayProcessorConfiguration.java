@@ -39,13 +39,13 @@ public class GooglePlayProcessorConfiguration {
     @Autowired
     private GooglePlayProcessorProperties properties;
 
+    public static void main(String[] args) {
+        SpringApplication.run(GooglePlayProcessorConfiguration.class, args);
+    }
+
     @Transformer(inputChannel = Processor.INPUT, outputChannel = Processor.OUTPUT)
     public Object transform(Message<?> message) {
         return message;
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(GooglePlayProcessorConfiguration.class, args);
     }
 
 }

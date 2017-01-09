@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.zuzuapps.task.app</groupId>
-            <artifactId>zuzuservice-google-play-common</artifactId>
+            <artifactId>google-play-common</artifactId>
             <version>1.0.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-stream -->

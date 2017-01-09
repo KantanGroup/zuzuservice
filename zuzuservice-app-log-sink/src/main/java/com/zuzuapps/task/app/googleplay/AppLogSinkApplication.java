@@ -37,14 +37,14 @@ public class AppLogSinkApplication {
     @Autowired
     private AppLogSinkProperties properties;
 
+    public static void main(String[] args) {
+        SpringApplication.run(AppLogSinkApplication.class, args);
+    }
+
     @StreamListener(Sink.INPUT)
     public void handlerMessage(Message<Object> data) throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
         System.out.println(mapper.writeValueAsString(data.getPayload()));
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(AppLogSinkApplication.class, args);
     }
 
 }
