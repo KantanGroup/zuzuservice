@@ -37,7 +37,6 @@ public enum CategoryEnum {
     TRAVEL_AND_LOCAL,
     VIDEO_PLAYERS,
     WEATHER,
-    APP_WIDGETS,
     GAME,
     GAME_ACTION,
     GAME_ADVENTURE,

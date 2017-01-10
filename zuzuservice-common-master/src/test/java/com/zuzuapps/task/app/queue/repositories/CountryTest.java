@@ -56,6 +56,16 @@ public class CountryTest {
         final ObjectMapper mapper = new ObjectMapper();
         Files.write(Paths.get("/tmp/countries.json"), mapper.writeValueAsString(locals).getBytes(), StandardOpenOption.CREATE);
     }
+
+
+    @Test
+    public void testGetOrderByTypeDesc() throws Exception {
+        List<CountryMaster> countries = countryRepository.findAllByTypeGreaterThanOrderByTypeDesc(0);
+        System.out.println(countries.size());
+        for (CountryMaster countryMaster : countries) {
+            System.out.println(countryMaster.getType() + " -- " + countryMaster.getCountryName());
+        }
+    }
 }
 
 

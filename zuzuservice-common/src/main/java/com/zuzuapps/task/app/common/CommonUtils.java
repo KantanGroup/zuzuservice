@@ -10,26 +10,41 @@ import java.util.Date;
 /**
  * @author tuanta17
  */
-public class FileUtils {
-    public static String ROOT_PATH = "/tmp";
-
+public class CommonUtils {
     /**
      * Get folder by service and type
      *
+     * @param root      Root path
      * @param service   Service name
      * @param type      Type name
      * @param subFolder Have subfolder
      * @return Absolute path
      */
-    public static String getFolderBy(String service, String type, boolean subFolder) {
+    public static String getFolderBy(String root, String country, String category, String collection, String service, String type, boolean subFolder) {
         String daily = getTimeBy("yyyMMdd");
         String hourly = getTimeBy("yyyyMMddHH");
         String minutely = getTimeBy("yyyyMMddHHmm");
         File folder;
         if (subFolder) {
-            folder = Paths.get(ROOT_PATH, service, type, daily, hourly, minutely).toFile();
+            folder = Paths.get(root, country, category.toLowerCase(), collection, service, type, daily, hourly, minutely).toFile();
         } else {
-            folder = Paths.get(ROOT_PATH, service, type).toFile();
+            folder = Paths.get(root, country, category.toLowerCase(), collection, service, type, daily).toFile();
+        }
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder.getAbsolutePath();
+    }
+
+    public static String getFolderBy(String root, String country, String category, String collection, boolean subFolder) {
+        String daily = getTimeBy("yyyMMdd");
+        String hourly = getTimeBy("yyyyMMddHH");
+        String minutely = getTimeBy("yyyyMMddHHmm");
+        File folder;
+        if (subFolder) {
+            folder = Paths.get(root, country, category.toLowerCase(), collection, daily, hourly, minutely).toFile();
+        } else {
+            folder = Paths.get(root, country, category.toLowerCase(), collection, daily).toFile();
         }
         if (!folder.exists()) {
             folder.mkdirs();
@@ -55,6 +70,6 @@ public class FileUtils {
     }
 
     public static void main(String[] args) {
-        System.out.println(FileUtils.getFolderBy("app", "queue", true));
+        System.out.println(CommonUtils.getFolderBy("/tmp", "vn", "GAME", "free","app", "queue", true));
     }
 }

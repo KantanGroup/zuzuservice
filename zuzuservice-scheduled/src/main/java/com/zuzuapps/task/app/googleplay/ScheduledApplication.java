@@ -18,16 +18,24 @@ package com.zuzuapps.task.app.googleplay;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzuapps.task.app.GooglePlayCommonConfiguration;
+import com.zuzuapps.task.app.common.*;
+import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
 import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
+import com.zuzuapps.task.app.master.models.CountryMaster;
+import com.zuzuapps.task.app.master.repositories.CountryMasterRepository;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 @SpringBootApplication
 @Import({GooglePlayCommonConfiguration.class})
@@ -35,8 +43,12 @@ public class ScheduledApplication {
     private final ObjectMapper mapper = new ObjectMapper();
     private final Log logger = LogFactory.getLog(ScheduledApplication.class);
 
+    @Value("${data.root.path:/tmp}")
+    private String rootPath;
     @Autowired
     private SummaryApplicationPlayService summaryApplicationPlayService;
+    @Autowired
+    private CountryMasterRepository countryRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(ScheduledApplication.class, args);
@@ -44,35 +56,44 @@ public class ScheduledApplication {
 
     public void delay(long time) {
         try {
+            logger.debug("Stop in " + time / 1000 + "s");
             Thread.sleep(time);
         } catch (Exception e) {
         }
     }
 
-    @Scheduled(cron = "0/5 * * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void appSummary() {
+        logger.info("[Application Summary]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
-        /*
-        for (CollectionEnum collection : CollectionEnum.values()) {
-            for (CategoryEnum category : CategoryEnum.values()) {
-                try {
-                    SummaryApplicationPlays summaryApplicationPlays
-                            = summaryApplicationPlayService.getSummaryApplications(category, collection, properties.getLanguageCode(), properties.getCountryCode(), 1);
-                    logger.info(mapper.writeValueAsString(summaryApplicationPlays));
-                } catch (Exception ex) {
-                    logger.error(ex);
-                    deday(30000);
+        List<CountryMaster> countries = countryRepository.findAllByTypeGreaterThanOrderByTypeDesc(0);
+        for (CountryMaster countryMaster : countries) {
+            for (CollectionEnum collection : CollectionEnum.values()) {
+                for (CategoryEnum category : CategoryEnum.values()) {
+                    try {
+                        SummaryApplicationPlays summaryApplicationPlays
+                                = summaryApplicationPlayService.getSummaryApplications(category, collection, countryMaster.getLanguageCode(), countryMaster.getCountryCode(), 0);
+                        String path = CommonUtils.getFolderBy(rootPath, countryMaster.getCountryCode(), category.name(), collection.name(),false);
+                        FileUtils.writeStringToFile(new File(path + "/" + System.currentTimeMillis() + ".json"), mapper.writeValueAsString(summaryApplicationPlays));
+                    } catch (Exception ex) {
+                        logger.error(ex);
+                    }
+                    delay(5000);
                 }
-                delay(5000);
             }
         }
-        //*/
-        logger.info("[Application Summary]Cronjob run at: " + new Date());
+        logger.info("[Application Summary]Cronjob end at: " + new Date());
     }
 
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0/5 * * * * *")
+    public void applicationInformation() {
+        // logger.info("[Application Information]Cronjob start at: " + new Date());
+        // logger.info("[Application Information]Cronjob end at: " + new Date());
+    }
+
+    @Scheduled(cron = "0/10 * * * * *")
     public void screenshootExtract() {
-        // something that should execute on weekdays only
-        logger.info("[Screenshoot Extract]Cronjob run at: " + new Date());
+        // logger.info("[Screenshoot Extract]Cronjob start at: " + new Date());
+        // logger.info("[Screenshoot Extract]Cronjob end at: " + new Date());
     }
 }

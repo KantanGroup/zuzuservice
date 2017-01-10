@@ -9,5 +9,4 @@ public enum CollectionEnum {
     topselling_new_free,
     topselling_new_paid,
     topgrossing,
-    movers_shakers,
 }
