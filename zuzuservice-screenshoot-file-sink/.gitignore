@@ -12,4 +12,4 @@ buildNumber.properties
 # Exclude maven wrapper
 !/.mvn/wrapper/maven-wrapper.jar
 .idea/
-google-play-app-log-sink.iml
+google-play-screenshoot-file-sink.iml
