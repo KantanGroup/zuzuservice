@@ -18,12 +18,13 @@ package com.zuzuapps.task.app.googleplay;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzuapps.task.app.GooglePlayCommonConfiguration;
-import com.zuzuapps.task.app.common.*;
+import com.zuzuapps.task.app.common.CategoryEnum;
+import com.zuzuapps.task.app.common.CollectionEnum;
+import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
 import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
 import com.zuzuapps.task.app.master.models.CountryMaster;
 import com.zuzuapps.task.app.master.repositories.CountryMasterRepository;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 
@@ -74,7 +77,9 @@ public class ScheduledApplication {
                         SummaryApplicationPlays summaryApplicationPlays
                                 = summaryApplicationPlayService.getSummaryApplications(category, collection, countryMaster.getLanguageCode(), countryMaster.getCountryCode(), 0);
                         String path = CommonUtils.getFolderBy(rootPath, countryMaster.getCountryCode(), category.name(), collection.name(),false);
-                        FileUtils.writeStringToFile(new File(path + "/" + System.currentTimeMillis() + ".json"), mapper.writeValueAsString(summaryApplicationPlays));
+                        Files.write(Paths.get(path + "/" + System.currentTimeMillis() + ".json"), mapper.writeValueAsBytes(summaryApplicationPlays));
+                    } catch (IOException ex) {
+
                     } catch (Exception ex) {
                         logger.error(ex);
                     }

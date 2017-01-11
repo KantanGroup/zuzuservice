@@ -3,8 +3,7 @@ package com.zuzuapps.task.app.common;
 /**
  * @author tuanta17
  */
-public enum DataTypeEnum {
-    queue,
-    log,
-    master
+public enum ImageTypeEnum {
+    icon,
+    screenshoot
 }

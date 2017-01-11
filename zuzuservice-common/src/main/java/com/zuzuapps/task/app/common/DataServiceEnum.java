@@ -1,7 +1,7 @@
 package com.zuzuapps.task.app.common;
 
 /**
- * Created by tuanta on 1/10/17.
+ * @author tuanta17
  */
 public enum DataServiceEnum {
     information,

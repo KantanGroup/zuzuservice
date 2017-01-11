@@ -2,7 +2,11 @@ package com.zuzuapps.task.app;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 /**
  * @author tuanta17
@@ -11,7 +15,12 @@ import org.springframework.web.client.RestTemplate;
 public class GooglePlayCommonConfiguration {
 
     @Bean
-    public RestTemplate createRestTemplate() {
-        return new RestTemplate();
+    public RestTemplate restTemplate(List<HttpMessageConverter<?>> messageConverters) {
+        return new RestTemplate(messageConverters);
+    }
+
+    @Bean
+    public ByteArrayHttpMessageConverter byteArrayHttpMessageConverter() {
+        return new ByteArrayHttpMessageConverter();
     }
 }
