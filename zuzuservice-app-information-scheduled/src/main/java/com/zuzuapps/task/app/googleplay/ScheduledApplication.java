@@ -29,12 +29,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -66,8 +67,8 @@ public class ScheduledApplication {
     }
 
     @Scheduled(cron = "0 0 0 * * *")
-    public void appSummary() {
-        logger.info("[Application Summary]Cronjob start at: " + new Date());
+    public void appTop() {
+        logger.info("[Application Top]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
         List<CountryMaster> countries = countryRepository.findAllByTypeGreaterThanOrderByTypeDesc(0);
         for (CountryMaster countryMaster : countries) {
@@ -76,10 +77,8 @@ public class ScheduledApplication {
                     try {
                         SummaryApplicationPlays summaryApplicationPlays
                                 = summaryApplicationPlayService.getSummaryApplications(category, collection, countryMaster.getLanguageCode(), countryMaster.getCountryCode(), 0);
-                        String path = CommonUtils.getFolderBy(rootPath, countryMaster.getCountryCode(), category.name(), collection.name(),false);
+                        String path = CommonUtils.getTopFolderBy(rootPath, countryMaster.getCountryCode(), category.name(), collection.name());
                         Files.write(Paths.get(path + "/" + System.currentTimeMillis() + ".json"), mapper.writeValueAsBytes(summaryApplicationPlays));
-                    } catch (IOException ex) {
-
                     } catch (Exception ex) {
                         logger.error(ex);
                     }
@@ -87,18 +86,69 @@ public class ScheduledApplication {
                 }
             }
         }
+        logger.info("[Application Top]Cronjob end at: " + new Date());
+    }
+
+    @Bean
+    public SummaryTask summaryTask() {
+        return new SummaryTask();
+    }
+
+    /**
+     * A commandline runner
+     */
+    public class SummaryTask implements CommandLineRunner {
+        @Override
+        public void run(String... strings) throws Exception {
+            appSummary();
+        }
+    }
+
+    public void appSummary() {
+        logger.info("[Application Summary]Cronjob start at: " + new Date());
+        // something that should execute on weekdays only
+        String time = CommonUtils.getMinutelyByTime();
+        List<CountryMaster> countries = countryRepository.findAllByTypeGreaterThanOrderByTypeDesc(0);
+        for (CountryMaster countryMaster : countries) {
+            for (CollectionEnum collection : CollectionEnum.values()) {
+                for (CategoryEnum category : CategoryEnum.values()) {
+                    int page = 1;
+                    while(true) {
+                        try {
+                            SummaryApplicationPlays summaryApplicationPlays
+                                    = summaryApplicationPlayService.getSummaryApplications(category, collection, countryMaster.getLanguageCode(), countryMaster.getCountryCode(), page);
+                            String path = CommonUtils.getSummaryFolderBy(rootPath, countryMaster.getCountryCode(), category.name(), collection.name(), time, page);
+                            Files.write(Paths.get(path + "/" + System.currentTimeMillis() + ".json"), mapper.writeValueAsBytes(summaryApplicationPlays));
+                            if (summaryApplicationPlays.getResults().size() < 120) {
+                                break;
+                            }
+                        } catch (Exception ex) {
+                            logger.error(ex);
+                            break;
+                        }
+                        page++;
+                        delay(5000);
+                    }
+                }
+            }
+        }
         logger.info("[Application Summary]Cronjob end at: " + new Date());
     }
 
-    @Scheduled(cron = "0/5 * * * * *")
-    public void applicationInformation() {
-        // logger.info("[Application Information]Cronjob start at: " + new Date());
-        // logger.info("[Application Information]Cronjob end at: " + new Date());
-    }
+    public void appInformation() {
+        logger.info("[Application Information]Cronjob start at: " + new Date());
+        // 1. Get app from queue
 
-    @Scheduled(cron = "0/10 * * * * *")
-    public void screenshootExtract() {
-        // logger.info("[Screenshoot Extract]Cronjob start at: " + new Date());
-        // logger.info("[Screenshoot Extract]Cronjob end at: " + new Date());
+        // 2. Get information
+
+        // 3. Get icon
+
+        // 4. Get screen shoot
+
+        // 5. Move queue to log
+
+        // 6. Update master
+
+        logger.info("[Application Information]Cronjob end at: " + new Date());
     }
 }

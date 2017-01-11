@@ -63,7 +63,7 @@ public class CountryTest {
         List<CountryMaster> countries = countryRepository.findAllByTypeGreaterThanOrderByTypeDesc(0);
         System.out.println(countries.size());
         for (CountryMaster countryMaster : countries) {
-            System.out.println(countryMaster.getType() + " -- " + countryMaster.getCountryName());
+            System.out.println(countryMaster.getType() + " -- " + countryMaster.getCountryCode() + " -- " + countryMaster.getCountryName());
         }
     }
 }

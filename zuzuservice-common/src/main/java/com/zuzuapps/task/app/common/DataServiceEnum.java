@@ -6,5 +6,6 @@ package com.zuzuapps.task.app.common;
 public enum DataServiceEnum {
     information,
     summary,
-    screen_shoot
+    top,
+    screenshoot
 }

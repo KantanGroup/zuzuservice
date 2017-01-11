@@ -47,7 +47,7 @@ public class ScreenshootApplicationPlayService {
     }
 
     /**
-     * Extract origin screnn shoot
+     * Extract origin screen shoot
      *
      * @param appId     Application id
      * @param imageLink Image link

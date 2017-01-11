@@ -12,40 +12,51 @@ import java.util.Date;
  */
 public class CommonUtils {
     /**
-     * Get folder by service and type
+     * Get top folder
      *
-     * @param root      Root path
-     * @param service   Service name
-     * @param type      Type name
-     * @param subFolder Have subfolder
      * @return Absolute path
      */
-    public static String getFolderBy(String root, String country, String category, String collection, String service, String type, boolean subFolder) {
-        String daily = getTimeBy("yyyMMdd");
-        String hourly = getTimeBy("yyyyMMddHH");
-        String minutely = getTimeBy("yyyyMMddHHmm");
-        File folder;
-        if (subFolder) {
-            folder = Paths.get(root, country, category.toLowerCase(), collection, service, type, daily, hourly, minutely).toFile();
-        } else {
-            folder = Paths.get(root, country, category.toLowerCase(), collection, service, type, daily).toFile();
-        }
+    public static String getTopFolderBy(String root, String country, String category, String collection) {
+        File folder = Paths.get(root, DataServiceEnum.top.name(), DataTypeEnum.queue.name(), country, category.toLowerCase(), collection, getDailyByTime()).toFile();
         if (!folder.exists()) {
             folder.mkdirs();
         }
         return folder.getAbsolutePath();
     }
 
-    public static String getFolderBy(String root, String country, String category, String collection, boolean subFolder) {
-        String daily = getTimeBy("yyyMMdd");
-        String hourly = getTimeBy("yyyyMMddHH");
-        String minutely = getTimeBy("yyyyMMddHHmm");
-        File folder;
-        if (subFolder) {
-            folder = Paths.get(root, country, category.toLowerCase(), collection, daily, hourly, minutely).toFile();
-        } else {
-            folder = Paths.get(root, country, category.toLowerCase(), collection, daily).toFile();
+    /**
+     * Get summary folder
+     *
+     * @return Absolute path
+     */
+    public static String getSummaryFolderBy(String root, String country, String category, String collection, String time, int page) {
+        File folder = Paths.get(root, DataServiceEnum.summary.name(), DataTypeEnum.queue.name(), time, country, category.toLowerCase(), collection, page + "").toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
         }
+        return folder.getAbsolutePath();
+    }
+
+    /**
+     * Get application folder
+     *
+     * @return Absolute path
+     */
+    public static String getAppFolderBy(String root, String appId, String language) {
+        File folder = Paths.get(root, DataServiceEnum.information.name(), DataTypeEnum.queue.name(), appId, language).toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder.getAbsolutePath();
+    }
+
+    /**
+     * Get screens shoot folder
+     *
+     * @return Absolute path
+     */
+    public static String getScreenshootFolderBy(String root, String appId, String time) {
+        File folder = Paths.get(root, DataServiceEnum.screenshoot.name(), DataTypeEnum.queue.name(), appId, time).toFile();
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -69,7 +80,15 @@ public class CommonUtils {
         return df.format(today);
     }
 
-    public static void main(String[] args) {
-        System.out.println(CommonUtils.getFolderBy("/tmp", "vn", "GAME", "free","app", "queue", true));
+    public static String getDailyByTime() {
+        return getTimeBy("yyyMMdd");
+    }
+
+    public static String getHourlyByTime() {
+        return getTimeBy("yyyyMMddHH");
+    }
+
+    public static String getMinutelyByTime() {
+        return getTimeBy("yyyyMMddHHmm");
     }
 }

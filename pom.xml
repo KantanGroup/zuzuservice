@@ -10,6 +10,8 @@
     <modules>
         <module>zuzuservice-app-summary-task</module>
         <module>zuzuservice-app-summary-source</module>
+        <module>zuzuservice-app-summary-scheduled</module>
+        <module>zuzuservice-app-information-scheduled</module>
         <module>zuzuservice-app-master-sink</module>
         <module>zuzuservice-app-log-sink</module>
         <module>zuzuservice-common-master</module>
@@ -23,7 +25,6 @@
         <module>zuzuservice-screenshoot-file-sink</module>
         <module>zuzuservice-screenshoot-starter</module>
         <module>zuzuservice-screenshoot-task</module>
-        <module>zuzuservice-scheduled</module>
     </modules>
 
     <build>
