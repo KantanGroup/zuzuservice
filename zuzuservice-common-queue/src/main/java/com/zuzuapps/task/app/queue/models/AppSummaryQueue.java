@@ -15,6 +15,7 @@ import java.util.Date;
                 @Index(name = "update_at_index", columnList = "update_at"),
                 @Index(name = "score_index", columnList = "score"),
                 @Index(name = "price_index", columnList = "price"),
+                @Index(name = "developer_id_index", columnList = "developer_id"),
                 @Index(name = "free_index", columnList = "free")
         }
 )
@@ -23,6 +24,10 @@ public class AppSummaryQueue {
     @Id
     @Column(name = "app_id")
     private String appId;
+    @Column(name = "developer_id")
+    private String developerId;
+    @Column(name = "developer_url")
+    private String developerUrl;
     private String url;
     private String icon;
     private int score;
@@ -40,6 +45,22 @@ public class AppSummaryQueue {
 
     public void setAppId(String appId) {
         this.appId = appId;
+    }
+
+    public String getDeveloperId() {
+        return developerId;
+    }
+
+    public void setDeveloperId(String developerId) {
+        this.developerId = developerId;
+    }
+
+    public String getDeveloperUrl() {
+        return developerUrl;
+    }
+
+    public void setDeveloperUrl(String developerUrl) {
+        this.developerUrl = developerUrl;
     }
 
     public String getUrl() {

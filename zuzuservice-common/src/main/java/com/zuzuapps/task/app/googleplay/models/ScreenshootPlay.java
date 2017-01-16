@@ -6,7 +6,7 @@ package com.zuzuapps.task.app.googleplay.models;
 public class ScreenshootPlay {
     private long id;
     private String appId;
-    private int type;
+    private int type; //icon, screen shoot
     private String source;
     private String original;
     private String watermark;

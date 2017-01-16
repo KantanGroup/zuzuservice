@@ -16,6 +16,7 @@ import java.util.Date;
                 @Index(name = "update_at_index", columnList = "update_at"),
                 @Index(name = "score_index", columnList = "score"),
                 @Index(name = "price_index", columnList = "price"),
+                @Index(name = "developer_id_index", columnList = "developer_id"),
                 @Index(name = "free_index", columnList = "free")
         }
 )
@@ -29,6 +30,10 @@ public class AppQueue {
     private int score;
     private String price;
     private boolean free;
+    @Column(name = "developer_id")
+    private String developerId;
+    @Column(name = "developer_url")
+    private String developerUrl;
     @Column(name = "developer_email")
     private String developerEmail;
     @Column(name = "developer_website")
@@ -110,6 +115,22 @@ public class AppQueue {
 
     public void setFree(boolean free) {
         this.free = free;
+    }
+
+    public String getDeveloperId() {
+        return developerId;
+    }
+
+    public void setDeveloperId(String developerId) {
+        this.developerId = developerId;
+    }
+
+    public String getDeveloperUrl() {
+        return developerUrl;
+    }
+
+    public void setDeveloperUrl(String developerUrl) {
+        this.developerUrl = developerUrl;
     }
 
     public String getDeveloperEmail() {
@@ -255,4 +276,21 @@ public class AppQueue {
     public void setReviews(String reviews) {
         this.reviews = reviews;
     }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
+    public Date getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(Date updateAt) {
+        this.updateAt = updateAt;
+    }
+
 }

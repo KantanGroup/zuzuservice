@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author tuanta17
@@ -18,6 +16,7 @@ import java.util.Set;
                 @Index(name = "update_at_index", columnList = "update_at"),
                 @Index(name = "score_index", columnList = "score"),
                 @Index(name = "price_index", columnList = "price"),
+                @Index(name = "developer_id_index", columnList = "developer_id"),
                 @Index(name = "free_index", columnList = "free")
         }
 )
@@ -31,6 +30,10 @@ public class AppMaster {
     private int score;
     private String price;
     private boolean free;
+    @Column(name = "developer_id")
+    private String developerId;
+    @Column(name = "developer_url")
+    private String developerUrl;
     @Column(name = "developer_email")
     private String developerEmail;
     @Column(name = "developer_website")
@@ -67,21 +70,6 @@ public class AppMaster {
     @Column(name = "update_at")
     private Date updateAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "developerId", nullable = false, insertable = false, updatable = false)
-    private AppDeveloperMaster developer;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "appId", orphanRemoval = true)
-    private Set<AppScreenshootMaster> screenshots = new HashSet<>();
-
-    public Set<AppScreenshootMaster> getScreenshots() {
-        return screenshots;
-    }
-
-    public void setScreenshots(Set<AppScreenshootMaster> screenshots) {
-        this.screenshots = screenshots;
-    }
-
     public String getAppId() {
         return appId;
     }
@@ -98,12 +86,20 @@ public class AppMaster {
         this.url = url;
     }
 
-    public AppDeveloperMaster getDeveloper() {
-        return developer;
+    public String getDeveloperId() {
+        return developerId;
     }
 
-    public void setDeveloper(AppDeveloperMaster developer) {
-        this.developer = developer;
+    public void setDeveloperId(String developerId) {
+        this.developerId = developerId;
+    }
+
+    public String getDeveloperUrl() {
+        return developerUrl;
+    }
+
+    public void setDeveloperUrl(String developerUrl) {
+        this.developerUrl = developerUrl;
     }
 
     public String getIcon() {

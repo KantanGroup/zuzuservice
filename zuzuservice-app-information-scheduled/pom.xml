@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zuzuapps.task.app</groupId>
-    <artifactId>google-play-scheduled</artifactId>
+    <artifactId>google-play-app-information-scheduled</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
-    <name>google-play-scheduled</name>
-    <description>Google Play Scheduled</description>
+    <name>google-play-app-information-scheduled</name>
+    <description>Google Play App Information Scheduled</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

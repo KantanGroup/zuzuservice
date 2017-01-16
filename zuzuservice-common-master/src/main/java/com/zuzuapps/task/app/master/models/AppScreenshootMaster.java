@@ -23,8 +23,11 @@ public class AppScreenshootMaster {
     private int id;
     @Column(name = "app_id")
     private String appId;
+    private int type; //icon, screen shoot
     private String source;
-    private String local;
+    private String original;
+    private String watermark;
+    private String resize;
 
     @Column(name = "create_at")
     private Date createAt;
@@ -55,12 +58,36 @@ public class AppScreenshootMaster {
         this.source = source;
     }
 
-    public String getLocal() {
-        return local;
+    public int getType() {
+        return type;
     }
 
-    public void setLocal(String local) {
-        this.local = local;
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getOriginal() {
+        return original;
+    }
+
+    public void setOriginal(String original) {
+        this.original = original;
+    }
+
+    public String getWatermark() {
+        return watermark;
+    }
+
+    public void setWatermark(String watermark) {
+        this.watermark = watermark;
+    }
+
+    public String getResize() {
+        return resize;
+    }
+
+    public void setResize(String resize) {
+        this.resize = resize;
     }
 
     public Date getCreateAt() {

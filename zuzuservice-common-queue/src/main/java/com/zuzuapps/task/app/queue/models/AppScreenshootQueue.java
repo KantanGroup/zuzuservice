@@ -24,9 +24,12 @@ public class AppScreenshootQueue {
     private int id;
     @Column(name = "app_id")
     private String appId;
+    private int type; //icon, screen shoot
     private String source;
-    private String local;
-    private int type;
+    private String original;
+    private String watermark;
+    private String resize;
+
     @Column(name = "create_at")
     private Date createAt;
     @Column(name = "update_at")
@@ -56,12 +59,28 @@ public class AppScreenshootQueue {
         this.source = source;
     }
 
-    public String getLocal() {
-        return local;
+    public String getOriginal() {
+        return original;
     }
 
-    public void setLocal(String local) {
-        this.local = local;
+    public void setOriginal(String original) {
+        this.original = original;
+    }
+
+    public String getWatermark() {
+        return watermark;
+    }
+
+    public void setWatermark(String watermark) {
+        this.watermark = watermark;
+    }
+
+    public String getResize() {
+        return resize;
+    }
+
+    public void setResize(String resize) {
+        this.resize = resize;
     }
 
     public int getType() {
