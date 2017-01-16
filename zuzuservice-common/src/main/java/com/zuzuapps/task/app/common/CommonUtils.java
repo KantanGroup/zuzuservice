@@ -16,8 +16,8 @@ public class CommonUtils {
      *
      * @return Absolute path
      */
-    public static String getTopFolderBy(String root, String country, String category, String collection) {
-        File folder = Paths.get(root, DataServiceEnum.top.name(), DataTypeEnum.queue.name(), country, category.toLowerCase(), collection, getDailyByTime()).toFile();
+    public static String getTopFolderBy(String root, String time) {
+        File folder = Paths.get(root, DataServiceEnum.top.name(), DataTypeEnum.queue.name(), time).toFile();
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -29,8 +29,8 @@ public class CommonUtils {
      *
      * @return Absolute path
      */
-    public static String getSummaryFolderBy(String root, String country, String category, String collection, String time, int page) {
-        File folder = Paths.get(root, DataServiceEnum.summary.name(), DataTypeEnum.queue.name(), time, country, category.toLowerCase(), collection, page + "").toFile();
+    public static String getSummaryFolderBy(String root, String time) {
+        File folder = Paths.get(root, DataServiceEnum.summary.name(), DataTypeEnum.queue.name(), time).toFile();
         if (!folder.exists()) {
             folder.mkdirs();
         }

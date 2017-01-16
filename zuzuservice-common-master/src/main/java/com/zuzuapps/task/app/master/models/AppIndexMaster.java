@@ -19,7 +19,8 @@ import java.util.Date;
                 @Index(name = "country_index", columnList = "country_code"),
                 @Index(name = "category_index", columnList = "category"),
                 @Index(name = "collection_index", columnList = "collection"),
-                @Index(name = "app_index_index", columnList = "app_index")
+                @Index(name = "app_index_index", columnList = "app_index"),
+                @Index(name = "visible_index", columnList = "visible_index")
         }
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -36,6 +37,8 @@ public class AppIndexMaster {
     private CollectionEnum collection;
     @Column(name = "app_index")
     private int index;
+    private String icon;
+    private boolean visible; //
 
     @Column(name = "create_at")
     private Date createAt;
@@ -88,6 +91,22 @@ public class AppIndexMaster {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public Date getCreateAt() {
