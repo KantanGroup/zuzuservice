@@ -29,7 +29,7 @@ public class AppMaster {
     private String url;
     private String icon;
     private int score;
-    private int price;
+    private String price;
     private boolean free;
     @Column(name = "developer_email")
     private String developerEmail;
@@ -122,11 +122,11 @@ public class AppMaster {
         this.score = score;
     }
 
-    public int getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
