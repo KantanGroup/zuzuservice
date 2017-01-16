@@ -13,3 +13,5 @@ buildNumber.properties
 !/.mvn/wrapper/maven-wrapper.jar
 .idea/
 google-play-app-summary-scheduled.iml
+data
+logs

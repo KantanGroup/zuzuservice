@@ -21,9 +21,14 @@ import com.zuzuapps.task.app.GooglePlayCommonConfiguration;
 import com.zuzuapps.task.app.common.CategoryEnum;
 import com.zuzuapps.task.app.common.CollectionEnum;
 import com.zuzuapps.task.app.common.CommonUtils;
+import com.zuzuapps.task.app.elasticsearch.models.AppIndexElasticSearch;
+import com.zuzuapps.task.app.elasticsearch.repositories.AppIndexElasticSearchRepository;
+import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
 import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
+import com.zuzuapps.task.app.master.models.AppIndexMaster;
 import com.zuzuapps.task.app.master.models.CountryMaster;
+import com.zuzuapps.task.app.master.repositories.AppIndexMasterRepository;
 import com.zuzuapps.task.app.master.repositories.CountryMasterRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,6 +42,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -54,16 +60,32 @@ public class ScheduledApplication {
     private SummaryApplicationPlayService summaryApplicationPlayService;
     @Autowired
     private CountryMasterRepository countryRepository;
+    @Autowired
+    private AppIndexMasterRepository appIndexMasterRepository;
+    @Autowired
+    private AppIndexElasticSearchRepository appIndexElasticSearchRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(ScheduledApplication.class, args);
     }
 
-    public void delay(long time) {
+    private void delay(long time) {
         try {
             logger.debug("Stop in " + time / 1000 + "s");
             Thread.sleep(time);
         } catch (Exception e) {
+        }
+    }
+
+    private void logAppIndex(List<AppIndexMaster> appIndexMasters, String time) {
+        for (AppIndexMaster indexMaster : appIndexMasters) {
+            try {
+                StringBuilder path = new StringBuilder(CommonUtils.logTopFolderBy(rootPath, time, indexMaster.getCountryCode(), indexMaster.getCategory().name().toLowerCase(), indexMaster.getCollection().name()));
+                path.append("/").append(indexMaster.getAppId()).append(".json");
+                Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(indexMaster));
+            } catch (Exception ex) {
+                logger.info("Write app index to file error", ex);
+            }
         }
     }
 
@@ -74,7 +96,7 @@ public class ScheduledApplication {
     public void appTop() {
         logger.info("[Application Top]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
-        String time = CommonUtils.getMinutelyByTime();
+        String time = CommonUtils.getDailyByTime();
         List<CountryMaster> countries = countryRepository.findAllByTypeGreaterThanOrderByTypeDesc(0);
         for (CountryMaster countryMaster : countries) {
             for (CollectionEnum collection : CollectionEnum.values()) {
@@ -82,10 +104,10 @@ public class ScheduledApplication {
                     try {
                         SummaryApplicationPlays summaryApplicationPlays
                                 = summaryApplicationPlayService.getSummaryApplications(category, collection, countryMaster.getLanguageCode(), countryMaster.getCountryCode(), 0);
-                        StringBuilder path = new StringBuilder(CommonUtils.getTopFolderBy(rootPath, time));
-                        path.append("/").append(countryMaster.getCountryCode()).append("_");
-                        path.append(category.name().toLowerCase()).append("_");
-                        path.append(collection.name().toLowerCase()).append("_").append(time + ".json");
+                        StringBuilder path = new StringBuilder(CommonUtils.queueTopFolderBy(rootPath, time));
+                        path.append("/").append(countryMaster.getCountryCode()).append("___");
+                        path.append(category.name().toLowerCase()).append("___");
+                        path.append(collection.name().toLowerCase()).append("___").append(time + ".json");
                         Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlays));
                     } catch (Exception ex) {
                         logger.error(ex);
@@ -104,7 +126,7 @@ public class ScheduledApplication {
     public void appSummary() {
         logger.info("[Application Summary]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
-        String time = CommonUtils.getMinutelyByTime();
+        String time = CommonUtils.getDailyByTime();
         for (CollectionEnum collection : CollectionEnum.values()) {
             for (CategoryEnum category : CategoryEnum.values()) {
                 int page = 1;
@@ -112,11 +134,11 @@ public class ScheduledApplication {
                     try {
                         SummaryApplicationPlays summaryApplicationPlays
                                 = summaryApplicationPlayService.getSummaryApplications(category, collection, LANGUAGE_CODE_DEFAULT, COUNTRY_CODE_DEFAULT, page);
-                        StringBuilder path = new StringBuilder(CommonUtils.getSummaryFolderBy(rootPath, time));
-                        path.append("/").append(COUNTRY_CODE_DEFAULT).append("_");
-                        path.append(category.name().toLowerCase()).append("_");
-                        path.append(collection.name().toLowerCase()).append("_");
-                        path.append(time).append("_").append(page).append(".json");
+                        StringBuilder path = new StringBuilder(CommonUtils.queueSummaryFolderBy(rootPath, time));
+                        path.append("/").append(COUNTRY_CODE_DEFAULT).append("___");
+                        path.append(category.name().toLowerCase()).append("___");
+                        path.append(collection.name().toLowerCase()).append("___");
+                        path.append(time).append("___").append(page).append(".json");
                         Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlays));
                         if (summaryApplicationPlays.getResults().size() < 120) {
                             break;
@@ -136,24 +158,64 @@ public class ScheduledApplication {
     @Scheduled(cron = "0/5 0 0 * * *")
     public void dailyAppInformationUpdate() {
         logger.info("[Application Information]Cronjob start at: " + new Date());
-        ObjectMapper mapper = new ObjectMapper();
         // something that should execute on weekdays only
-        String time = CommonUtils.getMinutelyByTime();
-        String dirPath = CommonUtils.getTopFolderBy(rootPath, time);
+        String time = CommonUtils.getDailyByTime();
+        String dirPath = CommonUtils.queueTopFolderBy(rootPath, time);
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
         if (files != null && files.length != 0) {
-            File json = files[0];
-            try {
-                SummaryApplicationPlays apps = mapper.readValue(json, SummaryApplicationPlays.class);
-                // Add data to mysql
+            for (File json : files) {
+                try {
+                    List<AppIndexMaster> appIndexMasters = new ArrayList<AppIndexMaster>();
+                    List<AppIndexElasticSearch> appIndexElasticSearches = new ArrayList<AppIndexElasticSearch>();
+                    String filename = json.getName();
+                    String[] data = filename.split("___");
+                    String country = data[0];
+                    CategoryEnum category = CategoryEnum.valueOf(data[1].toUpperCase());
+                    CollectionEnum collection = CollectionEnum.valueOf(data[2]);
+                    String fileTime = data[3].replaceAll(".json", "");
+                    logger.info(country + "-" + category + "-" + collection + "-" + fileTime);
+                    SummaryApplicationPlays apps = mapper.readValue(json, SummaryApplicationPlays.class);
+                    int index = 1;
+                    for (SummaryApplicationPlay app : apps.getResults()) {
+                        AppIndexMaster appIndexMaster = new AppIndexMaster();
+                        appIndexMaster.setAppId(app.getAppId());
+                        appIndexMaster.setCategory(category);
+                        appIndexMaster.setCollection(collection);
+                        appIndexMaster.setCountryCode(country);
+                        appIndexMaster.setIndex(index);
+                        appIndexMaster.setIcon(app.getIcon());
+                        appIndexMaster.setVisible(true);
+                        appIndexMaster.setCreateAt(new Date());
+                        appIndexMaster.setUpdateAt(new Date());
+                        appIndexMasters.add(appIndexMaster);
 
-                // Add data to elasticsearch
+                        AppIndexElasticSearch appIndexElasticSearch = new AppIndexElasticSearch();
+                        appIndexElasticSearch.setId(country + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + index);
+                        appIndexElasticSearch.setIndex(index);
+                        appIndexElasticSearch.setAppId(app.getAppId());
+                        appIndexElasticSearch.setCategory(category.name().toLowerCase());
+                        appIndexElasticSearch.setCollection(collection.name());
+                        appIndexElasticSearch.setCountryCode(country);
+                        appIndexElasticSearch.setIndex(index);
+                        appIndexElasticSearch.setIcon(app.getIcon());
+                        appIndexElasticSearch.setVisible(true);
+                        appIndexElasticSearch.setCreateAt(new Date());
+                        appIndexElasticSearch.setUpdateAt(new Date());
+                        appIndexElasticSearches.add(appIndexElasticSearch);
 
-            } catch (Exception e) {
-                logger.error("Convert data from json error " + json.getAbsolutePath());
+                        index++;
+                    }
+                    // Add data to mysql
+                    //appIndexMasterRepository.save(appIndexMasters);
+                    logAppIndex(appIndexMasters, time);
+                    // Add data to ElasticSearch
+                    appIndexElasticSearchRepository.save(appIndexElasticSearches);
+                } catch (Exception e) {
+                    logger.error("Convert data from json error " + json.getAbsolutePath());
+                }
+                delay(5);
             }
-            delay(100);
         }
         logger.info("[Application Information]Cronjob end at: " + new Date());
     }

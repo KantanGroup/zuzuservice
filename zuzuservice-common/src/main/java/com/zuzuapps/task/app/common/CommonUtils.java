@@ -16,8 +16,34 @@ public class CommonUtils {
      *
      * @return Absolute path
      */
-    public static String getTopFolderBy(String root, String time) {
+    public static String queueTopFolderBy(String root, String time) {
         File folder = Paths.get(root, DataServiceEnum.top.name(), DataTypeEnum.queue.name(), time).toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder.getAbsolutePath();
+    }
+
+    /**
+     * Get top folder
+     *
+     * @return Absolute path
+     */
+    public static String logTopFolderBy(String root, String time, String country, String category, String collection) {
+        File folder = Paths.get(root, DataServiceEnum.top.name(), DataTypeEnum.log.name(), time, country, category, collection).toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder.getAbsolutePath();
+    }
+
+    /**
+     * Get top folder
+     *
+     * @return Absolute path
+     */
+    public static String masterTopFolderBy(String root, String time) {
+        File folder = Paths.get(root, DataServiceEnum.top.name(), DataTypeEnum.master.name(), time).toFile();
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -29,8 +55,34 @@ public class CommonUtils {
      *
      * @return Absolute path
      */
-    public static String getSummaryFolderBy(String root, String time) {
+    public static String queueSummaryFolderBy(String root, String time) {
         File folder = Paths.get(root, DataServiceEnum.summary.name(), DataTypeEnum.queue.name(), time).toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder.getAbsolutePath();
+    }
+
+    /**
+     * Get summary folder
+     *
+     * @return Absolute path
+     */
+    public static String logSummaryFolderBy(String root, String time) {
+        File folder = Paths.get(root, DataServiceEnum.summary.name(), DataTypeEnum.log.name(), time).toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder.getAbsolutePath();
+    }
+
+    /**
+     * Get summary folder
+     *
+     * @return Absolute path
+     */
+    public static String masterSummaryFolderBy(String root, String time) {
+        File folder = Paths.get(root, DataServiceEnum.summary.name(), DataTypeEnum.master.name(), time).toFile();
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -42,8 +94,34 @@ public class CommonUtils {
      *
      * @return Absolute path
      */
-    public static String getAppFolderBy(String root, String appId, String language) {
+    public static String queueAppFolderBy(String root, String appId, String language) {
         File folder = Paths.get(root, DataServiceEnum.information.name(), DataTypeEnum.queue.name(), appId, language).toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder.getAbsolutePath();
+    }
+
+    /**
+     * Get application folder
+     *
+     * @return Absolute path
+     */
+    public static String logAppFolderBy(String root, String appId, String language) {
+        File folder = Paths.get(root, DataServiceEnum.information.name(), DataTypeEnum.log.name(), appId, language).toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder.getAbsolutePath();
+    }
+
+    /**
+     * Get application folder
+     *
+     * @return Absolute path
+     */
+    public static String masterAppFolderBy(String root, String appId, String language) {
+        File folder = Paths.get(root, DataServiceEnum.information.name(), DataTypeEnum.master.name(), appId, language).toFile();
         if (!folder.exists()) {
             folder.mkdirs();
         }

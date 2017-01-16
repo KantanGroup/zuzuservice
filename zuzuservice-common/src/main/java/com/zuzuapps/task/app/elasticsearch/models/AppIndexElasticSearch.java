@@ -1,55 +1,34 @@
-package com.zuzuapps.task.app.master.models;
+package com.zuzuapps.task.app.elasticsearch.models;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.zuzuapps.task.app.common.CategoryEnum;
 import com.zuzuapps.task.app.common.CollectionEnum;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
-import javax.persistence.*;
 import java.util.Date;
 
 /**
  * @author tuanta17
  */
-@Entity
-@Table(name = "master_application_index_s",
-        indexes = {
-                @Index(name = "app_id_index", columnList = "app_id"),
-                @Index(name = "create_at_index", columnList = "create_at"),
-                @Index(name = "update_at_index", columnList = "update_at"),
-                @Index(name = "country_index", columnList = "country_code"),
-                @Index(name = "category_index", columnList = "category"),
-                @Index(name = "collection_index", columnList = "collection"),
-                @Index(name = "app_index_index", columnList = "app_index"),
-                @Index(name = "visible_index", columnList = "visible")
-        }
-)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class AppIndexMaster {
+@Document(indexName = "app-top-index", type = "app-top-index", shards = 1, replicas = 0, refreshInterval = "-1")
+public class AppIndexElasticSearch {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-
-    @Column(name = "app_id")
-    private String appId;
-    @Column(name = "country_code")
-    private String countryCode;
-    private CategoryEnum category;
-    private CollectionEnum collection;
-    @Column(name = "app_index")
+    private String id;
     private int index;
+    private String appId;
+    private String countryCode;
+    private String category;
+    private String collection;
     private String icon;
     private boolean visible;
-
-    @Column(name = "create_at")
     private Date createAt;
-    @Column(name = "update_at")
     private Date updateAt;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -69,19 +48,19 @@ public class AppIndexMaster {
         this.countryCode = countryCode;
     }
 
-    public CategoryEnum getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(CategoryEnum category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
-    public CollectionEnum getCollection() {
+    public String getCollection() {
         return collection;
     }
 
-    public void setCollection(CollectionEnum collection) {
+    public void setCollection(String collection) {
         this.collection = collection;
     }
 

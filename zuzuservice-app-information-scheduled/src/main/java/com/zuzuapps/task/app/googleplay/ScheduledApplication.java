@@ -29,13 +29,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -44,6 +43,8 @@ import java.util.List;
 @SpringBootApplication
 @Import({GooglePlayCommonConfiguration.class})
 public class ScheduledApplication {
+    public static final String COUNTRY_CODE_DEFAULT = "us";
+    public static final String LANGUAGE_CODE_DEFAULT = "en";
     private final ObjectMapper mapper = new ObjectMapper();
     private final Log logger = LogFactory.getLog(ScheduledApplication.class);
 
@@ -66,10 +67,14 @@ public class ScheduledApplication {
         }
     }
 
+    /**
+     * Write top app info of category in to json
+     */
     @Scheduled(cron = "0 0 0 * * *")
     public void appTop() {
         logger.info("[Application Top]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
+        String time = CommonUtils.getMinutelyByTime();
         List<CountryMaster> countries = countryRepository.findAllByTypeGreaterThanOrderByTypeDesc(0);
         for (CountryMaster countryMaster : countries) {
             for (CollectionEnum collection : CollectionEnum.values()) {
@@ -77,8 +82,11 @@ public class ScheduledApplication {
                     try {
                         SummaryApplicationPlays summaryApplicationPlays
                                 = summaryApplicationPlayService.getSummaryApplications(category, collection, countryMaster.getLanguageCode(), countryMaster.getCountryCode(), 0);
-                        String path = CommonUtils.getTopFolderBy(rootPath, countryMaster.getCountryCode(), category.name(), collection.name());
-                        Files.write(Paths.get(path + "/" + System.currentTimeMillis() + ".json"), mapper.writeValueAsBytes(summaryApplicationPlays));
+                        StringBuilder path = new StringBuilder(CommonUtils.queueTopFolderBy(rootPath, time));
+                        path.append("/").append(countryMaster.getCountryCode()).append("_");
+                        path.append(category.name().toLowerCase()).append("_");
+                        path.append(collection.name().toLowerCase()).append("_").append(time + ".json");
+                        Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlays));
                     } catch (Exception ex) {
                         logger.error(ex);
                     }
@@ -89,66 +97,64 @@ public class ScheduledApplication {
         logger.info("[Application Top]Cronjob end at: " + new Date());
     }
 
-    @Bean
-    public SummaryTask summaryTask() {
-        return new SummaryTask();
-    }
-
     /**
-     * A commandline runner
+     *
      */
-    public class SummaryTask implements CommandLineRunner {
-        @Override
-        public void run(String... strings) throws Exception {
-            appSummary();
-        }
-    }
-
+    @Scheduled(cron = "2 0 0 1,11,21 * *")
     public void appSummary() {
         logger.info("[Application Summary]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
         String time = CommonUtils.getMinutelyByTime();
-        List<CountryMaster> countries = countryRepository.findAllByTypeGreaterThanOrderByTypeDesc(0);
-        for (CountryMaster countryMaster : countries) {
-            for (CollectionEnum collection : CollectionEnum.values()) {
-                for (CategoryEnum category : CategoryEnum.values()) {
-                    int page = 1;
-                    while(true) {
-                        try {
-                            SummaryApplicationPlays summaryApplicationPlays
-                                    = summaryApplicationPlayService.getSummaryApplications(category, collection, countryMaster.getLanguageCode(), countryMaster.getCountryCode(), page);
-                            String path = CommonUtils.getSummaryFolderBy(rootPath, countryMaster.getCountryCode(), category.name(), collection.name(), time, page);
-                            Files.write(Paths.get(path + "/" + System.currentTimeMillis() + ".json"), mapper.writeValueAsBytes(summaryApplicationPlays));
-                            if (summaryApplicationPlays.getResults().size() < 120) {
-                                break;
-                            }
-                        } catch (Exception ex) {
-                            logger.error(ex);
+        for (CollectionEnum collection : CollectionEnum.values()) {
+            for (CategoryEnum category : CategoryEnum.values()) {
+                int page = 1;
+                while (true) {
+                    try {
+                        SummaryApplicationPlays summaryApplicationPlays
+                                = summaryApplicationPlayService.getSummaryApplications(category, collection, LANGUAGE_CODE_DEFAULT, COUNTRY_CODE_DEFAULT, page);
+                        StringBuilder path = new StringBuilder(CommonUtils.queueSummaryFolderBy(rootPath, time));
+                        path.append("/").append(COUNTRY_CODE_DEFAULT).append("_");
+                        path.append(category.name().toLowerCase()).append("_");
+                        path.append(collection.name().toLowerCase()).append("_");
+                        path.append(time).append("_").append(page).append(".json");
+                        Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlays));
+                        if (summaryApplicationPlays.getResults().size() < 120) {
                             break;
                         }
-                        page++;
-                        delay(5000);
+                    } catch (Exception ex) {
+                        logger.error(ex);
+                        break;
                     }
+                    page++;
+                    delay(5000);
                 }
             }
         }
         logger.info("[Application Summary]Cronjob end at: " + new Date());
     }
 
-    public void appInformation() {
+    @Scheduled(cron = "0/5 0 0 * * *")
+    public void dailyAppInformationUpdate() {
         logger.info("[Application Information]Cronjob start at: " + new Date());
-        // 1. Get app from queue
+        ObjectMapper mapper = new ObjectMapper();
+        // something that should execute on weekdays only
+        String time = CommonUtils.getMinutelyByTime();
+        String dirPath = CommonUtils.queueTopFolderBy(rootPath, time);
+        File dir = new File(dirPath);
+        File[] files = dir.listFiles();
+        if (files != null && files.length != 0) {
+            File json = files[0];
+            try {
+                SummaryApplicationPlays apps = mapper.readValue(json, SummaryApplicationPlays.class);
+                // Add data to mysql
 
-        // 2. Get information
+                // Add data to elasticsearch
 
-        // 3. Get icon
-
-        // 4. Get screen shoot
-
-        // 5. Move queue to log
-
-        // 6. Update master
-
+            } catch (Exception e) {
+                logger.error("Convert data from json error " + json.getAbsolutePath());
+            }
+            delay(100);
+        }
         logger.info("[Application Information]Cronjob end at: " + new Date());
     }
 }
