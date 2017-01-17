@@ -29,8 +29,21 @@ public class CommonUtils {
      *
      * @return Absolute path
      */
-    public static String logTopFolderBy(String root, String time, String country, String category, String collection) {
-        File folder = Paths.get(root, DataServiceEnum.top.name(), DataTypeEnum.log.name(), time, country, category, collection).toFile();
+    public static String logTopFolderBy(String root, String time, String country) {
+        File folder = Paths.get(root, DataServiceEnum.top.name(), DataTypeEnum.log.name(), time, country).toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder.getAbsolutePath();
+    }
+
+    /**
+     * Get top folder
+     *
+     * @return Absolute path
+     */
+    public static String errorTopFolderBy(String root, String time) {
+        File folder = Paths.get(root, DataServiceEnum.top.name(), DataTypeEnum.error.name(), time).toFile();
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -94,8 +107,21 @@ public class CommonUtils {
      *
      * @return Absolute path
      */
-    public static String queueAppFolderBy(String root, String appId, String language) {
-        File folder = Paths.get(root, DataServiceEnum.information.name(), DataTypeEnum.queue.name(), appId, language).toFile();
+    public static String queueAppFolderBy(String root, String appId, String countryCode) {
+        File folder = Paths.get(root, DataServiceEnum.information.name(), DataTypeEnum.queue.name(), appId, countryCode).toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder.getAbsolutePath();
+    }
+
+    /**
+     * Get application folder
+     *
+     * @return Absolute path
+     */
+    public static String errorAppFolderBy(String root, String appId) {
+        File folder = Paths.get(root, DataServiceEnum.information.name(), DataTypeEnum.error.name(), appId).toFile();
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -169,4 +195,16 @@ public class CommonUtils {
     public static String getMinutelyByTime() {
         return getTimeBy("yyyyMMddHHmm");
     }
+
+    /**
+     * Delay in milliseconds
+     * @param time Milliseconds
+     */
+    public static void delay(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (Exception e) {
+        }
+    }
+
 }

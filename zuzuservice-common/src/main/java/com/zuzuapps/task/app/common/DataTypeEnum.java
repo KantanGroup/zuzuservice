@@ -6,5 +6,6 @@ package com.zuzuapps.task.app.common;
 public enum DataTypeEnum {
     queue,
     log,
+    error,
     master
 }
