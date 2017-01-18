@@ -19,8 +19,6 @@ package com.zuzuapps.task.app.googleplay;
 import com.zuzuapps.task.app.GooglePlayCommonConfiguration;
 import com.zuzuapps.task.app.common.CategoryEnum;
 import com.zuzuapps.task.app.common.CollectionEnum;
-import com.zuzuapps.task.app.exceptions.ExceptionCodes;
-import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
 import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
 import org.springframework.beans.factory.annotation.Autowired;

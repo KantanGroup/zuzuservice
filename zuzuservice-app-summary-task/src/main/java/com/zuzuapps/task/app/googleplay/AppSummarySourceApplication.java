@@ -18,9 +18,6 @@ package com.zuzuapps.task.app.googleplay;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzuapps.task.app.GooglePlayCommonConfiguration;
-import com.zuzuapps.task.app.common.CategoryEnum;
-import com.zuzuapps.task.app.common.CollectionEnum;
-import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
 import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,8 +26,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.stream.app.trigger.TriggerConfiguration;
-import org.springframework.cloud.stream.app.trigger.TriggerProperties;
 import org.springframework.cloud.stream.app.trigger.TriggerPropertiesMaxMessagesDefaultOne;
 import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.Bean;

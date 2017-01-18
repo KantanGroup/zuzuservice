@@ -2,12 +2,9 @@ package com.zuzuapps.task.app.googleplay;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzuapps.task.app.common.CommonUtils;
-import com.zuzuapps.task.app.elasticsearch.repositories.AppIndexElasticSearchRepository;
 import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
 import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
-import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
 import com.zuzuapps.task.app.master.models.CountryMaster;
-import com.zuzuapps.task.app.master.repositories.AppIndexMasterRepository;
 import com.zuzuapps.task.app.master.repositories.CountryMasterRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

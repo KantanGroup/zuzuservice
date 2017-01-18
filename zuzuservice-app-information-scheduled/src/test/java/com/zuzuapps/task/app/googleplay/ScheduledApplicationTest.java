@@ -42,7 +42,7 @@ import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import({GooglePlayCommonConfiguration.class})
 public class ScheduledApplicationTest {
     public static final String COUNTRY_CODE_DEFAULT = "us";
