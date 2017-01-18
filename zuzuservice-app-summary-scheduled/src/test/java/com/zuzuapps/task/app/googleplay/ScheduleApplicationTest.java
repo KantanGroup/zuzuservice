@@ -46,7 +46,7 @@ public class ScheduleApplicationTest {
 
     @Test
     public void appTop() {
-        scheduleService.appIndex();
+        scheduleService.appIndexStoreData();
     }
 
     @Test
@@ -62,7 +62,7 @@ public class ScheduleApplicationTest {
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
         if (files != null && files.length != 0) {
-            scheduleService.dailyAppIndexUpdate(files);
+            scheduleService.appIndexUpdate(files);
         }
     }
 

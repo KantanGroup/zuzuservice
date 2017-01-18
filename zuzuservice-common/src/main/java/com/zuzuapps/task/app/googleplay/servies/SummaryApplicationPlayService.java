@@ -36,7 +36,7 @@ public class SummaryApplicationPlayService {
             url = url.append("&collection=").append(collection.name());
             url = url.append("&country=").append(country);
             url = url.append("&lang=").append(language);
-            logger.info("URL request: " + url.toString());
+            logger.info("[Summary Application]URL request: " + url.toString());
             ResponseEntity<SummaryApplicationPlays> responseEntity = applicationPlaysCommonService.get(url.toString(), SummaryApplicationPlays.class);
             if (responseEntity == null) {
                 throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, "Can't get data from url " + url.toString());

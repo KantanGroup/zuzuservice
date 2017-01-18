@@ -31,6 +31,8 @@ public class AppSummaryService {
 
     @Value("${data.root.path:/tmp}")
     private String rootPath;
+    @Value("${time.get.app.info:5000}")
+    private long timeGetAppInfo;
     @Autowired
     private SummaryApplicationPlayService summaryApplicationPlayService;
     @Autowired
@@ -55,6 +57,7 @@ public class AppSummaryService {
                         SummaryApplicationPlays summaryApplicationPlays
                                 = summaryApplicationPlayService.getSummaryApplications(category, collection, LANGUAGE_CODE_DEFAULT, COUNTRY_CODE_DEFAULT, page);
                         StringBuilder path = queueAppSummaryJSONPath(time, collection, category, page);
+                        logger.debug("[Application Summary]Write app summary to json " + path.toString());
                         Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlays));
                         if (summaryApplicationPlays.getResults().size() < 120) {
                             break;
@@ -64,7 +67,7 @@ public class AppSummaryService {
                         break;
                     }
                     page++;
-                    CommonUtils.delay(5000);
+                    CommonUtils.delay(timeGetAppInfo);
                 }
             }
         }
