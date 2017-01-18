@@ -37,6 +37,8 @@ public class ScheduleApplication {
     private AppIndexService appIndexService;
     @Autowired
     private AppSummaryService appSummaryService;
+    @Autowired
+    private AppLanguageService appLanguageService;
 
     public static void main(String[] args) {
         SpringApplication.run(ScheduleApplication.class, args);
@@ -46,7 +48,9 @@ public class ScheduleApplication {
     public CommandLineRunner schedulingRunner(final TaskExecutor executor) {
         return new CommandLineRunner() {
             public void run(String... args) throws Exception {
-                executor.execute(new DailyUpdateRunable());
+                executor.execute(new DailyIndexUpdateRunable());
+                executor.execute(new DailySummaryUpdateRunable());
+                executor.execute(new DailyAppUpdateRunable());
             }
         };
     }
@@ -67,11 +71,27 @@ public class ScheduleApplication {
         appSummaryService.appSummary();
     }
 
-    class DailyUpdateRunable implements Runnable {
+    class DailyIndexUpdateRunable implements Runnable {
 
         @Override
         public void run() {
             appIndexService.dailyAppIndexUpdate();
+        }
+    }
+
+    class DailySummaryUpdateRunable implements Runnable {
+
+        @Override
+        public void run() {
+            appSummaryService.dailyAppSummaryUpdate();
+        }
+    }
+
+    class DailyAppUpdateRunable implements Runnable {
+
+        @Override
+        public void run() {
+            appLanguageService.dailyAppInformationUpdate();
         }
     }
 }

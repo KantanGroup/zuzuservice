@@ -107,8 +107,8 @@ public class CommonUtils {
      *
      * @return Absolute path
      */
-    public static String queueAppFolderBy(String root, String appId, String countryCode) {
-        File folder = Paths.get(root, DataServiceEnum.information.name(), DataTypeEnum.queue.name(), appId, countryCode).toFile();
+    public static String queueInformationFolderBy(String root, String countryCode) {
+        File folder = Paths.get(root, DataServiceEnum.information.name(), DataTypeEnum.queue.name(), countryCode).toFile();
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -120,7 +120,7 @@ public class CommonUtils {
      *
      * @return Absolute path
      */
-    public static String errorAppFolderBy(String root, String appId) {
+    public static String errorInformationFolderBy(String root, String appId) {
         File folder = Paths.get(root, DataServiceEnum.information.name(), DataTypeEnum.error.name(), appId).toFile();
         if (!folder.exists()) {
             folder.mkdirs();
@@ -133,7 +133,7 @@ public class CommonUtils {
      *
      * @return Absolute path
      */
-    public static String logAppFolderBy(String root, String appId, String language) {
+    public static String logInformationFolderBy(String root, String appId, String language) {
         File folder = Paths.get(root, DataServiceEnum.information.name(), DataTypeEnum.log.name(), appId, language).toFile();
         if (!folder.exists()) {
             folder.mkdirs();
@@ -153,6 +153,46 @@ public class CommonUtils {
         }
         return folder.getAbsolutePath();
     }
+
+    /**
+     * Get application folder
+     *
+     * @return Absolute path
+     */
+    public static String queueAppFolderBy(String root, String languageCode) {
+        File folder = Paths.get(root, DataServiceEnum.app.name(), DataTypeEnum.queue.name(), languageCode).toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder.getAbsolutePath();
+    }
+
+    /**
+     * Get application folder
+     *
+     * @return Absolute path
+     */
+    public static String errorAppFolderBy(String root, String appId) {
+        File folder = Paths.get(root, DataServiceEnum.app.name(), DataTypeEnum.error.name(), appId).toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder.getAbsolutePath();
+    }
+
+    /**
+     * Get application folder
+     *
+     * @return Absolute path
+     */
+    public static String logAppFolderBy(String root, String appId, String language) {
+        File folder = Paths.get(root, DataServiceEnum.app.name(), DataTypeEnum.log.name(), appId, language).toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder.getAbsolutePath();
+    }
+
 
     /**
      * Get screens shoot folder

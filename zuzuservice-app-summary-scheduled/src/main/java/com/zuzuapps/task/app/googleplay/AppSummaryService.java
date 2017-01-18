@@ -4,17 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzuapps.task.app.common.CategoryEnum;
 import com.zuzuapps.task.app.common.CollectionEnum;
 import com.zuzuapps.task.app.common.CommonUtils;
-import com.zuzuapps.task.app.elasticsearch.repositories.AppIndexElasticSearchRepository;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
 import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
-import com.zuzuapps.task.app.master.repositories.AppIndexMasterRepository;
-import com.zuzuapps.task.app.master.repositories.CountryMasterRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -35,18 +33,12 @@ public class AppSummaryService {
     private long timeGetAppInfo;
     @Autowired
     private SummaryApplicationPlayService summaryApplicationPlayService;
-    @Autowired
-    private CountryMasterRepository countryRepository;
-    @Autowired
-    private AppIndexMasterRepository appIndexMasterRepository;
-    @Autowired
-    private AppIndexElasticSearchRepository appIndexElasticSearchRepository;
 
     /**
      * Get all in USA
      */
     public void appSummary() {
-        logger.info("[Application Summary]Cronjob start at: " + new Date());
+        logger.info("[Application Summary Store]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();
         for (CollectionEnum collection : CollectionEnum.values()) {
@@ -57,13 +49,13 @@ public class AppSummaryService {
                         SummaryApplicationPlays summaryApplicationPlays
                                 = summaryApplicationPlayService.getSummaryApplications(category, collection, LANGUAGE_CODE_DEFAULT, COUNTRY_CODE_DEFAULT, page);
                         StringBuilder path = queueAppSummaryJSONPath(time, collection, category, page);
-                        logger.debug("[Application Summary]Write app summary to json " + path.toString());
+                        logger.debug("[Application Summary Store]Write app summary to json " + path.toString());
                         Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlays));
                         if (summaryApplicationPlays.getResults().size() < 120) {
                             break;
                         }
                     } catch (Exception ex) {
-                        logger.error(ex);
+                        logger.error("[Application Summary Store]App summary error", ex);
                         break;
                     }
                     page++;
@@ -71,7 +63,7 @@ public class AppSummaryService {
                 }
             }
         }
-        logger.info("[Application Summary]Cronjob end at: " + new Date());
+        logger.info("[Application Summary Store]Cronjob end at: " + new Date());
     }
 
     private StringBuilder queueAppSummaryJSONPath(String time, CollectionEnum collection, CategoryEnum category, int page) {
@@ -83,12 +75,25 @@ public class AppSummaryService {
         return path;
     }
 
-
-    /**
-     * Split app summary to apps
-     */
-    public void queueAppInformation() {
-
+    public void dailyAppSummaryUpdate() {
+        while (true) {
+            String time = CommonUtils.getDailyByTime();
+            // something that should execute on weekdays only
+            String dirPath = CommonUtils.queueSummaryFolderBy(rootPath, time);
+            File dir = new File(dirPath);
+            File[] files = dir.listFiles();
+            if (files != null && files.length != 0) {
+                processAppSummary(files);
+            }
+            CommonUtils.delay(timeGetAppInfo);
+        }
     }
 
+    public void processAppSummary(File[] files) {
+        logger.info("[Application Summary --> Information]Cronjob end at: " + new Date());
+        for (File json : files) {
+
+        }
+        logger.info("[Application Summary --> Information]Cronjob end at: " + new Date());
+    }
 }

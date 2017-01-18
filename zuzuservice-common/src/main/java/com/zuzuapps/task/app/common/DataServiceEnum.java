@@ -7,5 +7,6 @@ public enum DataServiceEnum {
     information,
     summary,
     top,
+    app,
     screenshoot
 }

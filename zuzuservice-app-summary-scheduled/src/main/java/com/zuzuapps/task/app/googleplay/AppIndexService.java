@@ -99,7 +99,7 @@ public class AppIndexService {
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
-                appIndexUpdate(files);
+                processIndexUpdate(files);
             }
             CommonUtils.delay(timeGetAppInfo);
         }
@@ -110,13 +110,13 @@ public class AppIndexService {
      *
      * @param files File data
      */
-    public void appIndexUpdate(File[] files) {
-        logger.info("[Application Index]Cronjob start at: " + new Date());
+    public void processIndexUpdate(File[] files) {
+        logger.info("[Application Summary --> Index]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();
         for (File json : files) {
             try {
-                logger.debug("[Application Index]File " + json.getAbsolutePath());
+                logger.debug("[Application Summary --> Index]File " + json.getAbsolutePath());
                 List<AppIndexMaster> appIndexMasters = new ArrayList<AppIndexMaster>();
                 List<AppIndexElasticSearch> appIndexElasticSearches = new ArrayList<AppIndexElasticSearch>();
                 String filename = json.getName();
@@ -126,8 +126,8 @@ public class AppIndexService {
                 CategoryEnum category = CategoryEnum.valueOf(data[2].toUpperCase());
                 CollectionEnum collection = CollectionEnum.valueOf(data[3]);
                 String fileTime = data[4].replaceAll(".json", "");
-                Date fileDateTime = new Date(Long.valueOf(filename));
-                logger.debug("[Application Index]Convert json data to object");
+                Date fileDateTime = new Date(Long.valueOf(fileTime));
+                logger.debug("[Application Summary --> Index]Convert json data to object");
                 SummaryApplicationPlays apps = mapper.readValue(json, SummaryApplicationPlays.class);
                 int index = 1;
                 for (SummaryApplicationPlay app : apps.getResults()) {
@@ -138,34 +138,34 @@ public class AppIndexService {
                 // Create app info json
                 queueAppInformation(appIndexMasters, countryCode, languageCode);
                 // Add data to mysql
-                logger.debug("[Application Index]Store to database");
+                logger.debug("[Application Summary --> Index]Store to database");
                 appIndexMasterRepository.save(appIndexMasters);
                 // Add data to ElasticSearch
-                logger.debug("[Application Index]Index to elastichsearch");
+                logger.debug("[Application Summary --> Index]Index to elastichsearch");
                 appIndexElasticSearchRepository.save(appIndexElasticSearches);
                 // Move data to log folder
                 moveDataToLogFolder(time, json, countryCode);
             } catch (Exception ex) {
-                logger.error(ex);
+                logger.error("[Application Summary --> Index]App update index error", ex);
                 moveDataToErrorFolder(time, json);
             }
             CommonUtils.delay(5);
         }
-        logger.info("[Application Index]Cronjob end at: " + new Date());
+        logger.info("[Application Summary --> Index]Cronjob end at: " + new Date());
     }
 
     private void queueAppInformation(List<AppIndexMaster> appIndexMasters, String countryCode, String languageCode) {
-        logger.debug("[Application Index]Write app json to queue folder");
+        logger.debug("[Application Summary --> Index]Write app json to queue folder");
         for (AppIndexMaster indexMaster : appIndexMasters) {
             try {
-                StringBuilder path = new StringBuilder(CommonUtils.queueAppFolderBy(rootPath, indexMaster.getAppId(), countryCode));
+                StringBuilder path = new StringBuilder(CommonUtils.queueInformationFolderBy(rootPath, countryCode));
                 path.append("/").append(countryCode).append("___");
                 path.append(languageCode).append("___");
                 path.append(indexMaster.getAppId()).append(".json");
                 logger.debug("[Application Index]Write app " + indexMaster.getAppId().toLowerCase() + " to queue folder " + path.toString());
                 Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(indexMaster));
             } catch (Exception ex) {
-                logger.warn("[Application Index]Write app json to file error", ex);
+                logger.error(ex);
             }
         }
     }
@@ -173,7 +173,7 @@ public class AppIndexService {
     private void moveDataToLogFolder(String time, File json, String country) throws IOException {
         Path src = Paths.get(json.getAbsolutePath());
         Path log = Paths.get(CommonUtils.logTopFolderBy(rootPath, time, country));
-        logger.debug("[Application Index]Move json file " + json.getAbsolutePath() + " to log folder " + log.toFile().getAbsolutePath());
+        logger.debug("[Application Summary --> Index]Move json file " + json.getAbsolutePath() + " to log folder " + log.toFile().getAbsolutePath());
         Files.move(src, log.resolve(src.getFileName()), StandardCopyOption.REPLACE_EXISTING);
     }
 
@@ -181,10 +181,10 @@ public class AppIndexService {
         try {
             Path src = Paths.get(json.getAbsolutePath());
             Path log = Paths.get(CommonUtils.errorTopFolderBy(rootPath, time));
-            logger.debug("[Application Index]Move json file " + json.getAbsolutePath() + " to error folder " + log.toFile().getAbsolutePath());
+            logger.debug("[Application Summary --> Index]Move json file " + json.getAbsolutePath() + " to error folder " + log.toFile().getAbsolutePath());
             Files.move(src, log.resolve(src.getFileName()), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception ex) {
-            logger.warn("[Application Index]Move json file error", ex);
+            logger.warn("[Application Summary --> Index]Move json file error", ex);
         }
     }
 
