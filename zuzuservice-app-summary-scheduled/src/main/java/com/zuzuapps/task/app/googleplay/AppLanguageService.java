@@ -70,6 +70,7 @@ public class AppLanguageService {
                 } catch (Exception ex) {
                     logger.error("[Application Information Store]App language error", ex);
                 }
+                CommonUtils.delay(timeGetAppInfo);
             }
         }
         logger.info("[Application Information Store]Cronjob end at: " + new Date());
