@@ -32,7 +32,7 @@ public class InformationApplicationPlayService {
             url = url.append("/").append(appId);
             url = url.append("/?lang=").append(language);
             logger.info("URL request: " + url.toString());
-            ResponseEntity<ApplicationPlay> responseEntity = applicationPlaysCommonService.get(url.toString(), SummaryApplicationPlays.class);
+            ResponseEntity<ApplicationPlay> responseEntity = applicationPlaysCommonService.get(url.toString(), ApplicationPlay.class);
             if (responseEntity == null) {
                 throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, "Can't get data from url " + url.toString());
             }

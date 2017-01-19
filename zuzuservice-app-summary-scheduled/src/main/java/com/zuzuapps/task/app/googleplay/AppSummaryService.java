@@ -37,7 +37,7 @@ public class AppSummaryService extends AppCommonService {
                             break;
                         }
                     } catch (Exception ex) {
-                        logger.error("[Application Summary Store]App summary error", ex);
+                        logger.error("[Application Summary Store]App summary error " + ex.getMessage(), ex);
                         break;
                     }
                     page++;
@@ -95,7 +95,7 @@ public class AppSummaryService extends AppCommonService {
                 // Move data to log folder
                 moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
             } catch (Exception ex) {
-                logger.error("[Application Summary]Write summary of app error", ex);
+                logger.error("[Application Summary]Write summary of app error " + ex.getMessage(), ex);
                 moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
             }
             CommonUtils.delay(5);

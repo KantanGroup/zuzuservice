@@ -66,7 +66,7 @@ public class ScheduleApplication {
     /**
      * Write app summary in USA to json
      */
-    @Scheduled(cron = "2 0 0 1,11,21 * *")
+    @Scheduled(cron = "2 0 0 1,10,20 * *")
     public void scheduleAppSummary() {
         appSummaryService.appSummary();
     }
