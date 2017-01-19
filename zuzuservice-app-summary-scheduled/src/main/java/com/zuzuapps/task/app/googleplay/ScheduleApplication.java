@@ -38,7 +38,7 @@ public class ScheduleApplication {
     @Autowired
     private AppSummaryService appSummaryService;
     @Autowired
-    private AppLanguageService appLanguageService;
+    private AppInformationService appLanguageService;
 
     public static void main(String[] args) {
         SpringApplication.run(ScheduleApplication.class, args);

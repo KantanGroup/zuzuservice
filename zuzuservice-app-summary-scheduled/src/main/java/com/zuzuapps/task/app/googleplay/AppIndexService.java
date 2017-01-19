@@ -1,30 +1,16 @@
 package com.zuzuapps.task.app.googleplay;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zuzuapps.task.app.common.CategoryEnum;
-import com.zuzuapps.task.app.common.CollectionEnum;
-import com.zuzuapps.task.app.common.CommonUtils;
+import com.zuzuapps.task.app.common.*;
 import com.zuzuapps.task.app.elasticsearch.models.AppIndexElasticSearch;
-import com.zuzuapps.task.app.elasticsearch.repositories.AppIndexElasticSearchRepository;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
-import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
 import com.zuzuapps.task.app.master.models.AppIndexMaster;
 import com.zuzuapps.task.app.master.models.CountryMaster;
-import com.zuzuapps.task.app.master.repositories.AppIndexMasterRepository;
-import com.zuzuapps.task.app.master.repositories.CountryMasterRepository;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,25 +19,7 @@ import java.util.List;
  * @author tuanta17
  */
 @Service
-public class AppIndexService {
-    public static final String COUNTRY_CODE_DEFAULT = "us";
-    public static final String LANGUAGE_CODE_DEFAULT = "en";
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final Log logger = LogFactory.getLog(ScheduleApplication.class);
-
-    @Value("${data.root.path:/tmp}")
-    private String rootPath;
-    @Value("${time.get.app.info:5000}")
-    private long timeGetAppInfo;
-    @Autowired
-    private SummaryApplicationPlayService summaryApplicationPlayService;
-    @Autowired
-    private CountryMasterRepository countryRepository;
-    @Autowired
-    private AppIndexMasterRepository appIndexMasterRepository;
-    @Autowired
-    private AppIndexElasticSearchRepository appIndexElasticSearchRepository;
-
+public class AppIndexService extends AppCommonService {
     /**
      * Write app index of category in to json
      */
@@ -80,11 +48,14 @@ public class AppIndexService {
     }
 
     private StringBuilder queueAppIndexJSONPath(String time, CountryMaster countryMaster, CollectionEnum collection, CategoryEnum category) {
-        StringBuilder path = new StringBuilder(CommonUtils.queueTopFolderBy(rootPath, time));
-        path.append("/").append(countryMaster.getCountryCode()).append("___");
+        StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.queue.name(), time).getAbsolutePath());
+        path.append("/");
+        path.append(countryMaster.getCountryCode()).append("___");
         path.append(countryMaster.getLanguageCode()).append("___");
         path.append(category.name().toLowerCase()).append("___");
-        path.append(collection.name().toLowerCase()).append("___").append(time + ".json");
+        path.append(collection.name().toLowerCase()).append("___");
+        path.append(time + "___");
+        path.append("0").append(".json");
         return path;
     }
 
@@ -95,7 +66,7 @@ public class AppIndexService {
         while (true) {
             // something that should execute on weekdays only
             String time = CommonUtils.getDailyByTime();
-            String dirPath = CommonUtils.queueTopFolderBy(rootPath, time);
+            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.queue.name(), time).getAbsolutePath();
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
@@ -125,7 +96,7 @@ public class AppIndexService {
                 String languageCode = data[1];
                 CategoryEnum category = CategoryEnum.valueOf(data[2].toUpperCase());
                 CollectionEnum collection = CollectionEnum.valueOf(data[3]);
-                String fileTime = data[4].replaceAll(".json", "");
+                String fileTime = data[4];
                 Date fileDateTime = new Date(Long.valueOf(fileTime));
                 logger.debug("[Application Summary --> Index]Convert json data to object");
                 SummaryApplicationPlays apps = mapper.readValue(json, SummaryApplicationPlays.class);
@@ -136,7 +107,7 @@ public class AppIndexService {
                     index++;
                 }
                 // Create app info json
-                queueAppInformation(appIndexMasters, countryCode, languageCode);
+                queueAppInformation(apps.getResults(), countryCode, languageCode);
                 // Add data to mysql
                 logger.debug("[Application Summary --> Index]Store to database");
                 appIndexMasterRepository.save(appIndexMasters);
@@ -144,48 +115,14 @@ public class AppIndexService {
                 logger.debug("[Application Summary --> Index]Index to elastichsearch");
                 appIndexElasticSearchRepository.save(appIndexElasticSearches);
                 // Move data to log folder
-                moveDataToLogFolder(time, json, countryCode);
+                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
             } catch (Exception ex) {
                 logger.error("[Application Summary --> Index]App update index error", ex);
-                moveDataToErrorFolder(time, json);
+                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
             }
             CommonUtils.delay(5);
         }
         logger.info("[Application Summary --> Index]Cronjob end at: " + new Date());
-    }
-
-    private void queueAppInformation(List<AppIndexMaster> appIndexMasters, String countryCode, String languageCode) {
-        logger.debug("[Application Summary --> Index]Write app json to queue folder");
-        for (AppIndexMaster indexMaster : appIndexMasters) {
-            try {
-                StringBuilder path = new StringBuilder(CommonUtils.queueInformationFolderBy(rootPath, countryCode));
-                path.append("/").append(countryCode).append("___");
-                path.append(languageCode).append("___");
-                path.append(indexMaster.getAppId()).append(".json");
-                logger.debug("[Application Index]Write app " + indexMaster.getAppId().toLowerCase() + " to queue folder " + path.toString());
-                Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(indexMaster));
-            } catch (Exception ex) {
-                logger.error(ex);
-            }
-        }
-    }
-
-    private void moveDataToLogFolder(String time, File json, String country) throws IOException {
-        Path src = Paths.get(json.getAbsolutePath());
-        Path log = Paths.get(CommonUtils.logTopFolderBy(rootPath, time, country));
-        logger.debug("[Application Summary --> Index]Move json file " + json.getAbsolutePath() + " to log folder " + log.toFile().getAbsolutePath());
-        Files.move(src, log.resolve(src.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-    }
-
-    private void moveDataToErrorFolder(String time, File json) {
-        try {
-            Path src = Paths.get(json.getAbsolutePath());
-            Path log = Paths.get(CommonUtils.errorTopFolderBy(rootPath, time));
-            logger.debug("[Application Summary --> Index]Move json file " + json.getAbsolutePath() + " to error folder " + log.toFile().getAbsolutePath());
-            Files.move(src, log.resolve(src.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-        } catch (Exception ex) {
-            logger.warn("[Application Summary --> Index]Move json file error", ex);
-        }
     }
 
     private void createAppIndexMaster(List<AppIndexMaster> appIndexMasters, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, int index, SummaryApplicationPlay app) {

@@ -18,6 +18,8 @@ package com.zuzuapps.task.app.googleplay;
 
 import com.zuzuapps.task.app.GooglePlayCommonConfiguration;
 import com.zuzuapps.task.app.common.CommonUtils;
+import com.zuzuapps.task.app.common.DataServiceEnum;
+import com.zuzuapps.task.app.common.DataTypeEnum;
 import com.zuzuapps.task.app.elasticsearch.models.AppIndexElasticSearch;
 import com.zuzuapps.task.app.elasticsearch.repositories.AppIndexElasticSearchRepository;
 import org.junit.Test;
@@ -58,7 +60,7 @@ public class ScheduleApplicationTest {
     public void testProcessAppIndexQueue() {
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();
-        String dirPath = CommonUtils.queueTopFolderBy(rootPath, time);
+        String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.queue.name(), time).getAbsolutePath();
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
         if (files != null && files.length != 0) {

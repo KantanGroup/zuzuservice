@@ -1,15 +1,10 @@
 package com.zuzuapps.task.app.googleplay;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzuapps.task.app.common.CommonUtils;
+import com.zuzuapps.task.app.common.DataServiceEnum;
+import com.zuzuapps.task.app.common.DataTypeEnum;
 import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
-import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
 import com.zuzuapps.task.app.master.models.CountryMaster;
-import com.zuzuapps.task.app.master.repositories.CountryMasterRepository;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -21,30 +16,17 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by tuanta on 1/18/17.
+ * @author tuanta17
  */
 @Service
-public class AppLanguageService {
-    public static final String COUNTRY_CODE_DEFAULT = "us";
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final Log logger = LogFactory.getLog(ScheduleApplication.class);
-
-    @Value("${data.root.path:/tmp}")
-    private String rootPath;
-    @Value("${time.get.app.info:5000}")
-    private long timeGetAppInfo;
-    @Autowired
-    private InformationApplicationPlayService informationApplicationPlayService;
-    @Autowired
-    private CountryMasterRepository countryRepository;
-
+public class AppInformationService extends AppCommonService {
     /**
      * Split app summary to apps
      */
     public void dailyAppInformationUpdate() {
         while (true) {
             // something that should execute on weekdays only
-            String dirPath = CommonUtils.queueInformationFolderBy(rootPath, COUNTRY_CODE_DEFAULT);
+            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.queue.name(), COUNTRY_CODE_DEFAULT).getAbsolutePath();
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
@@ -65,7 +47,7 @@ public class AppLanguageService {
                 try {
                     ApplicationPlay applicationPlay =
                             informationApplicationPlayService.getInformationApplications(appId, languageCode);
-                    StringBuilder path = createAppLanguageJSONPath(appId, languageCode);
+                    StringBuilder path = createAppInformationJSONPath(appId, languageCode);
                     Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
                 } catch (Exception ex) {
                     logger.error("[Application Information Store]App language error", ex);
@@ -76,9 +58,11 @@ public class AppLanguageService {
         logger.info("[Application Information Store]Cronjob end at: " + new Date());
     }
 
-    private StringBuilder createAppLanguageJSONPath(String appId, String languageCode) {
-        StringBuilder path = new StringBuilder(CommonUtils.queueAppFolderBy(rootPath, languageCode));
-        path.append("/").append(appId.toLowerCase()).append(".json");
+    private StringBuilder createAppInformationJSONPath(String appId, String languageCode) {
+        StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+        path.append("/");
+        path.append(languageCode).append("___");
+        path.append(appId.toLowerCase()).append(".json");
         return path;
     }
 
@@ -102,7 +86,7 @@ public class AppLanguageService {
             // something that should execute on weekdays only
             Set<String> languages = findDistinctByLanguageCode();
             for (String languageCode : languages) {
-                String dirPath = CommonUtils.queueAppFolderBy(rootPath, languageCode);
+                String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.queue.name(), languageCode).getAbsolutePath();
                 File dir = new File(dirPath);
                 File[] files = dir.listFiles();
                 if (files != null && files.length != 0) {
