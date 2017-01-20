@@ -3,6 +3,7 @@ package com.zuzuapps.task.app.common;
 import java.io.File;
 import java.nio.file.Paths;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,7 +13,7 @@ import java.util.Date;
  */
 public class CommonUtils {
 
-    public static File folderBy(String root, String ...more) {
+    public static File folderBy(String root, String... more) {
         File folder = Paths.get(root, more).toFile();
         if (!folder.exists()) {
             folder.mkdirs();
@@ -47,6 +48,20 @@ public class CommonUtils {
 
     public static String getMinutelyByTime() {
         return getTimeBy("yyyyMMddHHmm");
+    }
+
+    /**
+     * String to date time
+     *
+     * @param time Time
+     */
+    public static Date toDate(String time) {
+        DateFormat df = new SimpleDateFormat("yyyyMMdd");
+        try {
+            return df.parse(time);
+        } catch (ParseException e) {
+            return new Date();
+        }
     }
 
     /**

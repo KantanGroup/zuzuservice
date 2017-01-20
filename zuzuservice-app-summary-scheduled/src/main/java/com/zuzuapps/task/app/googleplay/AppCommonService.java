@@ -55,11 +55,11 @@ public class AppCommonService {
                 StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.queue.name(), countryCode).getAbsolutePath());
                 path.append("/").append(countryCode).append("___");
                 path.append(languageCode).append("___");
-                path.append(summaryApplicationPlay.getAppId()).append(".json");
+                path.append(summaryApplicationPlay.getAppId().toLowerCase()).append(".json");
                 logger.debug("[Application Summary]Write summary of app " + summaryApplicationPlay.getAppId().toLowerCase() + " to queue folder " + path.toString());
                 Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlay));
             } catch (Exception ex) {
-                logger.error("[Application Summary]Write summary of app error", ex);
+                logger.error("[Application Summary]Write summary of app error " + ex.getMessage(), ex);
             }
         }
     }
@@ -71,7 +71,7 @@ public class AppCommonService {
             logger.debug("Move json file " + source + " to log folder " + destination);
             Files.move(src, des.resolve(src.getFileName()), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception ex) {
-            logger.warn("Move json file error", ex);
+            logger.warn("Move json file error " + ex.getMessage(), ex);
         }
     }
 

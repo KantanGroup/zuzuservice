@@ -38,7 +38,7 @@ public class AppIndexService extends AppCommonService {
                         logger.debug("[Application Index Store]Write app summary to json " + path.toString());
                         Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlays));
                     } catch (Exception ex) {
-                        logger.error("[Application Index Store]Store app information error", ex);
+                        logger.error("[Application Index Store]Store app information error " + ex.getMessage(), ex);
                     }
                     CommonUtils.delay(timeGetAppInfo);
                 }
@@ -97,7 +97,7 @@ public class AppIndexService extends AppCommonService {
                 CategoryEnum category = CategoryEnum.valueOf(data[2].toUpperCase());
                 CollectionEnum collection = CollectionEnum.valueOf(data[3]);
                 String fileTime = data[4];
-                Date fileDateTime = new Date(Long.valueOf(fileTime));
+                Date fileDateTime = CommonUtils.toDate(fileTime);
                 logger.debug("[Application Summary --> Index]Convert json data to object");
                 SummaryApplicationPlays apps = mapper.readValue(json, SummaryApplicationPlays.class);
                 int index = 1;
@@ -117,7 +117,7 @@ public class AppIndexService extends AppCommonService {
                 // Move data to log folder
                 moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
             } catch (Exception ex) {
-                logger.error("[Application Summary --> Index]App update index error", ex);
+                logger.error("[Application Summary --> Index]App update index error " + ex.getMessage(), ex);
                 moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
             }
             CommonUtils.delay(5);

@@ -50,7 +50,7 @@ public class AppInformationService extends AppCommonService {
                     StringBuilder path = createAppInformationJSONPath(appId, languageCode);
                     Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
                 } catch (Exception ex) {
-                    logger.error("[Application Information Store]App language error", ex);
+                    logger.error("[Application Information Store]App language error " + ex.getMessage(), ex);
                 }
                 CommonUtils.delay(timeGetAppInfo);
             }
