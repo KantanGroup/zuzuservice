@@ -12,34 +12,30 @@ import java.util.Date;
 @Table(name = "master_application_s",
         indexes = {
                 @Index(name = "app_id_index", columnList = "app_id"),
-                @Index(name = "create_at_index", columnList = "create_at"),
-                @Index(name = "update_at_index", columnList = "update_at"),
-                @Index(name = "score_index", columnList = "score"),
-                @Index(name = "price_index", columnList = "price"),
-                @Index(name = "developer_id_index", columnList = "developer_id"),
-                @Index(name = "free_index", columnList = "free")
+                @Index(name = "developer_id_index", columnList = "developer_id")
         }
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppMaster {
     @Id
-    @Column(name = "app_id")
+    @Column(name = "app_id", length = 50, nullable = false)
     private String appId;
     private String url;
     private String icon;
-    private int score;
+    private float score;
+    @Column(name = "price", length = 20)
     private String price;
     private boolean free;
-    @Column(name = "developer_id")
+    @Column(name = "developer_id", length = 50)
     private String developerId;
     @Column(name = "developer_url")
     private String developerUrl;
-    @Column(name = "developer_email")
+    @Column(name = "developer_email", length = 36)
     private String developerEmail;
-    @Column(name = "developer_website")
+    @Column(name = "developer_website", length = 36)
     private String developerWebsite;
     private String updated;
-    @Column(name = "app_version")
+    @Column(name = "app_version", length = 20)
     private String appVersion;
     @Column(name = "min_installs")
     private int minInstalls;
@@ -65,8 +61,10 @@ public class AppMaster {
     private String similar;
     private String reviews;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_at")
     private Date createAt;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "update_at")
     private Date updateAt;
 
@@ -110,11 +108,11 @@ public class AppMaster {
         this.icon = icon;
     }
 
-    public int getScore() {
+    public float getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(float score) {
         this.score = score;
     }
 
