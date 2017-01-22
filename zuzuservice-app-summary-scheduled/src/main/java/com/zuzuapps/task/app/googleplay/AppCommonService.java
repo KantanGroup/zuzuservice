@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
+import com.zuzuapps.task.app.common.ZipUtil;
 import com.zuzuapps.task.app.elasticsearch.repositories.AppIndexElasticSearchRepository;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
@@ -27,9 +28,10 @@ import java.util.List;
  */
 @Service
 public class AppCommonService {
+    protected static final String REGEX_SPACEDOWN = "___";
     protected static final String COUNTRY_CODE_DEFAULT = "us";
     protected static final String LANGUAGE_CODE_DEFAULT = "en";
-    protected final Log logger = LogFactory.getLog(AppCommonService.class);
+    protected final Log logger = LogFactory.getLog("AppCommonService");
     protected final ObjectMapper mapper = new ObjectMapper();
 
     @Value("${data.root.path:/tmp}")
@@ -37,6 +39,9 @@ public class AppCommonService {
 
     @Value("${time.get.app.info:5000}")
     protected long timeGetAppInfo;
+
+    @Value("${zip.password.json:zippasswordjson}")
+    protected String zippasswordjson;
 
     @Autowired
     protected SummaryApplicationPlayService summaryApplicationPlayService;
@@ -56,10 +61,10 @@ public class AppCommonService {
                 path.append("/").append(countryCode).append("___");
                 path.append(languageCode).append("___");
                 path.append(summaryApplicationPlay.getAppId().toLowerCase()).append(".json");
-                logger.debug("[Application Summary]Write summary of app " + summaryApplicationPlay.getAppId().toLowerCase() + " to queue folder " + path.toString());
+                logger.debug("Write summary of app " + summaryApplicationPlay.getAppId().toLowerCase() + " to queue folder " + path.toString());
                 Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlay));
             } catch (Exception ex) {
-                logger.error("[Application Summary]Write summary of app error " + ex.getMessage(), ex);
+                logger.error("Write summary of app error " + ex.getMessage(), ex);
             }
         }
     }
@@ -68,8 +73,11 @@ public class AppCommonService {
         try {
             Path src = Paths.get(source);
             Path des = Paths.get(destination);
+            Path zipFile = Paths.get(src.toFile().getAbsolutePath() + ".zip");
+            logger.debug("Zip json file " + source);
+            new ZipUtil().zip(src.toFile().getAbsolutePath(), zipFile.toFile().getAbsolutePath(), zippasswordjson);
             logger.debug("Move json file " + source + " to log folder " + destination);
-            Files.move(src, des.resolve(src.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+            Files.move(zipFile, des.resolve(zipFile.getFileName()), StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception ex) {
             logger.warn("Move json file error " + ex.getMessage(), ex);
         }

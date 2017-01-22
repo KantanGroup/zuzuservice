@@ -5,6 +5,8 @@ import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
 import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
 import com.zuzuapps.task.app.master.models.CountryMaster;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -20,6 +22,8 @@ import java.util.Set;
  */
 @Service
 public class AppInformationService extends AppCommonService {
+    final Log logger = LogFactory.getLog("AppInformationService");
+
     /**
      * Split app summary to apps
      */
@@ -31,6 +35,8 @@ public class AppInformationService extends AppCommonService {
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
                 queueAppInformation(files);
+            } else {
+                logger.debug("[Application Information Store]Have " + files.length + " in folder " + dirPath);
             }
             CommonUtils.delay(timeGetAppInfo);
         }
@@ -38,22 +44,30 @@ public class AppInformationService extends AppCommonService {
 
     public void queueAppInformation(File[] files) {
         logger.info("[Application Information Store]Cronjob start at: " + new Date());
+        String time = CommonUtils.getDailyByTime();
         Set<String> languages = findDistinctByLanguageCode();
         for (File json : files) {
+            logger.info("[Application Information Store]File " + json.getAbsolutePath());
             String filename = json.getName();
-            String[] data = filename.split("___");
-            String appId = data[2].replaceAll(".json", "");
-            for (String languageCode : languages) {
-                try {
-                    ApplicationPlay applicationPlay =
-                            informationApplicationPlayService.getInformationApplications(appId, languageCode);
-                    StringBuilder path = createAppInformationJSONPath(appId, languageCode);
-                    Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
-                } catch (Exception ex) {
-                    logger.error("[Application Information Store]App language error " + ex.getMessage(), ex);
+            String[] data = filename.split(REGEX_SPACEDOWN);
+            if (data.length >= 2) {
+                String appId = data[2].replaceAll(".json", "");
+                for (String languageCode : languages) {
+                    try {
+                        ApplicationPlay applicationPlay =
+                                informationApplicationPlayService.getInformationApplications(appId, languageCode);
+                        StringBuilder path = createAppInformationJSONPath(appId, languageCode);
+                        Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
+                    } catch (Exception ex) {
+                        logger.error("[Application Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
+                    }
+                    CommonUtils.delay(timeGetAppInfo);
                 }
-                CommonUtils.delay(timeGetAppInfo);
+                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.log.name(), time, COUNTRY_CODE_DEFAULT).getAbsolutePath());
+            } else {
+                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
             }
+
         }
         logger.info("[Application Information Store]Cronjob end at: " + new Date());
     }
@@ -61,7 +75,7 @@ public class AppInformationService extends AppCommonService {
     private StringBuilder createAppInformationJSONPath(String appId, String languageCode) {
         StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.queue.name()).getAbsolutePath());
         path.append("/");
-        path.append(languageCode).append("___");
+        path.append(languageCode).append(REGEX_SPACEDOWN);
         path.append(appId.toLowerCase()).append(".json");
         return path;
     }
