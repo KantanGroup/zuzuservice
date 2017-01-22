@@ -12,32 +12,28 @@ import java.util.Date;
 @Table(name = "master_summary_s",
         indexes = {
                 @Index(name = "create_at_index", columnList = "create_at"),
-                @Index(name = "update_at_index", columnList = "update_at"),
-                @Index(name = "score_index", columnList = "score"),
-                @Index(name = "price_index", columnList = "price"),
-                @Index(name = "developer_id_index", columnList = "developer_id"),
-                @Index(name = "free_index", columnList = "free")
+                @Index(name = "developer_id_index", columnList = "developer_id")
         }
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppSummaryMaster {
     @Id
-    @Column(name = "app_id")
+    @Column(name = "app_id", length = 50)
     private String appId;
-    @Column(name = "developer_id")
+    @Column(name = "developer_id", length = 50)
     private String developerId;
     @Column(name = "developer_url")
     private String developerUrl;
     private String url;
     private String icon;
-    private int score;
+    private float score;
+    @Column(name = "price", length = 20)
     private String price;
     private boolean free;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_at")
     private Date createAt;
-    @Column(name = "update_at")
-    private Date updateAt;
 
     public String getAppId() {
         return appId;
@@ -79,11 +75,11 @@ public class AppSummaryMaster {
         this.icon = icon;
     }
 
-    public int getScore() {
+    public float getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(float score) {
         this.score = score;
     }
 
@@ -109,13 +105,5 @@ public class AppSummaryMaster {
 
     public void setCreateAt(Date createAt) {
         this.createAt = createAt;
-    }
-
-    public Date getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
     }
 }

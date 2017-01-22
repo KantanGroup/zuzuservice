@@ -11,10 +11,7 @@ import java.util.Date;
 @Entity
 @Table(name = "master_application_language_s",
         indexes = {
-                @Index(name = "create_at_index", columnList = "create_at"),
-                @Index(name = "update_at_index", columnList = "update_at"),
-                @Index(name = "app_language_index", columnList = "app_id,language_code"),
-                @Index(name = "title_index", columnList = "title")
+                @Index(name = "app_language_index", columnList = "app_id,language_code")
         }
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -24,9 +21,9 @@ public class AppLanguageMaster {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "app_id")
+    @Column(name = "app_id", length = 50, nullable = false)
     private String appId;
-    @Column(name = "language_code")
+    @Column(name = "language_code", nullable = false)
     private String languageCode;
 
     private String title;
@@ -35,6 +32,7 @@ public class AppLanguageMaster {
     @Column(name = "description_html")
     private String descriptionHTML;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_at")
     private Date createAt;
     @Column(name = "update_at")

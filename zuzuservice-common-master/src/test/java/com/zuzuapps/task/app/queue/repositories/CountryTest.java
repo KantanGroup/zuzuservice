@@ -46,7 +46,6 @@ public class CountryTest {
                 countryLocal.setLanguageName(code[2]);
                 countryLocal.setLanguageCode(code[3]);
                 countryLocal.setCreateAt(new Date());
-                countryLocal.setUpdateAt(new Date());
                 locals.add(countryLocal);
             }
         }

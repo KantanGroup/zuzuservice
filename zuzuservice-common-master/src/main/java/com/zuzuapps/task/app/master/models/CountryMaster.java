@@ -11,37 +11,33 @@ import java.util.Date;
 @Entity
 @Table(name = "master_country_language_s",
         indexes = {
-                @Index(name = "create_at_index", columnList = "create_at"),
-                @Index(name = "update_at_index", columnList = "update_at"),
-                @Index(name = "country_language_index", columnList = "country_code,language_code"),
-                @Index(name = "country_index", columnList = "country_code"),
-                @Index(name = "language_index", columnList = "language_code")
+                @Index(name = "country_language_index", columnList = "country_code,language_code")
         }
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CountryMaster {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
-    @Column(name = "language_code")
+    private short id;
+    @Column(name = "language_code", length = 2)
     private String languageCode;
-    @Column(name = "language_name")
+    @Column(name = "language_name", length = 10)
     private String languageName;
-    @Column(name = "country_code")
+    @Column(name = "country_code", length = 2)
     private String countryCode;
-    @Column(name = "country_name")
+    @Column(name = "country_name", length = 10)
     private String countryName;
-    private int type;
+    private short type;
+
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_at")
     private Date createAt;
-    @Column(name = "update_at")
-    private Date updateAt;
 
-    public int getId() {
+    public short getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(short id) {
         this.id = id;
     }
 
@@ -77,11 +73,11 @@ public class CountryMaster {
         this.countryName = countryName;
     }
 
-    public int getType() {
+    public short getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(short type) {
         this.type = type;
     }
 
@@ -91,13 +87,5 @@ public class CountryMaster {
 
     public void setCreateAt(Date createAt) {
         this.createAt = createAt;
-    }
-
-    public Date getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
     }
 }

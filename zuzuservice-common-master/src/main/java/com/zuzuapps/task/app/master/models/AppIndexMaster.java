@@ -13,14 +13,9 @@ import java.util.Date;
 @Entity
 @Table(name = "master_application_index_s",
         indexes = {
-                @Index(name = "app_id_index", columnList = "app_id"),
+                @Index(name = "app_id_index", columnList = "app_id,country_code,category,collection"),
                 @Index(name = "create_at_index", columnList = "create_at"),
-                @Index(name = "update_at_index", columnList = "update_at"),
-                @Index(name = "country_index", columnList = "country_code"),
-                @Index(name = "category_index", columnList = "category"),
-                @Index(name = "collection_index", columnList = "collection"),
-                @Index(name = "app_index_index", columnList = "app_index"),
-                @Index(name = "visible_index", columnList = "visible")
+                @Index(name = "app_index_index", columnList = "app_index")
         }
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -29,21 +24,19 @@ public class AppIndexMaster {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "app_id")
+    @Column(name = "app_id", length = 50, nullable = false)
     private String appId;
-    @Column(name = "country_code")
+    @Column(name = "country_code", length = 2)
     private String countryCode;
     private CategoryEnum category;
     private CollectionEnum collection;
     @Column(name = "app_index")
-    private int index;
+    private short index;
     private String icon;
-    private boolean visible;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_at")
     private Date createAt;
-    @Column(name = "update_at")
-    private Date updateAt;
 
     public long getId() {
         return id;
@@ -85,11 +78,11 @@ public class AppIndexMaster {
         this.collection = collection;
     }
 
-    public int getIndex() {
+    public short getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex(short index) {
         this.index = index;
     }
 
@@ -101,27 +94,11 @@ public class AppIndexMaster {
         this.icon = icon;
     }
 
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
     public Date getCreateAt() {
         return createAt;
     }
 
     public void setCreateAt(Date createAt) {
         this.createAt = createAt;
-    }
-
-    public Date getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
     }
 }
