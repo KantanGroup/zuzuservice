@@ -3,7 +3,6 @@ package com.zuzuapps.task.app.googleplay.servies;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
-import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class InformationApplicationPlayService {
-    private final Log logger = LogFactory.getLog(InformationApplicationPlayService.class);
+    private final Log logger = LogFactory.getLog("InformationApplicationPlayService");
 
     @Value("${data.site.path:\"http://localhost:5000\"}")
     private String sitePath;

@@ -1,7 +1,5 @@
 package com.zuzuapps.task.app.elasticsearch.models;
 
-import com.zuzuapps.task.app.common.CategoryEnum;
-import com.zuzuapps.task.app.common.CollectionEnum;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
@@ -15,6 +13,7 @@ public class AppIndexElasticSearch {
     @Id
     private String id;
     private int index;
+    private String title;
     private String appId;
     private String countryCode;
     private String category;
@@ -38,6 +37,14 @@ public class AppIndexElasticSearch {
 
     public void setAppId(String appId) {
         this.appId = appId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getCountryCode() {

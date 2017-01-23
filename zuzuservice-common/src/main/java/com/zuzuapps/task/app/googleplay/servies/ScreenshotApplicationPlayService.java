@@ -3,7 +3,9 @@ package com.zuzuapps.task.app.googleplay.servies;
 import com.zuzuapps.task.app.common.ImageTypeEnum;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
-import com.zuzuapps.task.app.googleplay.models.ScreenshootPlay;
+import com.zuzuapps.task.app.googleplay.models.ScreenshotPlay;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -19,7 +21,8 @@ import java.util.Collections;
 /**
  * @author tuanta17
  */
-public class ScreenshootApplicationPlayService {
+public class ScreenshotApplicationPlayService {
+    private final Log logger = LogFactory.getLog("ScreenshotApplicationPlayService");
 
     @Value("${data.image.path:/tmp")
     private String imageStore;
@@ -42,7 +45,7 @@ public class ScreenshootApplicationPlayService {
      * @return
      * @throws GooglePlayRuntimeException
      */
-    public ScreenshootPlay extractOriginalIcon(String appId, String imageLink) throws GooglePlayRuntimeException {
+    public ScreenshotPlay extractOriginalIcon(String appId, String imageLink) throws GooglePlayRuntimeException {
         return extractOriginalImage(appId, imageLink, ImageTypeEnum.icon.ordinal());
     }
 
@@ -54,7 +57,7 @@ public class ScreenshootApplicationPlayService {
      * @return
      * @throws GooglePlayRuntimeException
      */
-    public ScreenshootPlay extractOriginalScreenshoot(String appId, String imageLink) throws GooglePlayRuntimeException {
+    public ScreenshotPlay extractOriginalScreenshoot(String appId, String imageLink) throws GooglePlayRuntimeException {
         return extractOriginalImage(appId, imageLink, ImageTypeEnum.screenshoot.ordinal());
     }
 
@@ -67,7 +70,7 @@ public class ScreenshootApplicationPlayService {
      * @return
      * @throws GooglePlayRuntimeException
      */
-    private ScreenshootPlay extractOriginalImage(String appId, String imageLink, int type) throws GooglePlayRuntimeException {
+    private ScreenshotPlay extractOriginalImage(String appId, String imageLink, int type) throws GooglePlayRuntimeException {
         try {
             byte[] imageBytes = restTemplate.getForObject(imageLink, byte[].class, addHeaders());
             String appImageOriginPath = appId + "/" + System.currentTimeMillis() + ".png";
@@ -76,12 +79,12 @@ public class ScreenshootApplicationPlayService {
                 file.mkdirs();
             }
             Files.write(Paths.get(imageStore, appImageOriginPath), imageBytes);
-            ScreenshootPlay screenshoot = new ScreenshootPlay();
-            screenshoot.setAppId(appId);
-            screenshoot.setOriginal(appImageOriginPath);
-            screenshoot.setSource(imageLink);
-            screenshoot.setType(type);
-            return screenshoot;
+            ScreenshotPlay screenshot = new ScreenshotPlay();
+            screenshot.setAppId(appId);
+            screenshot.setOriginal(appImageOriginPath);
+            screenshot.setSource(imageLink);
+            screenshot.setType(type);
+            return screenshot;
         } catch (IOException ex) {
             throw new GooglePlayRuntimeException(ExceptionCodes.DATA_READ_WRITE_EXCEPTION, ex);
         } catch (Exception ex) {

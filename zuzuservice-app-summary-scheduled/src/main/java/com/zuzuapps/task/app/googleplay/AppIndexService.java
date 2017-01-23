@@ -54,12 +54,12 @@ public class AppIndexService extends AppCommonService {
     private StringBuilder queueAppIndexJSONPath(String time, CountryMaster countryMaster, CollectionEnum collection, CategoryEnum category) {
         StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.queue.name(), time).getAbsolutePath());
         path.append("/");
-        path.append(countryMaster.getCountryCode()).append(REGEX_SPACEDOWN);
-        path.append(countryMaster.getLanguageCode()).append(REGEX_SPACEDOWN);
-        path.append(category.name().toLowerCase()).append(REGEX_SPACEDOWN);
-        path.append(collection.name().toLowerCase()).append(REGEX_SPACEDOWN);
-        path.append(time).append(REGEX_SPACEDOWN);
-        path.append("0").append(".json");
+        path.append(countryMaster.getCountryCode()).append(REGEX_3_UNDER_LINE);
+        path.append(countryMaster.getLanguageCode()).append(REGEX_3_UNDER_LINE);
+        path.append(category.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
+        path.append(collection.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
+        path.append(time).append(REGEX_3_UNDER_LINE);
+        path.append(ZERO_NUMBER).append(JSON_FILE_EXTENSTION);
         return path;
     }
 
@@ -75,6 +75,8 @@ public class AppIndexService extends AppCommonService {
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
                 processIndexUpdate(files);
+            } else {
+                logger.info("[Application Summary --> Index]Don't have any file in folder " + dirPath);
             }
             CommonUtils.delay(timeGetAppInfo);
         }
@@ -94,7 +96,7 @@ public class AppIndexService extends AppCommonService {
             List<AppIndexMaster> appIndexMasters = new ArrayList<AppIndexMaster>();
             List<AppIndexElasticSearch> appIndexElasticSearches = new ArrayList<AppIndexElasticSearch>();
             String filename = json.getName();
-            String[] data = filename.split(REGEX_SPACEDOWN);
+            String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 4) {
                 String countryCode = data[0];
                 String languageCode = data[1];
@@ -105,7 +107,7 @@ public class AppIndexService extends AppCommonService {
                 try {
                     logger.debug("[Application Summary --> Index]Convert json data to object");
                     SummaryApplicationPlays apps = mapper.readValue(json, SummaryApplicationPlays.class);
-                    int index = 1;
+                    short index = 1;
                     for (SummaryApplicationPlay app : apps.getResults()) {
                         createAppIndexMaster(appIndexMasters, countryCode, category, collection, fileDateTime, index, app);
                         createAppIndexElasticSearch(appIndexElasticSearches, countryCode, category, collection, fileDateTime, index, app);
@@ -133,7 +135,7 @@ public class AppIndexService extends AppCommonService {
         logger.info("[Application Summary --> Index]Cronjob end at: " + new Date());
     }
 
-    private void createAppIndexMaster(List<AppIndexMaster> appIndexMasters, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, int index, SummaryApplicationPlay app) {
+    private void createAppIndexMaster(List<AppIndexMaster> appIndexMasters, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, short index, SummaryApplicationPlay app) {
         AppIndexMaster appIndexMaster = new AppIndexMaster();
         appIndexMaster.setAppId(app.getAppId());
         appIndexMaster.setCategory(category);
@@ -141,9 +143,7 @@ public class AppIndexService extends AppCommonService {
         appIndexMaster.setCountryCode(country);
         appIndexMaster.setIndex(index);
         appIndexMaster.setIcon(app.getIcon());
-        appIndexMaster.setVisible(true);
         appIndexMaster.setCreateAt(fileDateTime);
-        appIndexMaster.setUpdateAt(fileDateTime);
         appIndexMasters.add(appIndexMaster);
     }
 
@@ -151,6 +151,7 @@ public class AppIndexService extends AppCommonService {
         AppIndexElasticSearch appIndexElasticSearch = new AppIndexElasticSearch();
         appIndexElasticSearch.setId(country + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + index);
         appIndexElasticSearch.setIndex(index);
+        appIndexElasticSearch.setTitle(app.getTitle());
         appIndexElasticSearch.setAppId(app.getAppId());
         appIndexElasticSearch.setCategory(category.name().toLowerCase());
         appIndexElasticSearch.setCollection(collection.name());

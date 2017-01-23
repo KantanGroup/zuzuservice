@@ -52,12 +52,12 @@ public class AppSummaryService extends AppCommonService {
     private StringBuilder queueAppSummaryJSONPath(String time, CollectionEnum collection, CategoryEnum category, int page) {
         StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.queue.name()).getAbsolutePath());
         path.append("/");
-        path.append(COUNTRY_CODE_DEFAULT).append(REGEX_SPACEDOWN);
-        path.append(LANGUAGE_CODE_DEFAULT).append(REGEX_SPACEDOWN);
-        path.append(category.name().toLowerCase()).append(REGEX_SPACEDOWN);
-        path.append(collection.name().toLowerCase()).append(REGEX_SPACEDOWN);
-        path.append(time).append(REGEX_SPACEDOWN);
-        path.append(page).append(".json");
+        path.append(COUNTRY_CODE_DEFAULT).append(REGEX_3_UNDER_LINE);
+        path.append(LANGUAGE_CODE_DEFAULT).append(REGEX_3_UNDER_LINE);
+        path.append(category.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
+        path.append(collection.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
+        path.append(time).append(REGEX_3_UNDER_LINE);
+        path.append(page).append(JSON_FILE_EXTENSTION);
         return path;
     }
 
@@ -70,7 +70,7 @@ public class AppSummaryService extends AppCommonService {
             if (files != null && files.length != 0) {
                 processAppSummary(files);
             } else {
-                logger.debug("[Application Summary --> Information]Have " + files.length + " in folder " + dirPath);
+                logger.info("[Application Summary --> Information]Don't have any file in folder " + dirPath);
             }
             CommonUtils.delay(timeGetAppInfo);
         }
@@ -83,7 +83,7 @@ public class AppSummaryService extends AppCommonService {
         for (File json : files) {
             logger.debug("[Application Summary --> Information]File " + json.getAbsolutePath());
             String filename = json.getName();
-            String[] data = filename.split(REGEX_SPACEDOWN);
+            String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 4) {
                 String countryCode = data[0];
                 String languageCode = data[1];

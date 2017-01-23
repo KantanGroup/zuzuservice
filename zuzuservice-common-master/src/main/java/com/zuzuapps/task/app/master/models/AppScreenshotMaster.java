@@ -9,14 +9,14 @@ import java.util.Date;
  * @author tuanta17
  */
 @Entity
-@Table(name = "master_application_screen_shoot_s",
+@Table(name = "master_application_screenshot_s",
         indexes = {
                 @Index(name = "app_id_index", columnList = "app_id"),
                 @Index(name = "create_at_index", columnList = "create_at")
         }
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AppScreenshootMaster {
+public class AppScreenshotMaster {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;

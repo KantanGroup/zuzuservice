@@ -26,9 +26,11 @@ public class AppIndexMaster {
 
     @Column(name = "app_id", length = 50, nullable = false)
     private String appId;
-    @Column(name = "country_code", length = 2)
+    @Column(name = "country_code", length = 2, nullable = false)
     private String countryCode;
+    @Column(name = "category", length = 1, nullable = false)
     private CategoryEnum category;
+    @Column(name = "collection", length = 1, nullable = false)
     private CollectionEnum collection;
     @Column(name = "app_index")
     private short index;

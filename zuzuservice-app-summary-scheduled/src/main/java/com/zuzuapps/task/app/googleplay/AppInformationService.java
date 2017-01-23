@@ -36,7 +36,7 @@ public class AppInformationService extends AppCommonService {
             if (files != null && files.length != 0) {
                 queueAppInformation(files);
             } else {
-                logger.debug("[Application Information Store]Have " + files.length + " in folder " + dirPath);
+                logger.info("[Application Information Store]Don't have any file in folder " + dirPath);
             }
             CommonUtils.delay(timeGetAppInfo);
         }
@@ -49,9 +49,9 @@ public class AppInformationService extends AppCommonService {
         for (File json : files) {
             logger.info("[Application Information Store]File " + json.getAbsolutePath());
             String filename = json.getName();
-            String[] data = filename.split(REGEX_SPACEDOWN);
+            String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 2) {
-                String appId = data[2].replaceAll(".json", "");
+                String appId = data[2].replaceAll(JSON_FILE_EXTENSTION, "");
                 for (String languageCode : languages) {
                     try {
                         ApplicationPlay applicationPlay =
@@ -75,8 +75,8 @@ public class AppInformationService extends AppCommonService {
     private StringBuilder createAppInformationJSONPath(String appId, String languageCode) {
         StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.queue.name()).getAbsolutePath());
         path.append("/");
-        path.append(languageCode).append(REGEX_SPACEDOWN);
-        path.append(appId.toLowerCase()).append(".json");
+        path.append(languageCode).append(REGEX_3_UNDER_LINE);
+        path.append(appId.toLowerCase()).append(JSON_FILE_EXTENSTION);
         return path;
     }
 

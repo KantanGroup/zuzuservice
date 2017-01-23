@@ -23,13 +23,15 @@ public class AppLanguageMaster {
 
     @Column(name = "app_id", length = 50, nullable = false)
     private String appId;
-    @Column(name = "language_code", nullable = false)
+    @Column(name = "language_code", length = 2, nullable = false)
     private String languageCode;
 
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String summary;
+    @Column(columnDefinition = "TEXT")
     private String description;
-    @Column(name = "description_html")
+    @Column(columnDefinition = "TEXT", name = "description_html")
     private String descriptionHTML;
 
     @Temporal(TemporalType.TIMESTAMP)

@@ -1,0 +1,18 @@
+{
+  "url": "http://zuzuapps.com/api/apps/air.jp.ne.hap.mom2",
+  "appId": "air.jp.ne.hap.mom2",
+  "title": "ママにゲーム隠された2 - 脱出ゲーム",
+  "summary": "『ママにゲーム隠された - 脱出ゲーム』の続編が登場！",
+  "developer": {
+    "devId": "hap Inc.",
+    "url": "http://zuzuapps.com/api/developers/hap%20Inc."
+  },
+  "icon": "//lh3.googleusercontent.com/ujc7iyl28FvKRCNDTSnrBufoBDfliq-iQgF32TpV8aAR4xzKIfzWmsj6JgRe3iwWsNI=w340",
+  "score": 5,
+  "price": "0",
+  "free": true,
+  "playstoreUrl": "https://play.google.com/store/apps/details?id=air.jp.ne.hap.mom2",
+  "permissions": "http://zuzuapps.com/api/apps/air.jp.ne.hap.mom2/permissions",
+  "similar": "http://zuzuapps.com/api/apps/air.jp.ne.hap.mom2/similar",
+  "reviews": "http://zuzuapps.com/api/apps/air.jp.ne.hap.mom2/reviews"
+}

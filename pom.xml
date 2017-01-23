@@ -10,8 +10,6 @@
     <modules>
         <module>zuzuservice-app-summary-scheduled</module>
         <module>zuzuservice-common-master</module>
-        <module>zuzuservice-common-log</module>
-        <module>zuzuservice-common-queue</module>
         <module>zuzuservice-common</module>
     </modules>
 

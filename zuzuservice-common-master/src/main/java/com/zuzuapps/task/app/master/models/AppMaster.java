@@ -41,20 +41,26 @@ public class AppMaster {
     private int minInstalls;
     @Column(name = "max_installs")
     private int maxInstalls;
+    @Column(name = "genre", length = 36, nullable = false)
     private String genre;
-    @Column(name = "genre_id")
+    @Column(name = "genre_id", length = 36, nullable = false)
     private String genreId;
+    @Column(name = "family_genre", length = 36, nullable = false)
+    private String familyGenre;
+    @Column(name = "family_genre_id", length = 36, nullable = false)
+    private String familyGenreId;
     @Column(name = "offers_iap")
     private boolean offersIAP;
     @Column(name = "ad_supported")
     private boolean adSupported;
-    @Column(name = "android_version_text")
+    @Column(name = "android_version_text", length = 36, nullable = false)
     private String androidVersionText;
-    @Column(name = "android_version")
+    @Column(name = "android_version", length = 36, nullable = false)
     private String androidVersion;
-    @Column(name = "content_rating")
+    @Column(name = "content_rating", length = 36, nullable = false)
     private String contentRating;
     private boolean preregister;
+    private String video;
     @Column(name = "playstore_url")
     private String playstoreUrl;
     private String permissions;
@@ -196,6 +202,22 @@ public class AppMaster {
         this.genreId = genreId;
     }
 
+    public String getFamilyGenre() {
+        return familyGenre;
+    }
+
+    public void setFamilyGenre(String familyGenre) {
+        this.familyGenre = familyGenre;
+    }
+
+    public String getFamilyGenreId() {
+        return familyGenreId;
+    }
+
+    public void setFamilyGenreId(String familyGenreId) {
+        this.familyGenreId = familyGenreId;
+    }
+
     public boolean isOffersIAP() {
         return offersIAP;
     }
@@ -242,6 +264,14 @@ public class AppMaster {
 
     public void setPreregister(boolean preregister) {
         this.preregister = preregister;
+    }
+
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
     }
 
     public String getPlaystoreUrl() {

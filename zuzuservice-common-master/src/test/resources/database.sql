@@ -1,0 +1,1 @@
+ALTER TABLE `zuzuapps`.`master_application_language_s` CHANGE COLUMN `language_code` `language_code` VARCHAR(2) NOT NULL ;

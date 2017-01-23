@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SummaryApplicationPlayService {
-    private final Log logger = LogFactory.getLog(SummaryApplicationPlayService.class);
+    private final Log logger = LogFactory.getLog("SummaryApplicationPlayService");
 
     @Value("${data.site.path:\"http://localhost:5000\"}")
     private String sitePath;
@@ -45,7 +44,6 @@ public class SummaryApplicationPlayService {
             if (!statusCode.is2xxSuccessful()) {
                 throw new GooglePlayRuntimeException(ExceptionCodes.GOOGLE_PLAY_SERVER_EXCEPTION, "Get apps from page " + (page + 1) + " . HTTP Status: " + statusCode.value() + " HTTP Message: " + statusCode.getReasonPhrase());
             }
-            HttpHeaders header = responseEntity.getHeaders(); // (3)
             SummaryApplicationPlays applicationPlays = responseEntity.getBody(); // (4)
             if (applicationPlays == null) {
                 throw new GooglePlayRuntimeException(ExceptionCodes.GOOGLE_PLAY_SERVER_EXCEPTION, "Apps not found");

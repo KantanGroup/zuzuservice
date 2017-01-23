@@ -3,10 +3,10 @@ package com.zuzuapps.task.app.googleplay.models;
 /**
  * @author tuanta17
  */
-public class ScreenshootPlay {
+public class ScreenshotPlay {
     private long id;
     private String appId;
-    private int type; //icon, screen shoot
+    private int type; //icon, screen shot
     private String source;
     private String original;
     private String watermark;
