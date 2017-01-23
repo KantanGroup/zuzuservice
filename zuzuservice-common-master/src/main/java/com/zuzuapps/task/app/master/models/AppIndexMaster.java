@@ -37,7 +37,7 @@ public class AppIndexMaster {
     private String icon;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_at")
+    @Column(name = "create_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Date createAt;
 
     public long getId() {

@@ -68,10 +68,10 @@ public class AppMaster {
     private String reviews;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_at")
+    @Column(name = "create_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Date createAt;
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "update_at")
+    @Column(name = "update_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Date updateAt;
 
     public String getAppId() {

@@ -29,7 +29,7 @@ public class AppScreenshotMaster {
     private String resize;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_at")
+    @Column(name = "create_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Date createAt;
 
     public int getId() {
