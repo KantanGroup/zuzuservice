@@ -18,9 +18,9 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppSummaryMaster {
     @Id
-    @Column(name = "app_id", length = 50)
+    @Column(name = "app_id", length = 128)
     private String appId;
-    @Column(name = "developer_id", length = 50)
+    @Column(name = "developer_id", length = 64)
     private String developerId;
     @Column(name = "developer_url")
     private String developerUrl;

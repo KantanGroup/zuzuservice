@@ -3,28 +3,19 @@ package com.zuzuapps.task.app.master.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author tuanta17
  */
 @Entity
-@Table(name = "master_application_language_s",
-        indexes = {
-                @Index(name = "app_language_index", columnList = "app_id,language_code")
-        }
-)
+@Table(name = "master_application_language_s")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppLanguageMaster {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
-
-    @Column(name = "app_id", length = 50, nullable = false)
-    private String appId;
-    @Column(name = "language_code", length = 2, nullable = false)
-    private String languageCode;
+    @EmbeddedId
+    private AppLanguageId id;
 
     private String title;
     @Column(columnDefinition = "TEXT")
@@ -37,31 +28,16 @@ public class AppLanguageMaster {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Date createAt;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "update_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Date updateAt;
 
-    public int getId() {
+    public AppLanguageId getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(AppLanguageId id) {
         this.id = id;
-    }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    public String getLanguageCode() {
-        return languageCode;
-    }
-
-    public void setLanguageCode(String languageCode) {
-        this.languageCode = languageCode;
     }
 
     public String getTitle() {

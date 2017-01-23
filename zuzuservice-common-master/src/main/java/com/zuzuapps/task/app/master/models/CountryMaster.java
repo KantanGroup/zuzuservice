@@ -27,7 +27,7 @@ public class CountryMaster {
     private String countryCode;
     @Column(name = "country_name", length = 10)
     private String countryName;
-    private short type;
+    private int type;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -73,11 +73,11 @@ public class CountryMaster {
         this.countryName = countryName;
     }
 
-    public short getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(short type) {
+    public void setType(int type) {
         this.type = type;
     }
 

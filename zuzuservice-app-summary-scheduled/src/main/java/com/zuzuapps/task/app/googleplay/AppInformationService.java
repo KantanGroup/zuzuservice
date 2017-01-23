@@ -41,11 +41,11 @@ public class AppInformationService extends AppCommonService {
     }
 
     public void queueAppInformation(File[] files) {
-        logger.info("[Application Information Store]Cronjob start at: " + new Date());
+        logger.debug("[Application Information Store]Cronjob start at: " + new Date());
         String time = CommonUtils.getDailyByTime();
         Set<String> languages = findDistinctByLanguageCode();
         for (File json : files) {
-            logger.info("[Application Information Store]File " + json.getAbsolutePath());
+            logger.debug("[Application Information Store]File " + json.getAbsolutePath());
             String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 2) {
@@ -67,7 +67,7 @@ public class AppInformationService extends AppCommonService {
             }
 
         }
-        logger.info("[Application Information Store]Cronjob end at: " + new Date());
+        logger.debug("[Application Information Store]Cronjob end at: " + new Date());
     }
 
     private StringBuilder createAppInformationJSONPath(String appId, String languageCode) {
@@ -110,7 +110,7 @@ public class AppInformationService extends AppCommonService {
     }
 
     public void queueAppLanguage(File[] files) {
-        logger.info("[Application Language Store]Cronjob start at: " + new Date());
+        logger.debug("[Application Language Store]Cronjob start at: " + new Date());
         for (File json : files) {
             // 1. Get data
 
@@ -122,6 +122,6 @@ public class AppInformationService extends AppCommonService {
 
             // 5. Create screen shoot
         }
-        logger.info("[Application Language Store]Cronjob end at: " + new Date());
+        logger.debug("[Application Language Store]Cronjob end at: " + new Date());
     }
 }

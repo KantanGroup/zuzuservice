@@ -75,7 +75,7 @@ public class AppSummaryService extends AppCommonService {
     }
 
     public void processAppSummary(File[] files) {
-        logger.info("[Application Summary --> Information]Cronjob end at: " + new Date());
+        logger.debug("[Application Summary --> Information]Cronjob end at: " + new Date());
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();
         for (File json : files) {
@@ -102,6 +102,6 @@ public class AppSummaryService extends AppCommonService {
             }
             CommonUtils.delay(5);
         }
-        logger.info("[Application Summary --> Information]Cronjob end at: " + new Date());
+        logger.debug("[Application Summary --> Information]Cronjob end at: " + new Date());
     }
 }

@@ -18,36 +18,36 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppMaster {
     @Id
-    @Column(name = "app_id", length = 50, nullable = false)
+    @Column(name = "app_id", length = 128, nullable = false)
     private String appId;
     private String url;
     private String icon;
     private float score;
-    @Column(name = "price", length = 20)
+    @Column(name = "price", length = 64)
     private String price;
     private boolean free;
-    @Column(name = "developer_id", length = 50)
+    @Column(name = "developer_id", length = 128)
     private String developerId;
     @Column(name = "developer_url")
     private String developerUrl;
-    @Column(name = "developer_email", length = 36)
+    @Column(name = "developer_email", length = 64)
     private String developerEmail;
-    @Column(name = "developer_website", length = 36)
+    @Column(name = "developer_website", length = 64)
     private String developerWebsite;
     private String updated;
-    @Column(name = "app_version", length = 20)
+    @Column(name = "app_version", length = 64)
     private String appVersion;
     @Column(name = "min_installs")
     private int minInstalls;
     @Column(name = "max_installs")
     private int maxInstalls;
-    @Column(name = "genre", length = 36, nullable = false)
+    @Column(name = "genre", length = 64, nullable = false)
     private String genre;
-    @Column(name = "genre_id", length = 36, nullable = false)
+    @Column(name = "genre_id", length = 64, nullable = false)
     private String genreId;
-    @Column(name = "family_genre", length = 36, nullable = false)
+    @Column(name = "family_genre", length = 64, nullable = false)
     private String familyGenre;
-    @Column(name = "family_genre_id", length = 36, nullable = false)
+    @Column(name = "family_genre_id", length = 64, nullable = false)
     private String familyGenreId;
     @Column(name = "offers_iap")
     private boolean offersIAP;

@@ -58,7 +58,7 @@ public class ScheduleApplication {
     /**
      * Write top app info of category in to json
      */
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 33 0 * * *")
     public void scheduleAppTop() {
         appIndexService.appIndexStoreData();
     }
@@ -66,7 +66,7 @@ public class ScheduleApplication {
     /**
      * Write app summary in USA to json
      */
-    @Scheduled(cron = "2 0 0 1,10,20 * *")
+    @Scheduled(cron = "2 33 0 * * *")
     public void scheduleAppSummary() {
         appSummaryService.appSummary();
     }

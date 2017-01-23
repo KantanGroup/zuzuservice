@@ -20,7 +20,7 @@ public class AppScreenshotMaster {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @Column(name = "app_id", length = 50)
+    @Column(name = "app_id", length = 128)
     private String appId;
     private short type; //icon, screen shoot
     private String source;

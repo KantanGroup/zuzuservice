@@ -24,7 +24,7 @@ public class AppIndexMaster {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "app_id", length = 50, nullable = false)
+    @Column(name = "app_id", length = 128, nullable = false)
     private String appId;
     @Column(name = "country_code", length = 2, nullable = false)
     private String countryCode;

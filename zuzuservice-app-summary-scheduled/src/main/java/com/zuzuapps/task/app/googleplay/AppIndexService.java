@@ -86,7 +86,7 @@ public class AppIndexService extends AppCommonService {
      * @param files File data
      */
     public void processIndexUpdate(File[] files) {
-        logger.info("[Application Summary --> Index]Cronjob start at: " + new Date());
+        logger.debug("[Application Summary --> Index]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();
         for (File json : files) {
@@ -130,7 +130,7 @@ public class AppIndexService extends AppCommonService {
             }
             CommonUtils.delay(5);
         }
-        logger.info("[Application Summary --> Index]Cronjob end at: " + new Date());
+        logger.debug("[Application Summary --> Index]Cronjob end at: " + new Date());
     }
 
     private void createAppIndexMaster(List<AppIndexMaster> appIndexMasters, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, short index, SummaryApplicationPlay app) {
