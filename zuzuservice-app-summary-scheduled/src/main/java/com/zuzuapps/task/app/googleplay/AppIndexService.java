@@ -44,7 +44,7 @@ public class AppIndexService extends AppCommonService {
                     } catch (Exception ex) {
                         logger.error("[Application Index Store][" + countryMaster.getCountryCode() + "][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
                     }
-                    CommonUtils.delay(timeGetAppInfo);
+                    CommonUtils.delay(timeGetAppSummary);
                 }
             }
         }
@@ -75,10 +75,8 @@ public class AppIndexService extends AppCommonService {
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
                 processIndexUpdate(files);
-            } else {
-                logger.info("[Application Summary --> Index]Don't have any file in folder " + dirPath);
             }
-            CommonUtils.delay(timeGetAppInfo);
+            CommonUtils.delay(timeWaitRuntimeLocal);
         }
     }
 

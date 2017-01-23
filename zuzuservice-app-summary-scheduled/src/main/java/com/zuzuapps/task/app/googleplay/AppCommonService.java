@@ -28,20 +28,26 @@ import java.util.List;
  */
 @Service
 public class AppCommonService {
-    protected final Log logger = LogFactory.getLog("AppCommonService");
     protected static final String JSON_FILE_EXTENSTION = ".json";
     protected static final String GZ_FILE_EXTENSION = ".gz";
     protected static final String ZERO_NUMBER = "0";
     protected static final String REGEX_3_UNDER_LINE = "___";
     protected static final String COUNTRY_CODE_DEFAULT = "us";
     protected static final String LANGUAGE_CODE_DEFAULT = "en";
+    protected final Log logger = LogFactory.getLog("AppCommonService");
     protected final ObjectMapper mapper = new ObjectMapper();
 
     @Value("${data.root.path:/tmp}")
     protected String rootPath;
 
-    @Value("${time.get.app.info:5000}")
-    protected long timeGetAppInfo;
+    @Value("${time.get.app.information:2000}")
+    protected long timeGetAppInformation;
+
+    @Value("${time.get.app.summary:4000}")
+    protected long timeGetAppSummary;
+
+    @Value("${time.wait.runtime.local:200}")
+    protected long timeWaitRuntimeLocal;
 
     @Autowired
     protected SummaryApplicationPlayService summaryApplicationPlayService;

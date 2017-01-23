@@ -35,10 +35,8 @@ public class AppInformationService extends AppCommonService {
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
                 queueAppInformation(files);
-            } else {
-                logger.info("[Application Information Store]Don't have any file in folder " + dirPath);
             }
-            CommonUtils.delay(timeGetAppInfo);
+            CommonUtils.delay(timeWaitRuntimeLocal);
         }
     }
 
@@ -61,7 +59,7 @@ public class AppInformationService extends AppCommonService {
                     } catch (Exception ex) {
                         logger.error("[Application Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
                     }
-                    CommonUtils.delay(timeGetAppInfo);
+                    CommonUtils.delay(timeGetAppInformation);
                 }
                 moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.log.name(), time, COUNTRY_CODE_DEFAULT).getAbsolutePath());
             } else {
@@ -107,7 +105,7 @@ public class AppInformationService extends AppCommonService {
                     queueAppLanguage(files);
                 }
             }
-            CommonUtils.delay(timeGetAppInfo);
+            CommonUtils.delay(timeWaitRuntimeLocal);
         }
     }
 

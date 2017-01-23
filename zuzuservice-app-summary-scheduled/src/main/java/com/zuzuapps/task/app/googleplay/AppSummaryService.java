@@ -42,7 +42,7 @@ public class AppSummaryService extends AppCommonService {
                         break;
                     }
                     page++;
-                    CommonUtils.delay(timeGetAppInfo);
+                    CommonUtils.delay(timeGetAppSummary);
                 }
             }
         }
@@ -69,10 +69,8 @@ public class AppSummaryService extends AppCommonService {
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
                 processAppSummary(files);
-            } else {
-                logger.info("[Application Summary --> Information]Don't have any file in folder " + dirPath);
             }
-            CommonUtils.delay(timeGetAppInfo);
+            CommonUtils.delay(timeWaitRuntimeLocal);
         }
     }
 

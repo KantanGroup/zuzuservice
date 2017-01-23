@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class SummaryApplicationPlayService {
     private final Log logger = LogFactory.getLog("SummaryApplicationPlayService");
 
-    @Value("${data.site.path:\"http://localhost:5000\"}")
+    @Value("${app.summary.site.path:\"http://localhost:5000\"}")
     private String sitePath;
 
     @Autowired
