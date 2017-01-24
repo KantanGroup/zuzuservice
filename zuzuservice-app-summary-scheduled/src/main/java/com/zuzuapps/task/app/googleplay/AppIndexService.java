@@ -2,8 +2,10 @@ package com.zuzuapps.task.app.googleplay;
 
 import com.zuzuapps.task.app.common.*;
 import com.zuzuapps.task.app.elasticsearch.models.AppIndexElasticSearch;
+import com.zuzuapps.task.app.elasticsearch.models.AppTrendElasticSearch;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
+import com.zuzuapps.task.app.master.models.AppIndexId;
 import com.zuzuapps.task.app.master.models.AppIndexMaster;
 import com.zuzuapps.task.app.master.models.CountryMaster;
 import org.apache.commons.logging.Log;
@@ -93,6 +95,7 @@ public class AppIndexService extends AppCommonService {
             logger.debug("[Application Summary --> Index]File " + json.getAbsolutePath());
             List<AppIndexMaster> appIndexMasters = new ArrayList<AppIndexMaster>();
             List<AppIndexElasticSearch> appIndexElasticSearches = new ArrayList<AppIndexElasticSearch>();
+            List<AppTrendElasticSearch> appTrendElasticSearches = new ArrayList<AppTrendElasticSearch>();
             String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 4) {
@@ -109,6 +112,7 @@ public class AppIndexService extends AppCommonService {
                     for (SummaryApplicationPlay app : apps.getResults()) {
                         createAppIndexMaster(appIndexMasters, countryCode, category, collection, fileDateTime, index, app);
                         createAppIndexElasticSearch(appIndexElasticSearches, countryCode, category, collection, fileDateTime, index, app);
+                        createAppTrendElasticSearch(appTrendElasticSearches, countryCode, category, collection, fileDateTime, index, app);
                         index++;
                     }
                     // Create app info json
@@ -119,6 +123,8 @@ public class AppIndexService extends AppCommonService {
                     // Add data to ElasticSearch
                     logger.debug("[Application Summary --> Index]Index to elastichsearch");
                     appIndexElasticSearchRepository.save(appIndexElasticSearches);
+                    logger.debug("[Application Summary --> Index]Trend to elastichsearch");
+                    appTrendElasticSearchRepository.save(appTrendElasticSearches);
                     // Move data to log folder
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
                 } catch (Exception ex) {
@@ -135,13 +141,14 @@ public class AppIndexService extends AppCommonService {
 
     private void createAppIndexMaster(List<AppIndexMaster> appIndexMasters, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, short index, SummaryApplicationPlay app) {
         AppIndexMaster appIndexMaster = new AppIndexMaster();
+        AppIndexId id = new AppIndexId();
+        appIndexMaster.setId(id);
         appIndexMaster.setAppId(app.getAppId());
         appIndexMaster.setCategory(category);
         appIndexMaster.setCollection(collection);
         appIndexMaster.setCountryCode(country);
         appIndexMaster.setIndex(index);
         appIndexMaster.setIcon(app.getIcon());
-        appIndexMaster.setCreateAt(fileDateTime);
         appIndexMasters.add(appIndexMaster);
     }
 
@@ -156,9 +163,21 @@ public class AppIndexService extends AppCommonService {
         appIndexElasticSearch.setCountryCode(country);
         appIndexElasticSearch.setIndex(index);
         appIndexElasticSearch.setIcon(app.getIcon());
-        appIndexElasticSearch.setVisible(true);
-        appIndexElasticSearch.setCreateAt(fileDateTime);
-        appIndexElasticSearch.setUpdateAt(fileDateTime);
         appIndexElasticSearches.add(appIndexElasticSearch);
+    }
+
+    private void createAppTrendElasticSearch(List<AppTrendElasticSearch> appTrendElasticSearches, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, int index, SummaryApplicationPlay app) {
+        AppTrendElasticSearch appTrendElasticSearch = new AppTrendElasticSearch();
+        appTrendElasticSearch.setId(country + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getAppId() + "_" + CommonUtils.getTimeBy(fileDateTime, "yyyyMMdd"));
+        appTrendElasticSearch.setIndex(index);
+        appTrendElasticSearch.setTitle(app.getTitle());
+        appTrendElasticSearch.setAppId(app.getAppId());
+        appTrendElasticSearch.setCategory(category.name().toLowerCase());
+        appTrendElasticSearch.setCollection(collection.name());
+        appTrendElasticSearch.setCountryCode(country);
+        appTrendElasticSearch.setIndex(index);
+        appTrendElasticSearch.setIcon(app.getIcon());
+        appTrendElasticSearch.setCreateAt(fileDateTime);
+        appTrendElasticSearches.add(appTrendElasticSearch);
     }
 }

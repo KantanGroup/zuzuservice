@@ -38,6 +38,21 @@ public class CommonUtils {
         return df.format(today);
     }
 
+    /**
+     * Get time by format
+     *
+     * @param format String format
+     * @return Time formatted
+     */
+    public static String getTimeBy(Date time, String format) {
+        // Create an instance of SimpleDateFormat used for formatting
+        // the string representation of date (month/day/year)
+        DateFormat df = new SimpleDateFormat(format);
+        // Using DateFormat format method we can create a string
+        // representation of a date with the defined format.
+        return df.format(time);
+    }
+
     public static String getDailyByTime() {
         return getTimeBy("yyyMMdd");
     }

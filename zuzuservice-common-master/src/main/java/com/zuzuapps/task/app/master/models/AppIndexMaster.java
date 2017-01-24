@@ -5,7 +5,6 @@ import com.zuzuapps.task.app.common.CategoryEnum;
 import com.zuzuapps.task.app.common.CollectionEnum;
 
 import javax.persistence.*;
-import java.util.Date;
 
 /**
  * @author tuanta17
@@ -20,9 +19,8 @@ import java.util.Date;
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppIndexMaster {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @EmbeddedId
+    private AppIndexId id;
 
     @Column(name = "app_id", length = 128, nullable = false)
     private String appId;
@@ -36,15 +34,11 @@ public class AppIndexMaster {
     private short index;
     private String icon;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Date createAt;
-
-    public long getId() {
+    public AppIndexId getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(AppIndexId id) {
         this.id = id;
     }
 
@@ -94,13 +88,5 @@ public class AppIndexMaster {
 
     public void setIcon(String icon) {
         this.icon = icon;
-    }
-
-    public Date getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
     }
 }

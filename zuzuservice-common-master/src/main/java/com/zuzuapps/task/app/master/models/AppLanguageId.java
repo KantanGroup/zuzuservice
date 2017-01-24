@@ -7,9 +7,8 @@ import java.io.Serializable;
 /**
  * @author tuanta17
  */
-public
 @Embeddable
-class AppLanguageId implements Serializable {
+public class AppLanguageId implements Serializable {
     @Column(name = "app_id", length = 128, nullable = false)
     private String appId;
     @Column(name = "language_code", length = 2, nullable = false)

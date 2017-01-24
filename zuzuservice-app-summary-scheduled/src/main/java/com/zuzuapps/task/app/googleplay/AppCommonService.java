@@ -6,6 +6,7 @@ import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
 import com.zuzuapps.task.app.common.ZipUtil;
 import com.zuzuapps.task.app.elasticsearch.repositories.AppIndexElasticSearchRepository;
+import com.zuzuapps.task.app.elasticsearch.repositories.AppTrendElasticSearchRepository;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
 import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
@@ -57,6 +58,8 @@ public class AppCommonService {
     protected AppIndexMasterRepository appIndexMasterRepository;
     @Autowired
     protected AppIndexElasticSearchRepository appIndexElasticSearchRepository;
+    @Autowired
+    protected AppTrendElasticSearchRepository appTrendElasticSearchRepository;
     @Autowired
     protected InformationApplicationPlayService informationApplicationPlayService;
 

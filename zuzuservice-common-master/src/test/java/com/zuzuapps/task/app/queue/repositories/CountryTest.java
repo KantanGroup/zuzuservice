@@ -7,7 +7,7 @@ import com.zuzuapps.task.app.master.repositories.CountryMasterRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.BufferedReader;
@@ -24,7 +24,7 @@ import java.util.List;
  * @author tuanta17
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(GooglePlayCommonConfiguration.class)
+@Import({GooglePlayCommonConfiguration.class})
 public class CountryTest {
     @Autowired
     CountryMasterRepository countryRepository;

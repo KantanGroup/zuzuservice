@@ -16,7 +16,6 @@
 
 package com.zuzuapps.task.app.googleplay;
 
-import com.zuzuapps.task.app.GooglePlayCommonConfiguration;
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
@@ -27,7 +26,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
@@ -35,7 +33,6 @@ import java.util.Iterator;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Import({GooglePlayCommonConfiguration.class})
 public class ScheduleApplicationTest {
     @Value("${data.root.path:/tmp}")
     private String rootPath;
