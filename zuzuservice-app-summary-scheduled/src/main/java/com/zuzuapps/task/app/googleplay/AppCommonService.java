@@ -79,11 +79,14 @@ public class AppCommonService {
         try {
             Path src = Paths.get(source);
             Path des = Paths.get(destination);
-            Path zipFile = Paths.get(src.toFile().getAbsolutePath() + GZ_FILE_EXTENSION);
-            logger.debug("Zip json file " + source);
-            new ZipUtil().gzip(src.toFile().getAbsolutePath(), zipFile.toFile().getAbsolutePath());
             logger.debug("Move json file " + source + " to log folder " + destination);
-            Files.move(zipFile, des.resolve(zipFile.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+            Files.move(src, des.resolve(src.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+            Path inputFile = Paths.get(des.toFile().getAbsolutePath(), src.getFileName().toString());
+            Path zipFile = Paths.get(des.toFile().getAbsolutePath(), src.getFileName() + GZ_FILE_EXTENSION);
+            logger.debug("Zip json file " + inputFile + " to file " + zipFile);
+            new ZipUtil().gzip(inputFile.toFile().getAbsolutePath(), zipFile.toFile().getAbsolutePath());
+            logger.debug("Remove json file " + inputFile);
+            Files.delete(inputFile);
         } catch (Exception ex) {
             logger.warn("Move json file error " + ex.getMessage(), ex);
         }
