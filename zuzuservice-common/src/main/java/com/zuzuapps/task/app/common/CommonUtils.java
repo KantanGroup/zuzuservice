@@ -19,11 +19,11 @@ public class CommonUtils {
         try {
             if (Files.notExists(filePath)) {
                 Files.createFile(filePath);
+                return true;
             }
-            return true;
         } catch (Exception ex) {
-            return false;
         }
+        return false;
     }
 
     public static File folderBy(String root, String... more) {

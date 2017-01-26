@@ -3,6 +3,8 @@ package com.zuzuapps.task.app.googleplay;
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
+import com.zuzuapps.task.app.exceptions.ExceptionCodes;
+import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
 import com.zuzuapps.task.app.master.models.CountryMaster;
 import org.apache.commons.logging.Log;
@@ -54,6 +56,12 @@ public class AppInformationService extends AppCommonService {
                             informationApplicationPlayService.getInformationApplications(appId, LANGUAGE_CODE_DEFAULT);
                     StringBuilder path = createAppInformationJSONPath(appId, LANGUAGE_CODE_DEFAULT);
                     Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
+                } catch (GooglePlayRuntimeException ex) {
+                    if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
+                        logger.error("[Application Information Store][" + appId + "][" + LANGUAGE_CODE_DEFAULT + "]Error " + ex.getMessage(), ex);
+                    } else {
+                        logger.warn("[Application Information Store][" + appId + "][" + LANGUAGE_CODE_DEFAULT + "]Error " + ex.getMessage());
+                    }
                 } catch (Exception ex) {
                     logger.error("[Application Information Store][" + appId + "][" + LANGUAGE_CODE_DEFAULT + "]Error " + ex.getMessage(), ex);
                 }

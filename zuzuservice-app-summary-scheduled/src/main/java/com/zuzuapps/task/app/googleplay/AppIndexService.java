@@ -3,6 +3,8 @@ package com.zuzuapps.task.app.googleplay;
 import com.zuzuapps.task.app.common.*;
 import com.zuzuapps.task.app.elasticsearch.models.AppIndexElasticSearch;
 import com.zuzuapps.task.app.elasticsearch.models.AppTrendElasticSearch;
+import com.zuzuapps.task.app.exceptions.ExceptionCodes;
+import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
 import com.zuzuapps.task.app.master.models.AppIndexId;
@@ -83,6 +85,12 @@ public class AppIndexService extends AppCommonService {
                     logger.debug("[Application Index Store]Write app summary to json " + path.toString());
                     Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlays));
                     logger.debug("[Application Index Store]Delete file " + file.getAbsolutePath());
+                } catch (GooglePlayRuntimeException ex) {
+                    if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
+                        logger.error("[Application Index Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
+                    } else {
+                        logger.warn("[Application Index Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
+                    }
                 } catch (Exception ex) {
                     logger.error("[Application Index Store][" + countryCode + "][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
                 }

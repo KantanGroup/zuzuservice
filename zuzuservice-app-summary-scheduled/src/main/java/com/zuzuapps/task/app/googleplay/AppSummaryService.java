@@ -1,6 +1,8 @@
 package com.zuzuapps.task.app.googleplay;
 
 import com.zuzuapps.task.app.common.*;
+import com.zuzuapps.task.app.exceptions.ExceptionCodes;
+import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -70,6 +72,12 @@ public class AppSummaryService extends AppCommonService {
                         Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlays));
                         if (summaryApplicationPlays.getResults().size() < 120) {
                             break;
+                        }
+                    } catch (GooglePlayRuntimeException ex) {
+                        if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
+                            logger.error("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
+                        } else {
+                            logger.warn("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
                         }
                     } catch (Exception ex) {
                         logger.error("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
