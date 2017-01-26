@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URISyntaxException;
-
 /**
  * @author tuanta17
  */
@@ -24,19 +22,19 @@ public class CommonService<T> {
         return new HttpEntity<String>(headers);
     }
 
-    public ResponseEntity<T> get(String url, Class type) throws URISyntaxException {
+    public ResponseEntity<T> get(String url, Class type) throws Exception {
         return restTemplate.exchange(url, HttpMethod.GET, addHeaders(), type);
     }
 
-    public ResponseEntity<T> post(String url, Class type) {
+    public ResponseEntity<T> post(String url, Class type) throws Exception {
         return restTemplate.exchange(url, HttpMethod.POST, addHeaders(), type);
     }
 
-    public ResponseEntity<T> put(String url, Class type) {
+    public ResponseEntity<T> put(String url, Class type) throws Exception {
         return restTemplate.exchange(url, HttpMethod.PUT, addHeaders(), type);
     }
 
-    public ResponseEntity<T> delete(String url, Class type) {
+    public ResponseEntity<T> delete(String url, Class type) throws Exception {
         return restTemplate.exchange(url, HttpMethod.DELETE, addHeaders(), type);
     }
 }

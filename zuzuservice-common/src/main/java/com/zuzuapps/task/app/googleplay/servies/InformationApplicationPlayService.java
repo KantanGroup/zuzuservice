@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 
 /**
  * @author tuanta17
@@ -49,6 +50,9 @@ public class InformationApplicationPlayService {
         } catch (GooglePlayRuntimeException e) {
             throw e;
         } catch (Exception e) {
+            if (e instanceof ResourceAccessException) {
+                throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, e);
+            }
             throw new GooglePlayRuntimeException(ExceptionCodes.UNKNOWN_EXCEPTION, e);
         }
     }

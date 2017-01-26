@@ -1,5 +1,6 @@
 package com.zuzuapps.task.app.googleplay.servies;
 
+import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.ImageTypeEnum;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
@@ -33,7 +34,7 @@ public class ScreenshotApplicationPlayService {
     private HttpEntity<String> addHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.put("Upgrade-Insecure-Requests", Collections.singletonList(new String("1")));
-        headers.put("User-Agent", Collections.singletonList(new String("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36")));
+        headers.put("User-Agent", Collections.singletonList(CommonUtils.generateUserAgent()));
         return new HttpEntity<String>(headers);
     }
 

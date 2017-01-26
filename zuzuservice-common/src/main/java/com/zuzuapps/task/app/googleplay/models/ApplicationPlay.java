@@ -25,6 +25,8 @@ public class ApplicationPlay {
     private String genreId;
     private String description;
     private String descriptionHTML;
+    private String familyGenre;
+    private String familyGenreId;
     // histogram: { type: new List(IntType) },
     private boolean offersIAP;
     private boolean adSupported;
@@ -35,6 +37,7 @@ public class ApplicationPlay {
     // comments: { type: new List(StringType) },
     //    recentChanges:
     private boolean preregister;
+    private String video;
     private String playstoreUrl;
     private String permissions;
     private String similar;
@@ -192,6 +195,22 @@ public class ApplicationPlay {
         this.descriptionHTML = descriptionHTML;
     }
 
+    public String getFamilyGenre() {
+        return familyGenre;
+    }
+
+    public void setFamilyGenre(String familyGenre) {
+        this.familyGenre = familyGenre;
+    }
+
+    public String getFamilyGenreId() {
+        return familyGenreId;
+    }
+
+    public void setFamilyGenreId(String familyGenreId) {
+        this.familyGenreId = familyGenreId;
+    }
+
     public boolean isOffersIAP() {
         return offersIAP;
     }
@@ -246,6 +265,14 @@ public class ApplicationPlay {
 
     public void setPreregister(boolean preregister) {
         this.preregister = preregister;
+    }
+
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
     }
 
     public String getPlaystoreUrl() {

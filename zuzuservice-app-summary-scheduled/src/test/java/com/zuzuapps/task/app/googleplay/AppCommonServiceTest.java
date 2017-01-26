@@ -1,5 +1,6 @@
 package com.zuzuapps.task.app.googleplay;
 
+import com.zuzuapps.task.app.common.CommonUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +28,17 @@ public class AppCommonServiceTest {
         Path appSummary = Paths.get("src", "test", "resources", "app.summary.json");
         Files.copy(appSummaryBak, appSummary, StandardCopyOption.REPLACE_EXISTING);
         appCommonService.moveFile(appSummary.toFile().getAbsolutePath(), Paths.get("/tmp").toFile().getAbsolutePath());
+    }
+
+    @Test
+    public void testCreateFile() {
+        CommonUtils.createFile(Paths.get("/tmp/create_file_test"));
+    }
+
+    @Test
+    public void testGetUserAgent() {
+        for(int i =0; i < 100; i++) {
+            System.out.println(CommonUtils.generateUserAgent());
+        }
     }
 }
