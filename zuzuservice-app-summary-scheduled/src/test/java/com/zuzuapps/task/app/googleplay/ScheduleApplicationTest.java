@@ -49,8 +49,9 @@ public class ScheduleApplicationTest {
     }
 
     @Test
-    public void appSummary() {
-        appSummaryService.appSummary();
+    public void testGenerateAppSummaryStore() {
+        appSummaryService.generateAppSummaryStore();
+        appSummaryService.appSummaryStoreData();
     }
 
     @Test

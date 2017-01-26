@@ -8,6 +8,7 @@ import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
 import com.zuzuapps.task.app.master.models.AppIndexId;
 import com.zuzuapps.task.app.master.models.AppIndexMaster;
 import com.zuzuapps.task.app.master.models.CountryMaster;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -26,38 +27,79 @@ import java.util.List;
 public class AppIndexService extends AppCommonService {
     final Log logger = LogFactory.getLog("AppIndexService");
 
+    public void generateAppIndexStoreData() {
+        logger.info("[Application Index Generation]Task start at: " + new Date());
+        String time = CommonUtils.getDailyByTime();
+        String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.generate.name(), time).getAbsolutePath();
+        File dir = new File(dirPath);
+        File[] files = dir.listFiles();
+        if (files == null || files.length == 0) {
+            List<CountryMaster> countries = countryRepository.findAllByTypeGreaterThanOrderByTypeDesc(0);
+            for (CountryMaster countryMaster : countries) {
+                for (CollectionEnum collection : CollectionEnum.values()) {
+                    CommonUtils.createFile(Paths.get(dirPath, countryMaster.getCountryCode() + REGEX_3_UNDER_LINE + countryMaster.getLanguageCode() + REGEX_3_UNDER_LINE + collection.name() + REGEX_3_UNDER_LINE + CategoryEnum.ALL.name().toLowerCase() + REGEX_3_UNDER_LINE + time));
+                    for (CategoryEnum category : CategoryEnum.values()) {
+                        CommonUtils.createFile(Paths.get(dirPath, countryMaster.getCountryCode() + REGEX_3_UNDER_LINE + countryMaster.getLanguageCode() + REGEX_3_UNDER_LINE + collection.name() + REGEX_3_UNDER_LINE + category.name().toLowerCase() + REGEX_3_UNDER_LINE + time));
+                    }
+                }
+            }
+        }
+        logger.info("[Application Index Generation]Task end at: " + new Date());
+    }
+
     /**
      * Write app index of category in to json
      */
     public void appIndexStoreData() {
-        logger.info("[Application Index Store]Cronjob start at: " + new Date());
-        // something that should execute on weekdays only
-        String time = CommonUtils.getDailyByTime();
-        List<CountryMaster> countries = countryRepository.findAllByTypeGreaterThanOrderByTypeDesc(0);
-        for (CountryMaster countryMaster : countries) {
-            for (CollectionEnum collection : CollectionEnum.values()) {
-                for (CategoryEnum category : CategoryEnum.values()) {
-                    try {
-                        SummaryApplicationPlays summaryApplicationPlays
-                                = summaryApplicationPlayService.getSummaryApplications(category, collection, countryMaster.getLanguageCode(), countryMaster.getCountryCode(), 0);
-                        StringBuilder path = queueAppIndexJSONPath(time, countryMaster, collection, category);
-                        logger.debug("[Application Index Store]Write app summary to json " + path.toString());
-                        Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlays));
-                    } catch (Exception ex) {
-                        logger.error("[Application Index Store][" + countryMaster.getCountryCode() + "][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
-                    }
-                    CommonUtils.delay(timeGetAppSummary);
-                }
+        while (true) {
+            // something that should execute on weekdays only
+            String time = CommonUtils.getDailyByTime();
+            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.generate.name(), time).getAbsolutePath();
+            File dir = new File(dirPath);
+            File[] files = dir.listFiles();
+            if (files != null && files.length != 0) {
+                processAppIndexStoreData(files);
             }
+            CommonUtils.delay(timeWaitRuntimeLocal);
         }
-        logger.info("[Application Index Store]Cronjob end at: " + new Date());
     }
 
-    private StringBuilder queueAppIndexJSONPath(String time, CountryMaster countryMaster, CollectionEnum collection, CategoryEnum category) {
+    private void processAppIndexStoreData(File[] files) {
+        logger.info("[Application Index Store]Task start at: " + new Date());
+        // something that should execute on weekdays only
+        String time = CommonUtils.getDailyByTime();
+        for (File file : files) {
+            String filename = file.getName();
+            String[] data = filename.split(REGEX_3_UNDER_LINE);
+            if (data.length >= 4) {
+                String countryCode = data[0];
+                String languageCode = data[1];
+                CollectionEnum collection = CollectionEnum.valueOf(data[2]);
+                CategoryEnum category = CategoryEnum.valueOf(data[3].toUpperCase());
+                try {
+                    SummaryApplicationPlays summaryApplicationPlays
+                            = summaryApplicationPlayService.getSummaryApplications(category, collection, languageCode, countryCode, 0);
+                    StringBuilder path = queueAppIndexJSONPath(time, countryCode, languageCode, collection, category);
+                    logger.debug("[Application Index Store]Write app summary to json " + path.toString());
+                    Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlays));
+                    logger.debug("[Application Index Store]Delete file " + file.getAbsolutePath());
+                } catch (Exception ex) {
+                    logger.error("[Application Index Store][" + countryCode + "][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
+                }
+                CommonUtils.delay(timeGetAppSummary);
+            }
+            FileUtils.deleteQuietly(file);
+            CommonUtils.delay(5);
+        }
+        logger.info("[Application Index Store]Task end at: " + new Date());
+    }
+
+
+    private StringBuilder queueAppIndexJSONPath(String time, String countryCode, String languageCode, CollectionEnum collection, CategoryEnum category) {
         StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.queue.name(), time).getAbsolutePath());
         path.append("/");
-        path.append(countryMaster.getCountryCode()).append(REGEX_3_UNDER_LINE);
-        path.append(countryMaster.getLanguageCode()).append(REGEX_3_UNDER_LINE);
+        path.append(countryCode).append(REGEX_3_UNDER_LINE);
+        path.append(languageCode).append(REGEX_3_UNDER_LINE);
         path.append(category.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
         path.append(collection.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
         path.append(time).append(REGEX_3_UNDER_LINE);

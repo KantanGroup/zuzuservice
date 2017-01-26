@@ -2,6 +2,7 @@ package com.zuzuapps.task.app.googleplay;
 
 import com.zuzuapps.task.app.common.*;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -18,14 +19,47 @@ import java.util.Date;
 public class AppSummaryService extends AppCommonService {
     final Log logger = LogFactory.getLog("AppSummaryService");
 
+    public void generateAppSummaryStore() {
+        logger.info("[Application Summary Generation]Task start at: " + new Date());
+        String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.generate.name()).getAbsolutePath();
+        File dir = new File(dirPath);
+        File[] files = dir.listFiles();
+        if (files == null || files.length == 0) {
+            for (CollectionEnum collection : CollectionEnum.values()) {
+                CommonUtils.createFile(Paths.get(dirPath, collection.name() + REGEX_3_UNDER_LINE + CategoryEnum.ALL.name().toLowerCase()));
+                for (CategoryEnum category : CategoryEnum.values()) {
+                    CommonUtils.createFile(Paths.get(dirPath, collection.name() + REGEX_3_UNDER_LINE + category.name().toLowerCase()));
+                }
+            }
+        }
+        logger.info("[Application Summary Generation]Task end at: " + new Date());
+    }
+
+    public void appSummaryStoreData() {
+        while (true) {
+            // something that should execute on weekdays only
+            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.generate.name()).getAbsolutePath();
+            File dir = new File(dirPath);
+            File[] files = dir.listFiles();
+            if (files != null && files.length != 0) {
+                processAppSummaryStore(files);
+            }
+            CommonUtils.delay(timeWaitRuntimeLocal);
+        }
+    }
+
     /**
      * Get all in USA
      */
-    public void appSummary() {
+    private void processAppSummaryStore(File[] files) {
         logger.info("[Application Summary Store]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
-        for (CollectionEnum collection : CollectionEnum.values()) {
-            for (CategoryEnum category : CategoryEnum.values()) {
+        for (File file : files) {
+            String filename = file.getName();
+            String[] data = filename.split(REGEX_3_UNDER_LINE);
+            if (data.length >= 2) {
+                CollectionEnum collection = CollectionEnum.valueOf(data[0]);
+                CategoryEnum category = CategoryEnum.valueOf(data[1].toUpperCase());
                 int page = 1;
                 while (true) {
                     try {
@@ -45,6 +79,8 @@ public class AppSummaryService extends AppCommonService {
                     CommonUtils.delay(timeGetAppSummary);
                 }
             }
+            FileUtils.deleteQuietly(file);
+            CommonUtils.delay(5);
         }
         logger.info("[Application Summary Store]Cronjob end at: " + new Date());
     }
@@ -74,7 +110,7 @@ public class AppSummaryService extends AppCommonService {
         }
     }
 
-    public void processAppSummary(File[] files) {
+    private void processAppSummary(File[] files) {
         logger.debug("[Application Summary --> Information]Cronjob end at: " + new Date());
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();

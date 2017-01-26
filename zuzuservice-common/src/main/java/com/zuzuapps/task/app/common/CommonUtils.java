@@ -1,6 +1,8 @@
 package com.zuzuapps.task.app.common;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -12,6 +14,17 @@ import java.util.Date;
  * @author tuanta17
  */
 public class CommonUtils {
+
+    public static boolean createFile(Path filePath) {
+        try {
+            if (Files.notExists(filePath)) {
+                Files.createFile(filePath);
+            }
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 
     public static File folderBy(String root, String... more) {
         File folder = Paths.get(root, more).toFile();

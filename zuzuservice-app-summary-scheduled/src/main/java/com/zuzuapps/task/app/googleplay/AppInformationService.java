@@ -40,32 +40,28 @@ public class AppInformationService extends AppCommonService {
         }
     }
 
-    public void queueAppInformation(File[] files) {
+    private void queueAppInformation(File[] files) {
         logger.debug("[Application Information Store]Cronjob start at: " + new Date());
         String time = CommonUtils.getDailyByTime();
-        Set<String> languages = findDistinctByLanguageCode();
         for (File json : files) {
             logger.debug("[Application Information Store]File " + json.getAbsolutePath());
             String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 2) {
                 String appId = data[2].replaceAll(JSON_FILE_EXTENSTION, "");
-                for (String languageCode : languages) {
-                    try {
-                        ApplicationPlay applicationPlay =
-                                informationApplicationPlayService.getInformationApplications(appId, languageCode);
-                        StringBuilder path = createAppInformationJSONPath(appId, languageCode);
-                        Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
-                    } catch (Exception ex) {
-                        logger.error("[Application Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
-                    }
-                    CommonUtils.delay(timeGetAppInformation);
+                try {
+                    ApplicationPlay applicationPlay =
+                            informationApplicationPlayService.getInformationApplications(appId, LANGUAGE_CODE_DEFAULT);
+                    StringBuilder path = createAppInformationJSONPath(appId, LANGUAGE_CODE_DEFAULT);
+                    Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
+                } catch (Exception ex) {
+                    logger.error("[Application Information Store][" + appId + "][" + LANGUAGE_CODE_DEFAULT + "]Error " + ex.getMessage(), ex);
                 }
+                CommonUtils.delay(timeGetAppInformation);
                 moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.log.name(), time, COUNTRY_CODE_DEFAULT).getAbsolutePath());
             } else {
                 moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
             }
-
         }
         logger.debug("[Application Information Store]Cronjob end at: " + new Date());
     }
@@ -109,7 +105,7 @@ public class AppInformationService extends AppCommonService {
         }
     }
 
-    public void queueAppLanguage(File[] files) {
+    private void queueAppLanguage(File[] files) {
         logger.debug("[Application Language Store]Cronjob start at: " + new Date());
         for (File json : files) {
             // 1. Get data

@@ -31,7 +31,9 @@ public class SummaryApplicationPlayService {
             StringBuilder url = new StringBuilder(sitePath + "/api/apps");
             url = url.append("?start=").append(page);
             url = url.append("&num=120");
-            url = url.append("&category=").append(category.name());
+            if (category != CategoryEnum.ALL) {
+                url = url.append("&category=").append(category.name());
+            }
             url = url.append("&collection=").append(collection.name());
             url = url.append("&country=").append(country);
             url = url.append("&lang=").append(language);

@@ -48,9 +48,13 @@ public class ScheduleApplication {
     public CommandLineRunner schedulingRunner(final TaskExecutor executor) {
         return new CommandLineRunner() {
             public void run(String... args) throws Exception {
-                executor.execute(new DailyIndexUpdateRunable());
-                executor.execute(new DailySummaryUpdateRunable());
-                executor.execute(new DailyAppUpdateRunable());
+                executor.execute(new DailyIndexUpdateRunnable());
+                executor.execute(new DailySummaryUpdateRunnable());
+                executor.execute(new DailyAppUpdateRunnable());
+                executor.execute(new GenerationIndexRunnable());
+                executor.execute(new GenerationSummaryRunnable());
+                executor.execute(new IndexStoreRunnable());
+                executor.execute(new SummaryStoreRunnable());
             }
         };
     }
@@ -58,20 +62,20 @@ public class ScheduleApplication {
     /**
      * Write top app info of category in to json
      */
-    @Scheduled(cron = "0 33 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void scheduleAppTop() {
-        appIndexService.appIndexStoreData();
+        appIndexService.generateAppIndexStoreData();
     }
 
     /**
      * Write app summary in USA to json
      */
-    @Scheduled(cron = "2 33 0 * * *")
+    @Scheduled(cron = "2 0 0 1,11,21 * *")
     public void scheduleAppSummary() {
-        appSummaryService.appSummary();
+        appSummaryService.generateAppSummaryStore();
     }
 
-    class DailyIndexUpdateRunable implements Runnable {
+    class DailyIndexUpdateRunnable implements Runnable {
 
         @Override
         public void run() {
@@ -79,7 +83,7 @@ public class ScheduleApplication {
         }
     }
 
-    class DailySummaryUpdateRunable implements Runnable {
+    class DailySummaryUpdateRunnable implements Runnable {
 
         @Override
         public void run() {
@@ -87,11 +91,43 @@ public class ScheduleApplication {
         }
     }
 
-    class DailyAppUpdateRunable implements Runnable {
+    class DailyAppUpdateRunnable implements Runnable {
 
         @Override
         public void run() {
             appLanguageService.dailyAppInformationUpdate();
+        }
+    }
+
+    class GenerationIndexRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            appIndexService.generateAppIndexStoreData();
+        }
+    }
+
+    class GenerationSummaryRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            appSummaryService.generateAppSummaryStore();
+        }
+    }
+
+    class IndexStoreRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            appIndexService.appIndexStoreData();
+        }
+    }
+
+    class SummaryStoreRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            appSummaryService.appSummaryStoreData();
         }
     }
 }
