@@ -6,6 +6,7 @@ import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
 import com.zuzuapps.task.app.common.ZipUtil;
 import com.zuzuapps.task.app.elasticsearch.repositories.AppIndexElasticSearchRepository;
+import com.zuzuapps.task.app.elasticsearch.repositories.AppInformationElasticSearchRepository;
 import com.zuzuapps.task.app.elasticsearch.repositories.AppTrendElasticSearchRepository;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
@@ -50,6 +51,9 @@ public class AppCommonService {
     @Value("${time.wait.runtime.local:200}")
     protected long timeWaitRuntimeLocal;
 
+    @Value("${time.update.app.information:7}")
+    protected int timeUpdateAppInformation;
+
     @Autowired
     protected SummaryApplicationPlayService summaryApplicationPlayService;
     @Autowired
@@ -61,12 +65,14 @@ public class AppCommonService {
     @Autowired
     protected AppTrendElasticSearchRepository appTrendElasticSearchRepository;
     @Autowired
+    protected AppInformationElasticSearchRepository appInformationElasticSearchRepository;
+    @Autowired
     protected InformationApplicationPlayService informationApplicationPlayService;
 
     protected void queueAppInformation(List<SummaryApplicationPlay> summaryApplicationPlays, String countryCode, String languageCode) {
         for (SummaryApplicationPlay summaryApplicationPlay : summaryApplicationPlays) {
             try {
-                StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.queue.name(), countryCode).getAbsolutePath());
+                StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.queue.name()).getAbsolutePath());
                 path.append("/").append(countryCode).append(REGEX_3_UNDER_LINE);
                 path.append(languageCode).append(REGEX_3_UNDER_LINE);
                 path.append(summaryApplicationPlay.getAppId().toLowerCase()).append(JSON_FILE_EXTENSTION);
