@@ -101,7 +101,7 @@ public class AppSummaryService extends AppCommonService {
         path.append(category.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
         path.append(collection.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
         path.append(time).append(REGEX_3_UNDER_LINE);
-        path.append(page).append(JSON_FILE_EXTENSTION);
+        path.append(page).append(JSON_FILE_EXTENSION);
         return path;
     }
 

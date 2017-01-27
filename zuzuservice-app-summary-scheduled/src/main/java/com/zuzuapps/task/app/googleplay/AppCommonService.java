@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Service
 public class AppCommonService {
-    protected static final String JSON_FILE_EXTENSTION = ".json";
+    protected static final String JSON_FILE_EXTENSION = ".json";
     protected static final String GZ_FILE_EXTENSION = ".gz";
     protected static final String ZERO_NUMBER = "0";
     protected static final String REGEX_3_UNDER_LINE = "___";
@@ -75,7 +75,7 @@ public class AppCommonService {
                 StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.queue.name()).getAbsolutePath());
                 path.append("/").append(countryCode).append(REGEX_3_UNDER_LINE);
                 path.append(languageCode).append(REGEX_3_UNDER_LINE);
-                path.append(summaryApplicationPlay.getAppId().toLowerCase()).append(JSON_FILE_EXTENSTION);
+                path.append(summaryApplicationPlay.getAppId().toLowerCase()).append(JSON_FILE_EXTENSION);
                 logger.debug("Write summary of app " + summaryApplicationPlay.getAppId().toLowerCase() + " to queue folder " + path.toString());
                 Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlay));
             } catch (Exception ex) {

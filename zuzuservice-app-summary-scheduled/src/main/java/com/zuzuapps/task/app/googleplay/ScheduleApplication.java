@@ -17,6 +17,8 @@
 package com.zuzuapps.task.app.googleplay;
 
 import com.zuzuapps.task.app.GooglePlayCommonConfiguration;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -27,9 +29,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.util.Date;
+
 @SpringBootApplication
 @Import({GooglePlayCommonConfiguration.class})
 public class ScheduleApplication {
+    final Log logger = LogFactory.getLog("ScheduleApplication");
 
     @Value("${data.root.path:/tmp}")
     private String rootPath;
@@ -79,6 +84,7 @@ public class ScheduleApplication {
 
         @Override
         public void run() {
+            logger.info("[ScheduleApplication][DailyIndexUpdateRunnable]Start at " + new Date());
             appIndexService.dailyAppIndexUpdate();
         }
     }
@@ -87,6 +93,7 @@ public class ScheduleApplication {
 
         @Override
         public void run() {
+            logger.info("[ScheduleApplication][DailySummaryUpdateRunnable]Start at " + new Date());
             appSummaryService.dailyAppSummaryUpdate();
         }
     }
@@ -95,6 +102,7 @@ public class ScheduleApplication {
 
         @Override
         public void run() {
+            logger.info("[ScheduleApplication][DailyAppUpdateRunnable]Start at " + new Date());
             appLanguageService.dailyAppInformationUpdate();
         }
     }
@@ -103,6 +111,7 @@ public class ScheduleApplication {
 
         @Override
         public void run() {
+            logger.info("[ScheduleApplication][GenerationIndexRunnable]Start at " + new Date());
             appIndexService.generateAppIndexStoreData();
         }
     }
@@ -111,6 +120,7 @@ public class ScheduleApplication {
 
         @Override
         public void run() {
+            logger.info("[ScheduleApplication][GenerationSummaryRunnable]Start at " + new Date());
             appSummaryService.generateAppSummaryStore();
         }
     }
@@ -119,6 +129,7 @@ public class ScheduleApplication {
 
         @Override
         public void run() {
+            logger.info("[ScheduleApplication][IndexStoreRunnable]Start at " + new Date());
             appIndexService.appIndexStoreData();
         }
     }
@@ -127,6 +138,7 @@ public class ScheduleApplication {
 
         @Override
         public void run() {
+            logger.info("[ScheduleApplication][SummaryStoreRunnable]Start at " + new Date());
             appSummaryService.appSummaryStoreData();
         }
     }

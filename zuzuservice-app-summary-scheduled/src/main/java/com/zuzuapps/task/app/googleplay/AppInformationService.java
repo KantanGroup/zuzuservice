@@ -51,10 +51,10 @@ public class AppInformationService extends AppCommonService {
             if (data.length >= 3) {
                 String countryCode = data[0];
                 String languageCode = data[1];
-                String appId = data[2].replaceAll(JSON_FILE_EXTENSTION, "");
+                String appId = data[2].replaceAll(JSON_FILE_EXTENSION, "");
                 logger.debug("[Application Information Store]Get app " + appId + " by language " + languageCode + " in elastic search");
                 AppInformationElasticSearch app = appInformationElasticSearchRepository.findOne(appId + "_" + languageCode);
-                if (app == null || (app != null && isTimeToUpdate(app.getCreateAt()))) {
+                if (app == null || isTimeToUpdate(app.getCreateAt())) {
                     try {
                         logger.debug("[Application Information Store]Get app " + appId + " by language " + languageCode);
                         ApplicationPlay applicationPlay = getAppInformationByLanguage(languageCode, appId);
@@ -63,7 +63,7 @@ public class AppInformationService extends AppCommonService {
                         } else {
                             logger.debug("[Application Information Store]Time to update app " + appId + " by language " + languageCode);
                         }
-                        // Get app informaton
+                        // Get app information
                         app = createAppInformation(applicationPlay, languageCode);
                         // Index to elastic search
                         logger.debug("[Application Information Store]Get app " + appId + " by language " + languageCode);
@@ -161,7 +161,7 @@ public class AppInformationService extends AppCommonService {
         StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.queue.name(), languageCode).getAbsolutePath());
         path.append("/");
         path.append(languageCode).append(REGEX_3_UNDER_LINE);
-        path.append(appId.toLowerCase()).append(JSON_FILE_EXTENSTION);
+        path.append(appId.toLowerCase()).append(JSON_FILE_EXTENSION);
         return path;
     }
 

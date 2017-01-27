@@ -111,7 +111,7 @@ public class AppIndexService extends AppCommonService {
         path.append(category.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
         path.append(collection.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
         path.append(time).append(REGEX_3_UNDER_LINE);
-        path.append(ZERO_NUMBER).append(JSON_FILE_EXTENSTION);
+        path.append(ZERO_NUMBER).append(JSON_FILE_EXTENSION);
         return path;
     }
 
