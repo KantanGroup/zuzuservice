@@ -31,20 +31,21 @@ public class CountryTest {
 
     @Test
     public void testAddCountryData() throws Exception {
-        File countryFile = Paths.get("src", "test", "resources", "country_code_language_code.csv").toFile();
+        File countryFile = Paths.get("src", "test", "resources", "country_language_code.csv").toFile();
         BufferedReader in = new BufferedReader(new FileReader(countryFile));
         String str;
 
         List<String[]> codes = new ArrayList<String[]>();
         List<CountryMaster> locals = new ArrayList<>();
         while ((str = in.readLine()) != null) {
-            String[] code = str.split(",");
-            if (code.length == 4) {
+            String[] code = str.split("\t");
+            if (code.length == 5) {
                 CountryMaster countryLocal = new CountryMaster();
                 countryLocal.setCountryName(code[0]);
                 countryLocal.setCountryCode(code[1]);
                 countryLocal.setLanguageName(code[2]);
                 countryLocal.setLanguageCode(code[3]);
+                countryLocal.setType(Integer.valueOf(code[4]));
                 countryLocal.setCreateAt(new Date());
                 locals.add(countryLocal);
             }

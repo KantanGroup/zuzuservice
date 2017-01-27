@@ -1,5 +1,8 @@
 package com.zuzuapps.task.app.master.models;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -36,5 +39,15 @@ public class AppLanguageId implements Serializable {
 
     public void setLanguageCode(String languageCode) {
         this.languageCode = languageCode;
+    }
+
+    @Override
+    public int hashCode(){
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object o){
+        return EqualsBuilder.reflectionEquals(this,o);
     }
 }

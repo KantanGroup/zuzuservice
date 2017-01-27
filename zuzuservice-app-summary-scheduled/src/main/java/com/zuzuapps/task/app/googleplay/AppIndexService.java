@@ -86,7 +86,7 @@ public class AppIndexService extends AppCommonService {
                     logger.debug("[Application Index Store]Delete file " + file.getAbsolutePath());
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
-                        logger.error("[Application Index Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
+                        logger.error("[Application Index Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
                     } else {
                         logger.warn("[Application Index Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
                     }

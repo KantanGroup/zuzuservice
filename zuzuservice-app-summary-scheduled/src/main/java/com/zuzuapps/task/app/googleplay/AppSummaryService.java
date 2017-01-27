@@ -75,10 +75,11 @@ public class AppSummaryService extends AppCommonService {
                         }
                     } catch (GooglePlayRuntimeException ex) {
                         if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
-                            logger.error("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
+                            logger.error("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
                         } else {
                             logger.warn("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
                         }
+                        break;
                     } catch (Exception ex) {
                         logger.error("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
                         break;

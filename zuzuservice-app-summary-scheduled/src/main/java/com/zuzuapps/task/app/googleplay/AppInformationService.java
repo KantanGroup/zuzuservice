@@ -228,7 +228,7 @@ public class AppInformationService extends AppCommonService {
                     queueAppScreenshot(app);
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
-                        logger.error("[Application Image Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
+                        logger.error("[Application Image Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     } else {
                         logger.warn("[Application Image Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     }
@@ -295,7 +295,7 @@ public class AppInformationService extends AppCommonService {
                     appScreenshotElasticSearchRepository.save(appScreenshotElasticSearch);
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
-                        logger.error("[Application Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
+                        logger.error("[Application Screenshot Store][" + appId + "]Error " + ex.getMessage());
                     } else {
                         logger.warn("[Application Screenshot Store][" + appId + "]Error " + ex.getMessage());
                     }
