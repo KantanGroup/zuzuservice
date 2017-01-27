@@ -7,6 +7,7 @@ import com.zuzuapps.task.app.common.DataTypeEnum;
 import com.zuzuapps.task.app.common.ZipUtil;
 import com.zuzuapps.task.app.elasticsearch.repositories.AppIndexElasticSearchRepository;
 import com.zuzuapps.task.app.elasticsearch.repositories.AppInformationElasticSearchRepository;
+import com.zuzuapps.task.app.elasticsearch.repositories.AppScreenshotElasticSearchRepository;
 import com.zuzuapps.task.app.elasticsearch.repositories.AppTrendElasticSearchRepository;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
@@ -57,6 +58,9 @@ public class AppCommonService {
     @Value("${time.update.app.information:7}")
     protected int timeUpdateAppInformation;
 
+    @Value("${time.get.app.screenshot:1000}")
+    protected int timeGetAppScreenshot;
+
     @Autowired
     protected SummaryApplicationPlayService summaryApplicationPlayService;
     @Autowired
@@ -75,6 +79,8 @@ public class AppCommonService {
     protected AppTrendElasticSearchRepository appTrendElasticSearchRepository;
     @Autowired
     protected AppInformationElasticSearchRepository appInformationElasticSearchRepository;
+    @Autowired
+    protected AppScreenshotElasticSearchRepository appScreenshotElasticSearchRepository;
     @Autowired
     protected InformationApplicationPlayService informationApplicationPlayService;
     @Autowired

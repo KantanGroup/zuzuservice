@@ -49,7 +49,7 @@ public class ScreenshotApplicationPlayService {
      * @throws GooglePlayRuntimeException
      */
     public ScreenshotPlay extractOriginalIcon(String appId, String imageLink) throws GooglePlayRuntimeException {
-        return extractOriginalImage(appId, imageLink, ImageTypeEnum.icon.ordinal());
+        return extractOriginalImage(appId, imageLink, ImageTypeEnum.icon);
     }
 
     /**
@@ -61,7 +61,7 @@ public class ScreenshotApplicationPlayService {
      * @throws GooglePlayRuntimeException
      */
     public ScreenshotPlay extractOriginalScreenshot(String appId, String imageLink) throws GooglePlayRuntimeException {
-        return extractOriginalImage(appId, imageLink, ImageTypeEnum.screenshot.ordinal());
+        return extractOriginalImage(appId, imageLink, ImageTypeEnum.screenshot);
     }
 
     /**
@@ -73,11 +73,14 @@ public class ScreenshotApplicationPlayService {
      * @return
      * @throws GooglePlayRuntimeException
      */
-    private ScreenshotPlay extractOriginalImage(String appId, String imageLink, int type) throws GooglePlayRuntimeException {
+    private ScreenshotPlay extractOriginalImage(String appId, String imageLink, ImageTypeEnum type) throws GooglePlayRuntimeException {
         logger.debug("[ScreenshotApplicationPlayService][" + appId + "]Extract image from " + imageLink);
         try {
+            if (imageLink.startsWith("//")) {
+                imageLink = "http:" + imageLink;
+            }
             byte[] imageBytes = restTemplate.getForObject(imageLink, byte[].class, addHeaders());
-            String appImageOriginPath = appId + "/icon.png";
+            String appImageOriginPath = appId + (type == ImageTypeEnum.screenshot ? "/" + System.currentTimeMillis() + ".png" : "/icon.png");
             CommonUtils.folderBy(imageStore, appId);
             logger.debug("[ScreenshotApplicationPlayService][" + appId + "]Write image from " + imageStore);
             Files.write(Paths.get(imageStore, appImageOriginPath), imageBytes);
@@ -85,7 +88,7 @@ public class ScreenshotApplicationPlayService {
             screenshot.setAppId(appId);
             screenshot.setOriginal(appImageOriginPath);
             screenshot.setSource(imageLink);
-            screenshot.setType((short) type);
+            screenshot.setType((short) type.ordinal());
             return screenshot;
         } catch (IOException ex) {
             throw new GooglePlayRuntimeException(ExceptionCodes.DATA_READ_WRITE_EXCEPTION, ex);

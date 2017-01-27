@@ -105,6 +105,9 @@ public class AppSummaryService extends AppCommonService {
         return path;
     }
 
+    /**
+     * Daily app summary update
+     */
     public void dailyAppSummaryUpdate() {
         while (true) {
             // something that should execute on weekdays only

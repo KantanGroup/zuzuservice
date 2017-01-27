@@ -56,6 +56,7 @@ public class ScheduleApplication {
                 executor.execute(new DailyIndexUpdateRunnable());
                 executor.execute(new DailySummaryUpdateRunnable());
                 executor.execute(new DailyAppUpdateRunnable());
+                executor.execute(new DailyAppScreenshotRunnable());
                 executor.execute(new GenerationIndexRunnable());
                 executor.execute(new GenerationSummaryRunnable());
                 executor.execute(new IndexStoreRunnable());
@@ -104,6 +105,14 @@ public class ScheduleApplication {
         public void run() {
             logger.info("[ScheduleApplication][DailyAppUpdateRunnable]Start at " + new Date());
             appLanguageService.dailyAppInformationUpdate();
+        }
+    }
+
+    class DailyAppScreenshotRunnable implements Runnable {
+        @Override
+        public void run() {
+            logger.info("[ScheduleApplication][DailyAppScreenshotRunnable]Start at " + new Date());
+            appLanguageService.dailyAppScreenshotUpdate();
         }
     }
 

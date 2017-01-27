@@ -4,10 +4,12 @@ import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
 import com.zuzuapps.task.app.elasticsearch.models.AppInformationElasticSearch;
+import com.zuzuapps.task.app.elasticsearch.models.AppScreenshotElasticSearch;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
 import com.zuzuapps.task.app.googleplay.models.ScreenshotPlay;
+import com.zuzuapps.task.app.googleplay.models.ScreenshotPlays;
 import com.zuzuapps.task.app.master.models.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,7 +29,7 @@ public class AppInformationService extends AppCommonService {
     final Log logger = LogFactory.getLog("AppInformationService");
 
     /**
-     * Split app summary to apps
+     * Daily app information update
      */
     public void dailyAppInformationUpdate() {
         while (true) {
@@ -179,9 +181,9 @@ public class AppInformationService extends AppCommonService {
     }
 
     /**
-     * Split app summary to apps
+     * Daily app update
      */
-    public void dailyAppLanguageUpdate() {
+    public void dailyAppUpdate() {
         while (true) {
             // something that should execute on weekdays only
             Set<String> languages = findDistinctByLanguageCode();
@@ -190,14 +192,14 @@ public class AppInformationService extends AppCommonService {
                 File dir = new File(dirPath);
                 File[] files = dir.listFiles();
                 if (files != null && files.length != 0) {
-                    processAppImages(files);
+                    processApp(files);
                 }
             }
             CommonUtils.delay(timeWaitRuntimeLocal);
         }
     }
 
-    private void processAppImages(File[] files) {
+    private void processApp(File[] files) {
         logger.debug("[Application Image Store]Cronjob start at: " + new Date());
         for (File json : files) {
             String filename = json.getName();
@@ -211,6 +213,7 @@ public class AppInformationService extends AppCommonService {
                     // 2. Write data to database
                     AppMaster appMaster = createAppMaster(app);
                     AppLanguageMaster appLanguageMaster = createAppLanguageMaster(app, languageCode);
+                    logger.debug("[Application Image Store]App "+ appId + " info store to database");
                     appMasterRepository.save(appMaster);
                     appLanguageMasterRepository.save(appLanguageMaster);
                     // 3. Index data
@@ -218,9 +221,11 @@ public class AppInformationService extends AppCommonService {
                     // 4. Create icon
                     ScreenshotPlay screenshotPlay = screenshotApplicationPlayService.extractOriginalIcon(app.getAppId(), app.getIcon());
                     AppScreenshotMaster appScreenshotMaster =  createAppScreenshotMaster(screenshotPlay);
+                    logger.debug("[Application Image Store]Icon store to database");
                     appScreenshotMasterRepository.save(appScreenshotMaster);
-                    CommonUtils.delay(1000);
+                    CommonUtils.delay(timeGetAppScreenshot);
                     // 5. Create screenshot
+                    queueAppScreenshot(app);
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
                         logger.error("[Application Image Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
@@ -235,14 +240,79 @@ public class AppInformationService extends AppCommonService {
         logger.debug("[Application Image Store]Cronjob end at: " + new Date());
     }
 
+    private void queueAppScreenshot(ApplicationPlay app) {
+        try {
+            ScreenshotPlays screenshotPlays = new ScreenshotPlays();
+            screenshotPlays.setAppId(app.getAppId());
+            screenshotPlays.setScreenshots(app.getScreenshots());
+            StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+            path.append("/").append(app.getAppId()).append(REGEX_3_UNDER_LINE);
+            path.append("screenshots").append(JSON_FILE_EXTENSION);
+            logger.debug("[Application Image Store]Write screenshot of app " + app.getAppId().toLowerCase() + " to queue folder " + path.toString());
+            Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(screenshotPlays));
+        } catch (Exception ex) {
+            logger.error("[Application Image Store]Write screenshot of app error " + ex.getMessage(), ex);
+        }
+    }
+
+    /**
+     * Split app summary to apps
+     */
+    public void dailyAppScreenshotUpdate() {
+        while (true) {
+            // something that should execute on weekdays only
+            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.queue.name()).getAbsolutePath();
+            File dir = new File(dirPath);
+            File[] files = dir.listFiles();
+            if (files != null && files.length != 0) {
+                processApp(files);
+            }
+            CommonUtils.delay(timeWaitRuntimeLocal);
+        }
+    }
+
+    private void processAppScreenshots(File[] files) {
+        logger.debug("[Application Screenshot Store]Task start at: " + new Date());
+        for (File json : files) {
+            String filename = json.getName();
+            String[] data = filename.split(REGEX_3_UNDER_LINE);
+            if (data.length >= 2) {
+                String appId = data[0];
+                try {
+                    ScreenshotPlays screenshotPlays = mapper.readValue(json, ScreenshotPlays.class);
+                    List<AppScreenshotMaster> appScreenshotMasters = new ArrayList<AppScreenshotMaster>();
+                    AppScreenshotElasticSearch appScreenshotElasticSearch = new AppScreenshotElasticSearch();
+                    appScreenshotElasticSearch.setId(appId);
+                    for(String screenshot: screenshotPlays.getScreenshots()) {
+                        // 5. Create screenshot
+                        ScreenshotPlay screenshotPlay = screenshotApplicationPlayService.extractOriginalScreenshot(appId, screenshot);
+                        AppScreenshotMaster appScreenshotMaster =  createAppScreenshotMaster(screenshotPlay);
+                        appScreenshotMasters.add(appScreenshotMaster);
+                        appScreenshotElasticSearch.getScreenshotPlays().add(screenshotPlay);
+                        CommonUtils.delay(timeGetAppScreenshot);
+                    }
+                    appScreenshotMasterRepository.save(appScreenshotMasters);
+                    appScreenshotElasticSearchRepository.save(appScreenshotElasticSearch);
+                } catch (GooglePlayRuntimeException ex) {
+                    if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
+                        logger.error("[Application Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
+                    } else {
+                        logger.warn("[Application Screenshot Store][" + appId + "]Error " + ex.getMessage());
+                    }
+                } catch (Exception ex) {
+                    logger.error("[Application Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
+                }
+            }
+        }
+        logger.debug("[Application Screenshot Store]Task end at: " + new Date());
+    }
+
     private AppScreenshotMaster createAppScreenshotMaster(ScreenshotPlay screenshotPlay) {
         AppScreenshotMaster app = new AppScreenshotMaster();
         app.setAppId(screenshotPlay.getAppId());
         app.setSource(screenshotPlay.getSource());
-        app.setType(screenshotPlay.getType());
+        app.setType((short)screenshotPlay.getType());
         app.setOriginal(screenshotPlay.getOriginal());
-        app.setWatermark(screenshotPlay.getWatermark());
-        app.setResize(screenshotPlay.getResize());
         return app;
     }
 
