@@ -47,12 +47,11 @@ public class InformationApplicationPlayService {
             } else {
                 return applicationPlay;
             }
+        } catch (ResourceAccessException ex) {
+            throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);
         } catch (GooglePlayRuntimeException e) {
             throw e;
         } catch (Exception e) {
-            if (e instanceof ResourceAccessException) {
-                throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, e);
-            }
             throw new GooglePlayRuntimeException(ExceptionCodes.UNKNOWN_EXCEPTION, e);
         }
     }

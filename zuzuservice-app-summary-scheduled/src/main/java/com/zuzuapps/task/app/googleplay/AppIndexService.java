@@ -7,7 +7,6 @@ import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
-import com.zuzuapps.task.app.master.models.AppIndexId;
 import com.zuzuapps.task.app.master.models.AppIndexMaster;
 import com.zuzuapps.task.app.master.models.CountryMaster;
 import org.apache.commons.io.FileUtils;
@@ -191,8 +190,6 @@ public class AppIndexService extends AppCommonService {
 
     private void createAppIndexMaster(List<AppIndexMaster> appIndexMasters, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, short index, SummaryApplicationPlay app) {
         AppIndexMaster appIndexMaster = new AppIndexMaster();
-        AppIndexId id = new AppIndexId();
-        appIndexMaster.setId(id);
         appIndexMaster.setAppId(app.getAppId());
         appIndexMaster.setCategory(category);
         appIndexMaster.setCollection(collection);

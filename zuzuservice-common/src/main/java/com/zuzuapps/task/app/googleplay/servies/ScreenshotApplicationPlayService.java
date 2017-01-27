@@ -11,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,6 +23,7 @@ import java.util.Collections;
 /**
  * @author tuanta17
  */
+@Service
 public class ScreenshotApplicationPlayService {
     private final Log logger = LogFactory.getLog("ScreenshotApplicationPlayService");
 
@@ -51,15 +53,15 @@ public class ScreenshotApplicationPlayService {
     }
 
     /**
-     * Extract origin screen shoot
+     * Extract origin screenshot
      *
      * @param appId     Application id
      * @param imageLink Image link
      * @return
      * @throws GooglePlayRuntimeException
      */
-    public ScreenshotPlay extractOriginalScreenshoot(String appId, String imageLink) throws GooglePlayRuntimeException {
-        return extractOriginalImage(appId, imageLink, ImageTypeEnum.screenshoot.ordinal());
+    public ScreenshotPlay extractOriginalScreenshot(String appId, String imageLink) throws GooglePlayRuntimeException {
+        return extractOriginalImage(appId, imageLink, ImageTypeEnum.screenshot.ordinal());
     }
 
     /**
@@ -72,22 +74,23 @@ public class ScreenshotApplicationPlayService {
      * @throws GooglePlayRuntimeException
      */
     private ScreenshotPlay extractOriginalImage(String appId, String imageLink, int type) throws GooglePlayRuntimeException {
+        logger.debug("[ScreenshotApplicationPlayService][" + appId + "]Extract image from " + imageLink);
         try {
             byte[] imageBytes = restTemplate.getForObject(imageLink, byte[].class, addHeaders());
-            String appImageOriginPath = appId + "/" + System.currentTimeMillis() + ".png";
-            File file = Paths.get(imageStore, appId).toFile();
-            if (!file.exists()) {
-                file.mkdirs();
-            }
+            String appImageOriginPath = appId + "/icon.png";
+            CommonUtils.folderBy(imageStore, appId);
+            logger.debug("[ScreenshotApplicationPlayService][" + appId + "]Write image from " + imageStore);
             Files.write(Paths.get(imageStore, appImageOriginPath), imageBytes);
             ScreenshotPlay screenshot = new ScreenshotPlay();
             screenshot.setAppId(appId);
             screenshot.setOriginal(appImageOriginPath);
             screenshot.setSource(imageLink);
-            screenshot.setType(type);
+            screenshot.setType((short) type);
             return screenshot;
         } catch (IOException ex) {
             throw new GooglePlayRuntimeException(ExceptionCodes.DATA_READ_WRITE_EXCEPTION, ex);
+        } catch (ResourceAccessException ex) {
+            throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);
         } catch (Exception ex) {
             throw new GooglePlayRuntimeException(ExceptionCodes.UNKNOWN_EXCEPTION, ex);
         }

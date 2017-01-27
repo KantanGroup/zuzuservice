@@ -6,7 +6,7 @@ package com.zuzuapps.task.app.googleplay.models;
 public class ScreenshotPlay {
     private long id;
     private String appId;
-    private int type; //icon, screen shot
+    private short type; //icon, screen shot
     private String source;
     private String original;
     private String watermark;
@@ -28,11 +28,11 @@ public class ScreenshotPlay {
         this.appId = appId;
     }
 
-    public int getType() {
+    public short getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(short type) {
         this.type = type;
     }
 

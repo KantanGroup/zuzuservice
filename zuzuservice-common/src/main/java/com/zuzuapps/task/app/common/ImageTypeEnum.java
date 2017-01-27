@@ -5,5 +5,5 @@ package com.zuzuapps.task.app.common;
  */
 public enum ImageTypeEnum {
     icon,
-    screenshoot
+    screenshot
 }

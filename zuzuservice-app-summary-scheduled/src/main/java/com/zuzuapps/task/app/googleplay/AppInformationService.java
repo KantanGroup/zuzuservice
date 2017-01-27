@@ -7,7 +7,8 @@ import com.zuzuapps.task.app.elasticsearch.models.AppInformationElasticSearch;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
-import com.zuzuapps.task.app.master.models.CountryMaster;
+import com.zuzuapps.task.app.googleplay.models.ScreenshotPlay;
+import com.zuzuapps.task.app.master.models.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -189,26 +190,104 @@ public class AppInformationService extends AppCommonService {
                 File dir = new File(dirPath);
                 File[] files = dir.listFiles();
                 if (files != null && files.length != 0) {
-                    queueAppLanguage(files);
+                    processAppImages(files);
                 }
             }
             CommonUtils.delay(timeWaitRuntimeLocal);
         }
     }
 
-    private void queueAppLanguage(File[] files) {
-        logger.debug("[Application Language Store]Cronjob start at: " + new Date());
+    private void processAppImages(File[] files) {
+        logger.debug("[Application Image Store]Cronjob start at: " + new Date());
         for (File json : files) {
-            // 1. Get data
+            String filename = json.getName();
+            String[] data = filename.split(REGEX_3_UNDER_LINE);
+            if (data.length >= 2) {
+                String appId = data[0];
+                String languageCode = data[1];
+                try {
+                    // 1. Get data
+                    ApplicationPlay app = mapper.readValue(json, ApplicationPlay.class);
+                    // 2. Write data to database
+                    AppMaster appMaster = createAppMaster(app);
+                    AppLanguageMaster appLanguageMaster = createAppLanguageMaster(app, languageCode);
+                    appMasterRepository.save(appMaster);
+                    appLanguageMasterRepository.save(appLanguageMaster);
+                    // 3. Index data
 
-            // 2. Write data to database
-
-            // 3. Index data
-
-            // 4. Create icon
-
-            // 5. Create screen shoot
+                    // 4. Create icon
+                    ScreenshotPlay screenshotPlay = screenshotApplicationPlayService.extractOriginalIcon(app.getAppId(), app.getIcon());
+                    AppScreenshotMaster appScreenshotMaster =  createAppScreenshotMaster(screenshotPlay);
+                    appScreenshotMasterRepository.save(appScreenshotMaster);
+                    CommonUtils.delay(1000);
+                    // 5. Create screenshot
+                } catch (GooglePlayRuntimeException ex) {
+                    if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
+                        logger.error("[Application Image Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
+                    } else {
+                        logger.warn("[Application Image Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                    }
+                } catch (Exception ex) {
+                    logger.error("[Application Image Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
+                }
+            }
         }
-        logger.debug("[Application Language Store]Cronjob end at: " + new Date());
+        logger.debug("[Application Image Store]Cronjob end at: " + new Date());
+    }
+
+    private AppScreenshotMaster createAppScreenshotMaster(ScreenshotPlay screenshotPlay) {
+        AppScreenshotMaster app = new AppScreenshotMaster();
+        app.setAppId(screenshotPlay.getAppId());
+        app.setSource(screenshotPlay.getSource());
+        app.setType(screenshotPlay.getType());
+        app.setOriginal(screenshotPlay.getOriginal());
+        app.setWatermark(screenshotPlay.getWatermark());
+        app.setResize(screenshotPlay.getResize());
+        return app;
+    }
+
+    private AppLanguageMaster createAppLanguageMaster(ApplicationPlay applicationPlay, String languageCode) {
+        AppLanguageMaster app = new AppLanguageMaster();
+        AppLanguageId id = new AppLanguageId(applicationPlay.getAppId(), languageCode);
+        app.setId(id);
+        app.setTitle(applicationPlay.getTitle());
+        app.setSummary(applicationPlay.getSummary());
+        app.setDescription(applicationPlay.getDescription());
+        app.setDescriptionHTML(applicationPlay.getDescriptionHTML());
+        return app;
+    }
+
+    private AppMaster createAppMaster(ApplicationPlay applicationPlay) {
+        AppMaster app = new AppMaster();
+        app.setAppId(applicationPlay.getAppId());
+        app.setUrl(applicationPlay.getUrl());
+        app.setIcon(applicationPlay.getIcon());
+        app.setScore(applicationPlay.getScore());
+        app.setPrice(applicationPlay.getPrice());
+        app.setFree(applicationPlay.isFree());
+        app.setDeveloperId(applicationPlay.getDeveloper().getDevId());
+        app.setDeveloperUrl(applicationPlay.getDeveloper().getUrl());
+        app.setDeveloperEmail(applicationPlay.getDeveloperEmail());
+        app.setDeveloperWebsite(applicationPlay.getDeveloperWebsite());
+        app.setUpdated(applicationPlay.getUpdated());
+        app.setAppVersion(applicationPlay.getVersion());
+        app.setMinInstalls(applicationPlay.getMinInstalls());
+        app.setMaxInstalls(applicationPlay.getMaxInstalls());
+        app.setGenre(applicationPlay.getGenre());
+        app.setGenreId(applicationPlay.getGenreId());
+        app.setFamilyGenre(applicationPlay.getFamilyGenre());
+        app.setFamilyGenreId(applicationPlay.getFamilyGenreId());
+        app.setOffersIAP(applicationPlay.isOffersIAP());
+        app.setAdSupported(applicationPlay.isAdSupported());
+        app.setAndroidVersion(applicationPlay.getAndroidVersion());
+        app.setAndroidVersionText(applicationPlay.getAndroidVersionText());
+        app.setContentRating(applicationPlay.getContentRating());
+        app.setPreregister(applicationPlay.isPreregister());
+        app.setVideo(applicationPlay.getVideo());
+        app.setPlaystoreUrl(applicationPlay.getPlaystoreUrl());
+        app.setPermissions(applicationPlay.getPermissions());
+        app.setSimilar(applicationPlay.getSimilar());
+        app.setReviews(applicationPlay.getReviews());
+        return app;
     }
 }

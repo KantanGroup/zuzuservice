@@ -10,9 +10,9 @@ import com.zuzuapps.task.app.elasticsearch.repositories.AppInformationElasticSea
 import com.zuzuapps.task.app.elasticsearch.repositories.AppTrendElasticSearchRepository;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
+import com.zuzuapps.task.app.googleplay.servies.ScreenshotApplicationPlayService;
 import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
-import com.zuzuapps.task.app.master.repositories.AppIndexMasterRepository;
-import com.zuzuapps.task.app.master.repositories.CountryMasterRepository;
+import com.zuzuapps.task.app.master.repositories.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +42,9 @@ public class AppCommonService {
     @Value("${data.root.path:/tmp}")
     protected String rootPath;
 
+    @Value("${data.image.path:/tmp")
+    protected String imageStore;
+
     @Value("${time.get.app.information:2000}")
     protected long timeGetAppInformation;
 
@@ -61,6 +64,12 @@ public class AppCommonService {
     @Autowired
     protected AppIndexMasterRepository appIndexMasterRepository;
     @Autowired
+    protected AppMasterRepository appMasterRepository;
+    @Autowired
+    protected AppLanguageMasterRepository appLanguageMasterRepository;
+    @Autowired
+    protected AppScreenshotMasterRepository appScreenshotMasterRepository;
+    @Autowired
     protected AppIndexElasticSearchRepository appIndexElasticSearchRepository;
     @Autowired
     protected AppTrendElasticSearchRepository appTrendElasticSearchRepository;
@@ -68,6 +77,8 @@ public class AppCommonService {
     protected AppInformationElasticSearchRepository appInformationElasticSearchRepository;
     @Autowired
     protected InformationApplicationPlayService informationApplicationPlayService;
+    @Autowired
+    protected ScreenshotApplicationPlayService screenshotApplicationPlayService;
 
     protected void queueAppInformation(List<SummaryApplicationPlay> summaryApplicationPlays, String countryCode, String languageCode) {
         for (SummaryApplicationPlay summaryApplicationPlay : summaryApplicationPlays) {

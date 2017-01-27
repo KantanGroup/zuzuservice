@@ -14,6 +14,14 @@ public class AppLanguageId implements Serializable {
     @Column(name = "language_code", length = 2, nullable = false)
     private String languageCode;
 
+    public AppLanguageId() {
+    }
+
+    public AppLanguageId(String appId, String languageCode) {
+        this.appId = appId;
+        this.languageCode = languageCode;
+    }
+
     public String getAppId() {
         return appId;
     }
