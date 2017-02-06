@@ -19,13 +19,13 @@ public class CountryMaster {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private short id;
-    @Column(name = "language_code", length = 2)
+    @Column(name = "language_code", length = 3)
     private String languageCode;
-    @Column(name = "language_name", length = 10)
+    @Column(name = "language_name", length = 30)
     private String languageName;
-    @Column(name = "country_code", length = 2)
+    @Column(name = "country_code", length = 3)
     private String countryCode;
-    @Column(name = "country_name", length = 10)
+    @Column(name = "country_name", length = 30)
     private String countryName;
     private int type;
 

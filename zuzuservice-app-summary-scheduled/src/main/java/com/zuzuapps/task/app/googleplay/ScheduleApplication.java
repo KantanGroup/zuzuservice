@@ -39,6 +39,8 @@ public class ScheduleApplication {
     @Value("${data.root.path:/tmp}")
     private String rootPath;
     @Autowired
+    private AppCommonService appCommonService;
+    @Autowired
     private AppIndexService appIndexService;
     @Autowired
     private AppSummaryService appSummaryService;
@@ -51,6 +53,7 @@ public class ScheduleApplication {
 
     @Bean
     public CommandLineRunner schedulingRunner(final TaskExecutor executor) {
+        appCommonService.importCountries();
         return new CommandLineRunner() {
             public void run(String... args) throws Exception {
                 executor.execute(new DailyIndexUpdateRunnable());

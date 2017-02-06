@@ -72,7 +72,9 @@ public class AppInformationService extends AppCommonService {
                         logger.debug("[Application Information Store]Get app " + appId + " by language " + languageCode);
                         appInformationElasticSearchRepository.save(app);
                     } catch (GooglePlayRuntimeException ex) {
-                        if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
+                        if (ex.getCode() == ExceptionCodes.APP_NOT_FOUND) {
+                            logger.error("[Application Information Store][" + appId + "][" + languageCode + "] not found. Error " + ex.getMessage());
+                        } else if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
                             logger.error("[Application Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
                         } else {
                             logger.warn("[Application Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());

@@ -1,10 +1,11 @@
 package com.zuzuapps.task.app.googleplay;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
-import com.zuzuapps.task.app.common.ZipUtil;
+import com.zuzuapps.task.app.common.GZipUtil;
 import com.zuzuapps.task.app.elasticsearch.repositories.AppIndexElasticSearchRepository;
 import com.zuzuapps.task.app.elasticsearch.repositories.AppInformationElasticSearchRepository;
 import com.zuzuapps.task.app.elasticsearch.repositories.AppScreenshotElasticSearchRepository;
@@ -13,6 +14,7 @@ import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
 import com.zuzuapps.task.app.googleplay.servies.ScreenshotApplicationPlayService;
 import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
+import com.zuzuapps.task.app.master.models.CountryMaster;
 import com.zuzuapps.task.app.master.repositories.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -110,11 +113,23 @@ public class AppCommonService {
             Path inputFile = Paths.get(des.toFile().getAbsolutePath(), src.getFileName().toString());
             Path zipFile = Paths.get(des.toFile().getAbsolutePath(), src.getFileName() + GZ_FILE_EXTENSION);
             logger.debug("Zip json file " + inputFile + " to file " + zipFile);
-            new ZipUtil().gzip(inputFile.toFile().getAbsolutePath(), zipFile.toFile().getAbsolutePath());
+            new GZipUtil().gzip(inputFile.toFile().getAbsolutePath(), zipFile.toFile().getAbsolutePath());
             logger.debug("Remove json file " + inputFile);
             Files.delete(inputFile);
         } catch (Exception ex) {
             logger.warn("Move json file error " + ex.getMessage(), ex);
+        }
+    }
+
+    public void importCountries() {
+        if (!countryRepository.findAll().iterator().hasNext()) {
+            try {
+                Path file = Paths.get("countries.json");
+                List<CountryMaster> countries = mapper.readValue(file.toFile().getAbsoluteFile(), new TypeReference<List<CountryMaster>>() {});
+                countryRepository.save(countries);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

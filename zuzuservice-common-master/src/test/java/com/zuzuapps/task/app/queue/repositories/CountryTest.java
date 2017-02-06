@@ -36,7 +36,7 @@ public class CountryTest {
         String str;
 
         List<String[]> codes = new ArrayList<String[]>();
-        List<CountryMaster> locals = new ArrayList<>();
+        List<CountryMaster> locals = new ArrayList<CountryMaster>();
         while ((str = in.readLine()) != null) {
             String[] code = str.split("\t");
             if (code.length == 5) {
