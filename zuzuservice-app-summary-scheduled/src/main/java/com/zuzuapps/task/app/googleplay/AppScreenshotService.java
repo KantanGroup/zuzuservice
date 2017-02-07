@@ -1,0 +1,86 @@
+package com.zuzuapps.task.app.googleplay;
+
+import com.zuzuapps.task.app.common.CommonUtils;
+import com.zuzuapps.task.app.common.DataServiceEnum;
+import com.zuzuapps.task.app.common.DataTypeEnum;
+import com.zuzuapps.task.app.elasticsearch.models.AppScreenshotElasticSearch;
+import com.zuzuapps.task.app.exceptions.ExceptionCodes;
+import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
+import com.zuzuapps.task.app.googleplay.models.ScreenshotPlay;
+import com.zuzuapps.task.app.googleplay.models.ScreenshotPlays;
+import com.zuzuapps.task.app.master.models.AppScreenshotMaster;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @author tuanta17
+ */
+@Service
+public class AppScreenshotService extends AppCommonService {
+    final Log logger = LogFactory.getLog("AppScreenshotService");
+
+    /**
+     * Split app summary to apps
+     */
+    public void dailyAppScreenshotUpdate() {
+        while (true) {
+            // something that should execute on weekdays only
+            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.queue.name()).getAbsolutePath();
+            File dir = new File(dirPath);
+            File[] files = dir.listFiles();
+            if (files != null && files.length != 0) {
+                processDailyAppScreenshots(files);
+            }
+            CommonUtils.delay(timeWaitRuntimeLocal);
+        }
+    }
+
+    private void processDailyAppScreenshots(File[] files) {
+        logger.debug("[Screenshot Store]Task start at: " + new Date());
+        for (File json : files) {
+            logger.info("[Screenshot Store]File " + json.getAbsolutePath());
+            String filename = json.getName();
+            String[] data = filename.split(REGEX_3_UNDER_LINE);
+            if (data.length >= 2) {
+                String appId = data[0];
+                try {
+                    ScreenshotPlays screenshotPlays = mapper.readValue(json, ScreenshotPlays.class);
+                    List<AppScreenshotMaster> appScreenshotMasters = new ArrayList<AppScreenshotMaster>();
+                    AppScreenshotElasticSearch appScreenshotElasticSearch = new AppScreenshotElasticSearch();
+                    appScreenshotElasticSearch.setId(appId);
+                    for (String screenshot : screenshotPlays.getScreenshots()) {
+                        // 5. Create screenshot
+                        ScreenshotPlay screenshotPlay = screenshotApplicationPlayService.extractOriginalScreenshot(appId, screenshot);
+                        AppScreenshotMaster appScreenshotMaster = createAppScreenshotMaster(screenshotPlay);
+                        appScreenshotMasters.add(appScreenshotMaster);
+                        appScreenshotElasticSearch.getScreenshotPlays().add(screenshotPlay);
+                        CommonUtils.delay(timeGetAppScreenshot);
+                    }
+                    appScreenshotMasterRepository.save(appScreenshotMasters);
+                    appScreenshotElasticSearchRepository.save(appScreenshotElasticSearch);
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.log.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                } catch (GooglePlayRuntimeException ex) {
+                    if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
+                        logger.error("[Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
+                    } else {
+                        logger.warn("[Screenshot Store][" + appId + "]Error " + ex.getMessage());
+                    }
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                } catch (Exception ex) {
+                    logger.error("[Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                }
+                CommonUtils.delay(timeGetAppInformation);
+            } else {
+                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+            }
+        }
+        logger.debug("[Screenshot Store]Task end at: " + new Date());
+    }
+}

@@ -69,8 +69,9 @@ public class AppIndexService extends AppCommonService {
         logger.info("[Application Index Store]Task start at: " + new Date());
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();
-        for (File file : files) {
-            String filename = file.getName();
+        for (File json : files) {
+            logger.info("[Application Information Store]File " + json.getAbsolutePath());
+            String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 4) {
                 String countryCode = data[0];
@@ -83,7 +84,7 @@ public class AppIndexService extends AppCommonService {
                     StringBuilder path = queueAppIndexJSONPath(time, countryCode, languageCode, collection, category);
                     logger.debug("[Application Index Store]Write app summary to json " + path.toString());
                     Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlays));
-                    logger.debug("[Application Index Store]Delete file " + file.getAbsolutePath());
+                    logger.debug("[Application Index Store]Delete file " + json.getAbsolutePath());
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
                         logger.error("[Application Index Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
@@ -95,7 +96,7 @@ public class AppIndexService extends AppCommonService {
                 }
                 CommonUtils.delay(timeGetAppSummary);
             }
-            FileUtils.deleteQuietly(file);
+            FileUtils.deleteQuietly(json);
             CommonUtils.delay(5);
         }
         logger.info("[Application Index Store]Task end at: " + new Date());
@@ -141,13 +142,13 @@ public class AppIndexService extends AppCommonService {
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();
         for (File json : files) {
-            logger.debug("[Application Summary --> Index]File " + json.getAbsolutePath());
-            List<AppIndexMaster> appIndexMasters = new ArrayList<AppIndexMaster>();
-            List<AppIndexElasticSearch> appIndexElasticSearches = new ArrayList<AppIndexElasticSearch>();
-            List<AppTrendElasticSearch> appTrendElasticSearches = new ArrayList<AppTrendElasticSearch>();
+            logger.info("[Application Summary --> Index]File " + json.getAbsolutePath());
             String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 4) {
+                List<AppIndexMaster> appIndexMasters = new ArrayList<AppIndexMaster>();
+                List<AppIndexElasticSearch> appIndexElasticSearches = new ArrayList<AppIndexElasticSearch>();
+                List<AppTrendElasticSearch> appTrendElasticSearches = new ArrayList<AppTrendElasticSearch>();
                 String countryCode = data[0];
                 String languageCode = data[1];
                 CategoryEnum category = CategoryEnum.valueOf(data[2].toUpperCase());

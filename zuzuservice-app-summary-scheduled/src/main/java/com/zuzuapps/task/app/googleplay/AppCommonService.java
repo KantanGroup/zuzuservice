@@ -10,10 +10,12 @@ import com.zuzuapps.task.app.elasticsearch.repositories.AppIndexElasticSearchRep
 import com.zuzuapps.task.app.elasticsearch.repositories.AppInformationElasticSearchRepository;
 import com.zuzuapps.task.app.elasticsearch.repositories.AppScreenshotElasticSearchRepository;
 import com.zuzuapps.task.app.elasticsearch.repositories.AppTrendElasticSearchRepository;
+import com.zuzuapps.task.app.googleplay.models.ScreenshotPlay;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
 import com.zuzuapps.task.app.googleplay.servies.ScreenshotApplicationPlayService;
 import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
+import com.zuzuapps.task.app.master.models.AppScreenshotMaster;
 import com.zuzuapps.task.app.master.models.CountryMaster;
 import com.zuzuapps.task.app.master.repositories.*;
 import org.apache.commons.logging.Log;
@@ -27,7 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author tuanta17
@@ -121,6 +123,40 @@ public class AppCommonService {
         }
     }
 
+    protected AppScreenshotMaster createAppScreenshotMaster(ScreenshotPlay screenshotPlay) {
+        AppScreenshotMaster app = new AppScreenshotMaster();
+        app.setAppId(screenshotPlay.getAppId());
+        app.setSource(screenshotPlay.getSource());
+        app.setType((short) screenshotPlay.getType());
+        app.setOriginal(screenshotPlay.getOriginal());
+        return app;
+    }
+
+    /**
+     * Get distinct language
+     */
+    protected Set<String> findDistinctByLanguageCode() {
+        List<CountryMaster> countries = countryRepository.findAllByTypeGreaterThanOrderByTypeDesc(0);
+        Set<String> languages = new HashSet<String>();
+        for (CountryMaster country : countries) {
+            languages.add(country.getLanguageCode());
+        }
+        return languages;
+    }
+
+    /**
+     * Time to update
+     *
+     * @param appTime App time
+     */
+    protected boolean isTimeToUpdate(Date appTime) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -timeUpdateAppInformation);
+        String appTime_ = CommonUtils.getTimeBy(appTime, "yyyyMMdd");
+        String currentTime_ = CommonUtils.getTimeBy(cal.getTime(), "yyyyMMdd");
+        return appTime_.equalsIgnoreCase(currentTime_);
+    }
+
     public void importCountries() {
         if (!countryRepository.findAll().iterator().hasNext()) {
             try {
@@ -133,5 +169,4 @@ public class AppCommonService {
             }
         }
     }
-
 }

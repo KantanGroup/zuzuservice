@@ -45,7 +45,11 @@ public class ScheduleApplication {
     @Autowired
     private AppSummaryService appSummaryService;
     @Autowired
-    private AppInformationService appLanguageService;
+    private AppInformationService appInformationService;
+    @Autowired
+    private AppScreenshotService appScreenshotService;
+    @Autowired
+    private AppService appService;
 
     public static void main(String[] args) {
         SpringApplication.run(ScheduleApplication.class, args);
@@ -108,7 +112,7 @@ public class ScheduleApplication {
         @Override
         public void run() {
             logger.info("[ScheduleApplication][DailyAppInformationUpdateRunnable]Start at " + new Date());
-            appLanguageService.dailyAppInformationUpdate();
+            appInformationService.dailyAppInformationUpdate();
         }
     }
 
@@ -117,7 +121,7 @@ public class ScheduleApplication {
         @Override
         public void run() {
             logger.info("[ScheduleApplication][DailyAppUpdateRunnable]Start at " + new Date());
-            appLanguageService.dailyAppUpdate();
+            appService.dailyAppUpdate();
         }
     }
 
@@ -126,7 +130,7 @@ public class ScheduleApplication {
         @Override
         public void run() {
             logger.info("[ScheduleApplication][DailyAppScreenshotRunnable]Start at " + new Date());
-            appLanguageService.dailyAppScreenshotUpdate();
+            appScreenshotService.dailyAppScreenshotUpdate();
         }
     }
 

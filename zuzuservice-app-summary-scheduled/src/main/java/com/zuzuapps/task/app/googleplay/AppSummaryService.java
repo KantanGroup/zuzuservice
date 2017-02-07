@@ -56,8 +56,9 @@ public class AppSummaryService extends AppCommonService {
     private void processAppSummaryStore(File[] files) {
         logger.info("[Application Summary Store]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
-        for (File file : files) {
-            String filename = file.getName();
+        for (File json : files) {
+            logger.info("[Application Summary Store]File " + json.getAbsolutePath());
+            String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 2) {
                 CollectionEnum collection = CollectionEnum.valueOf(data[0]);
@@ -88,7 +89,7 @@ public class AppSummaryService extends AppCommonService {
                     CommonUtils.delay(timeGetAppSummary);
                 }
             }
-            FileUtils.deleteQuietly(file);
+            FileUtils.deleteQuietly(json);
             CommonUtils.delay(5);
         }
         logger.info("[Application Summary Store]Cronjob end at: " + new Date());
@@ -127,7 +128,7 @@ public class AppSummaryService extends AppCommonService {
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();
         for (File json : files) {
-            logger.debug("[Application Summary --> Information]File " + json.getAbsolutePath());
+            logger.info("[Application Summary --> Information]File " + json.getAbsolutePath());
             String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 4) {
