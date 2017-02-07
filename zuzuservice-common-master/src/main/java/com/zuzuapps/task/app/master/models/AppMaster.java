@@ -32,7 +32,7 @@ public class AppMaster {
     private String developerUrl;
     @Column(name = "developer_email", length = 64)
     private String developerEmail;
-    @Column(name = "developer_website", length = 64)
+    @Column(name = "developer_website")
     private String developerWebsite;
     private String updated;
     @Column(name = "app_version", length = 64)
@@ -41,23 +41,23 @@ public class AppMaster {
     private int minInstalls;
     @Column(name = "max_installs")
     private int maxInstalls;
-    @Column(name = "genre", length = 64, nullable = false)
+    @Column(name = "genre", length = 64)
     private String genre;
-    @Column(name = "genre_id", length = 64, nullable = false)
+    @Column(name = "genre_id", length = 64)
     private String genreId;
-    @Column(name = "family_genre", length = 64, nullable = false)
+    @Column(name = "family_genre", length = 64)
     private String familyGenre;
-    @Column(name = "family_genre_id", length = 64, nullable = false)
+    @Column(name = "family_genre_id", length = 64)
     private String familyGenreId;
     @Column(name = "offers_iap")
     private boolean offersIAP;
     @Column(name = "ad_supported")
     private boolean adSupported;
-    @Column(name = "android_version_text", length = 36, nullable = false)
+    @Column(name = "android_version_text", length = 36)
     private String androidVersionText;
-    @Column(name = "android_version", length = 36, nullable = false)
+    @Column(name = "android_version", length = 36)
     private String androidVersion;
-    @Column(name = "content_rating", length = 36, nullable = false)
+    @Column(name = "content_rating", length = 36)
     private String contentRating;
     private boolean preregister;
     private String video;
@@ -68,10 +68,10 @@ public class AppMaster {
     private String reviews;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "create_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Date createAt;
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "update_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @Column(name = "update_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private Date updateAt;
 
     public String getAppId() {
@@ -111,6 +111,9 @@ public class AppMaster {
     }
 
     public void setIcon(String icon) {
+        if (icon.startsWith("//")) {
+            icon = "http:" + icon;
+        }
         this.icon = icon;
     }
 

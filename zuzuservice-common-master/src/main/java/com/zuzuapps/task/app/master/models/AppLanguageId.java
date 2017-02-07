@@ -42,12 +42,12 @@ public class AppLanguageId implements Serializable {
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
-    public boolean equals(Object o){
-        return EqualsBuilder.reflectionEquals(this,o);
+    public boolean equals(Object o) {
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 }

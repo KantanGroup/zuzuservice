@@ -45,13 +45,13 @@ public class ScheduleApplicationTest {
 
     @Test
     public void appTop() {
-        scheduleService.appIndexStoreData();
+        scheduleService.processAppIndexStoreData();
     }
 
     @Test
     public void testGenerateAppSummaryStore() {
         appSummaryService.generateAppSummaryStore();
-        appSummaryService.appSummaryStoreData();
+        appSummaryService.processAppSummaryStoreData();
     }
 
     @Test

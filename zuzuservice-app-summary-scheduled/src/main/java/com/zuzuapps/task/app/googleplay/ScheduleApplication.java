@@ -58,12 +58,13 @@ public class ScheduleApplication {
             public void run(String... args) throws Exception {
                 executor.execute(new DailyIndexUpdateRunnable());
                 executor.execute(new DailySummaryUpdateRunnable());
+                executor.execute(new DailyAppInformationUpdateRunnable());
                 executor.execute(new DailyAppUpdateRunnable());
                 executor.execute(new DailyAppScreenshotRunnable());
                 executor.execute(new GenerationIndexRunnable());
                 executor.execute(new GenerationSummaryRunnable());
-                executor.execute(new IndexStoreRunnable());
-                executor.execute(new SummaryStoreRunnable());
+                executor.execute(new ProcessIndexStoreRunnable());
+                executor.execute(new ProcessSummaryStoreRunnable());
             }
         };
     }
@@ -73,7 +74,7 @@ public class ScheduleApplication {
      */
     @Scheduled(cron = "0 0 0 * * *")
     public void scheduleAppTop() {
-        appIndexService.generateAppIndexStoreData();
+        appIndexService.generateAppIndexStore();
     }
 
     /**
@@ -102,16 +103,26 @@ public class ScheduleApplication {
         }
     }
 
+    class DailyAppInformationUpdateRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            logger.info("[ScheduleApplication][DailyAppInformationUpdateRunnable]Start at " + new Date());
+            appLanguageService.dailyAppInformationUpdate();
+        }
+    }
+
     class DailyAppUpdateRunnable implements Runnable {
 
         @Override
         public void run() {
             logger.info("[ScheduleApplication][DailyAppUpdateRunnable]Start at " + new Date());
-            appLanguageService.dailyAppInformationUpdate();
+            appLanguageService.dailyAppUpdate();
         }
     }
 
     class DailyAppScreenshotRunnable implements Runnable {
+        
         @Override
         public void run() {
             logger.info("[ScheduleApplication][DailyAppScreenshotRunnable]Start at " + new Date());
@@ -124,7 +135,7 @@ public class ScheduleApplication {
         @Override
         public void run() {
             logger.info("[ScheduleApplication][GenerationIndexRunnable]Start at " + new Date());
-            appIndexService.generateAppIndexStoreData();
+            appIndexService.generateAppIndexStore();
         }
     }
 
@@ -137,21 +148,21 @@ public class ScheduleApplication {
         }
     }
 
-    class IndexStoreRunnable implements Runnable {
+    class ProcessIndexStoreRunnable implements Runnable {
 
         @Override
         public void run() {
-            logger.info("[ScheduleApplication][IndexStoreRunnable]Start at " + new Date());
-            appIndexService.appIndexStoreData();
+            logger.info("[ScheduleApplication][ProcessIndexStoreRunnable]Start at " + new Date());
+            appIndexService.processAppIndexStoreData();
         }
     }
 
-    class SummaryStoreRunnable implements Runnable {
+    class ProcessSummaryStoreRunnable implements Runnable {
 
         @Override
         public void run() {
-            logger.info("[ScheduleApplication][SummaryStoreRunnable]Start at " + new Date());
-            appSummaryService.appSummaryStoreData();
+            logger.info("[ScheduleApplication][ProcessSummaryStoreRunnable]Start at " + new Date());
+            appSummaryService.processAppSummaryStoreData();
         }
     }
 }

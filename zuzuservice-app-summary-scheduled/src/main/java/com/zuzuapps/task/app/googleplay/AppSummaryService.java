@@ -37,7 +37,7 @@ public class AppSummaryService extends AppCommonService {
         logger.info("[Application Summary Generation]Task end at: " + new Date());
     }
 
-    public void appSummaryStoreData() {
+    public void processAppSummaryStoreData() {
         while (true) {
             // something that should execute on weekdays only
             String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.generate.name()).getAbsolutePath();

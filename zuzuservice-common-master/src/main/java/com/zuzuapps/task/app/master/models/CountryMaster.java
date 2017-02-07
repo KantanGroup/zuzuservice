@@ -30,7 +30,7 @@ public class CountryMaster {
     private int type;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "create_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Date createAt;
 
     public short getId() {

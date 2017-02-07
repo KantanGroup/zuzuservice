@@ -108,7 +108,7 @@ public class CommonUtils {
     }
 
     public static String generateUserAgent() {
-        List<String> userAgents =  new ArrayList<String>();
+        List<String> userAgents = new ArrayList<String>();
         // Firefox
         userAgents.add("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1");
         userAgents.add("Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0");

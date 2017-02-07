@@ -28,7 +28,7 @@ import java.util.List;
 public class AppIndexService extends AppCommonService {
     final Log logger = LogFactory.getLog("AppIndexService");
 
-    public void generateAppIndexStoreData() {
+    public void generateAppIndexStore() {
         logger.info("[Application Index Generation]Task start at: " + new Date());
         String time = CommonUtils.getDailyByTime();
         String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.generate.name(), time).getAbsolutePath();
@@ -51,7 +51,7 @@ public class AppIndexService extends AppCommonService {
     /**
      * Write app index of category in to json
      */
-    public void appIndexStoreData() {
+    public void processAppIndexStoreData() {
         while (true) {
             // something that should execute on weekdays only
             String time = CommonUtils.getDailyByTime();

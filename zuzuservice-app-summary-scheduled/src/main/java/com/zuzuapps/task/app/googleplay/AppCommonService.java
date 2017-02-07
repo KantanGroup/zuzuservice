@@ -46,7 +46,7 @@ public class AppCommonService {
     @Value("${data.root.path:/tmp}")
     protected String rootPath;
 
-    @Value("${data.image.path:/tmp")
+    @Value("${data.image.path:/tmp}")
     protected String imageStore;
 
     @Value("${time.get.app.information:2000}")
@@ -125,7 +125,8 @@ public class AppCommonService {
         if (!countryRepository.findAll().iterator().hasNext()) {
             try {
                 Path file = Paths.get("countries.json");
-                List<CountryMaster> countries = mapper.readValue(file.toFile().getAbsoluteFile(), new TypeReference<List<CountryMaster>>() {});
+                List<CountryMaster> countries = mapper.readValue(file.toFile().getAbsoluteFile(), new TypeReference<List<CountryMaster>>() {
+                });
                 countryRepository.save(countries);
             } catch (IOException e) {
                 e.printStackTrace();

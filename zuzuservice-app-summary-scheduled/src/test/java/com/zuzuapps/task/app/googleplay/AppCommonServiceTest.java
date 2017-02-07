@@ -37,7 +37,7 @@ public class AppCommonServiceTest {
 
     @Test
     public void testGetUserAgent() {
-        for(int i =0; i < 100; i++) {
+        for (int i = 0; i < 100; i++) {
             System.out.println(CommonUtils.generateUserAgent());
         }
     }

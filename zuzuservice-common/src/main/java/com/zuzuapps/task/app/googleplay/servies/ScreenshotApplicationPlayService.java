@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
@@ -27,7 +28,7 @@ import java.util.Collections;
 public class ScreenshotApplicationPlayService {
     private final Log logger = LogFactory.getLog("ScreenshotApplicationPlayService");
 
-    @Value("${data.image.path:/tmp")
+    @Value("${data.image.path:/tmp}")
     private String imageStore;
 
     @Autowired
@@ -74,16 +75,17 @@ public class ScreenshotApplicationPlayService {
      * @throws GooglePlayRuntimeException
      */
     private ScreenshotPlay extractOriginalImage(String appId, String imageLink, ImageTypeEnum type) throws GooglePlayRuntimeException {
-        logger.debug("[ScreenshotApplicationPlayService][" + appId + "]Extract image from " + imageLink);
         try {
             if (imageLink.startsWith("//")) {
                 imageLink = "http:" + imageLink;
             }
+            logger.debug("[ScreenshotApplicationPlayService][" + appId + "]Extract image from " + imageLink);
             byte[] imageBytes = restTemplate.getForObject(imageLink, byte[].class, addHeaders());
             String appImageOriginPath = appId + (type == ImageTypeEnum.screenshot ? "/" + System.currentTimeMillis() + ".png" : "/icon.png");
             CommonUtils.folderBy(imageStore, appId);
-            logger.debug("[ScreenshotApplicationPlayService][" + appId + "]Write image from " + imageStore);
-            Files.write(Paths.get(imageStore, appImageOriginPath), imageBytes);
+            Path imagePath = Paths.get(imageStore, appImageOriginPath);
+            logger.debug("[ScreenshotApplicationPlayService][" + appId + "]Write image to " + imagePath.toFile().getAbsolutePath());
+            Files.write(imagePath, imageBytes);
             ScreenshotPlay screenshot = new ScreenshotPlay();
             screenshot.setAppId(appId);
             screenshot.setOriginal(appImageOriginPath);

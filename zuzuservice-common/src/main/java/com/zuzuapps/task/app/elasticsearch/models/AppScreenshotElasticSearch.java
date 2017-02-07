@@ -16,7 +16,7 @@ import java.util.List;
 public class AppScreenshotElasticSearch {
     @Id
     private String id;
-    @Field( type = FieldType.Nested)
+    @Field(type = FieldType.Nested)
     private List<ScreenshotPlay> screenshotPlays;
 
     public String getId() {

@@ -37,7 +37,7 @@ public class AppIndexMaster {
     private String icon;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_at", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "create_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Date createAt;
 
     public long getId() {
@@ -93,6 +93,9 @@ public class AppIndexMaster {
     }
 
     public void setIcon(String icon) {
+        if (icon.startsWith("//")) {
+            icon = "http:" + icon;
+        }
         this.icon = icon;
     }
 
