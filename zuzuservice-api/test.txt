@@ -1,0 +1,1 @@
+http://localhost:11223/api/v1/appIndexElasticSearches/search/findByCountryCodeAndCategoryAndCollection?countryCode=at&category=communication&collection=topselling_new_paid

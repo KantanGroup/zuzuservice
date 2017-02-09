@@ -11,6 +11,7 @@
         <module>zuzuservice-app-summary-scheduled</module>
         <module>zuzuservice-common-master</module>
         <module>zuzuservice-common</module>
+        <module>zuzuservice-api</module>
     </modules>
 
     <build>
