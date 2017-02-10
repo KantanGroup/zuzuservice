@@ -3,6 +3,8 @@ package com.zuzuapps.task.app.elasticsearch.models;
 import com.zuzuapps.task.app.googleplay.models.DeveloperPlay;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Date;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 public class AppInformationElasticSearch {
     @Id
     private String id;
+    @Field(type = FieldType.String)
     private String appId;
     private String url;
     private String title;

@@ -2,6 +2,8 @@ package com.zuzuapps.task.app.elasticsearch.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.Date;
 
@@ -12,13 +14,19 @@ import java.util.Date;
 public class AppTrendElasticSearch {
     @Id
     private String id;
+    @Field(type = FieldType.Long)
     private int index;
     private String title;
+    @Field(type = FieldType.String)
     private String appId;
+    @Field(type = FieldType.String)
     private String countryCode;
+    @Field(type = FieldType.String)
     private String category;
+    @Field(type = FieldType.String)
     private String collection;
     private String icon;
+    @Field(type = FieldType.Long)
     private Date createAt;
 
     public String getId() {

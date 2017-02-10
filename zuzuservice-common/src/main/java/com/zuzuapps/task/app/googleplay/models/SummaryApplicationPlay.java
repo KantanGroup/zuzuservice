@@ -59,6 +59,9 @@ public class SummaryApplicationPlay {
     }
 
     public String getIcon() {
+        if (icon.startsWith("//")) {
+            icon = "http:" + icon;
+        }
         return icon;
     }
 

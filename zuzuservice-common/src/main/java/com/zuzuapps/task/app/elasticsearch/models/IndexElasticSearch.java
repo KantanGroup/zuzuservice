@@ -8,11 +8,11 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 /**
  * @author tuanta17
  */
-@Document(indexName = "app-top-index", type = "app-top-index", shards = 1, replicas = 0, refreshInterval = "-1")
-public class AppIndexElasticSearch {
+@Document(indexName = "app-index", type = "app-index", shards = 1, replicas = 0, refreshInterval = "-1")
+public class IndexElasticSearch {
     @Id
     private String id;
-    @Field(type = FieldType.Long)
+    @Field(type = FieldType.Integer)
     private int index;
     private String title;
     @Field(type = FieldType.String)

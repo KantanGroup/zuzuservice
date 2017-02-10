@@ -1,27 +1,27 @@
-package com.zuzuapps.task.app.elasticsearch.models;
+package com.zuzuapps.task.app.solr.models;
 
+import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.solr.core.mapping.SolrDocument;
 
 /**
  * @author tuanta17
  */
-@Document(indexName = "app-top-index", type = "app-top-index", shards = 1, replicas = 0, refreshInterval = "-1")
-public class AppIndexElasticSearch {
+@SolrDocument(solrCoreName = "app_index")
+public class AppIndexSolr {
     @Id
     private String id;
-    @Field(type = FieldType.Long)
+    @Field
     private int index;
+    @Field
     private String title;
-    @Field(type = FieldType.String)
+    @Field
     private String appId;
-    @Field(type = FieldType.String)
+    @Field
     private String countryCode;
-    @Field(type = FieldType.String)
+    @Field
     private String category;
-    @Field(type = FieldType.String)
+    @Field
     private String collection;
     private String icon;
 
@@ -33,12 +33,12 @@ public class AppIndexElasticSearch {
         this.id = id;
     }
 
-    public String getAppId() {
-        return appId;
+    public int getIndex() {
+        return index;
     }
 
-    public void setAppId(String appId) {
-        this.appId = appId;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public String getTitle() {
@@ -47,6 +47,14 @@ public class AppIndexElasticSearch {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 
     public String getCountryCode() {
@@ -71,14 +79,6 @@ public class AppIndexElasticSearch {
 
     public void setCollection(String collection) {
         this.collection = collection;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
     }
 
     public String getIcon() {

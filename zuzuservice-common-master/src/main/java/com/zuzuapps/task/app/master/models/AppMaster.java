@@ -111,9 +111,6 @@ public class AppMaster {
     }
 
     public void setIcon(String icon) {
-        if (icon.startsWith("//")) {
-            icon = "http:" + icon;
-        }
         this.icon = icon;
     }
 

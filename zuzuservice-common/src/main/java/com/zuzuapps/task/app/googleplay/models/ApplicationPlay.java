@@ -84,6 +84,9 @@ public class ApplicationPlay {
     }
 
     public String getIcon() {
+        if (icon.startsWith("//")) {
+            icon = "http:" + icon;
+        }
         return icon;
     }
 
