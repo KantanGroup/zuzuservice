@@ -21,7 +21,7 @@ public class AppIndexElasticSearchRepositoryTest {
 
     @Test
     public void testGetIndex() throws Exception {
-        List<AppIndexElasticSearch> apps = repository.findByCountryCodeAndCategoryAndCollection("at", "communication", "topselling_new_paid");
+        List<AppIndexElasticSearch> apps = repository.findByCountryCodeAndCategoryAndCollection("at", "game", "topselling_free");
         System.out.println(apps.size());
     }
 }
