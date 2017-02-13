@@ -3,16 +3,15 @@ package com.zuzuapps.task.app.googleplay;
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
-import com.zuzuapps.task.app.elasticsearch.models.AppInformationElasticSearch;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
+import com.zuzuapps.task.app.solr.models.AppInformationSolr;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -34,13 +33,17 @@ public class AppInformationService extends AppCommonService {
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
-                processDailyAppInformation(files);
+                try {
+                    processDailyAppInformation(files);
+                } catch (Exception ex) {
+                    logger.error("[ProcessError]Error " + ex.getMessage(), ex);
+                }
             }
             CommonUtils.delay(timeWaitRuntimeLocal);
         }
     }
 
-    private void processDailyAppInformation(File[] files) {
+    private void processDailyAppInformation(File[] files) throws Exception {
         logger.debug("[Information Store]Task start at: " + new Date());
         String time = CommonUtils.getDailyByTime();
         for (File json : files) {
@@ -53,7 +56,7 @@ public class AppInformationService extends AppCommonService {
                 String appId = data[2].replaceAll(JSON_FILE_EXTENSION, "");
                 logger.debug("[Information Store]Get app " + appId + " by language " + languageCode + " in elastic search");
                 try {
-                    AppInformationElasticSearch app = appInformationElasticSearchRepository.findOne(appId + "_" + languageCode);
+                    AppInformationSolr app = appInformationService.findOne(appId + "_" + languageCode);
                     if (app == null || isTimeToUpdate(app.getCreateAt())) {
                         logger.debug("[Information Store]Get app " + appId + " by language " + languageCode);
                         ApplicationPlay applicationPlay = getAppInformationByLanguage(languageCode, appId);
@@ -66,16 +69,16 @@ public class AppInformationService extends AppCommonService {
                         app = createAppInformation(applicationPlay, languageCode);
                         // Index to elastic search
                         logger.debug("[Information Store]Get app " + appId + " by language " + languageCode);
-                        appInformationElasticSearchRepository.save(app);
+                        appInformationService.save(app);
                         moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
                     }
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.APP_NOT_FOUND) {
-                        logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                        logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     } else if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
                         logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
                     } else {
-                        logger.warn("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                        logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     }
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
                 } catch (Exception ex) {
@@ -90,14 +93,15 @@ public class AppInformationService extends AppCommonService {
         logger.debug("[Information Store]Task end at: " + new Date());
     }
 
-    private AppInformationElasticSearch createAppInformation(ApplicationPlay applicationPlay, String languageCode) {
-        AppInformationElasticSearch app = new AppInformationElasticSearch();
+    private AppInformationSolr createAppInformation(ApplicationPlay applicationPlay, String languageCode) {
+        AppInformationSolr app = new AppInformationSolr();
         app.setId(applicationPlay.getAppId() + "_" + languageCode);
         app.setAppId(applicationPlay.getAppId());
         app.setUrl(applicationPlay.getUrl());
         app.setTitle(applicationPlay.getTitle());
         app.setSummary(applicationPlay.getSummary());
-        app.setDeveloper(applicationPlay.getDeveloper());
+        app.setDeveloperId(applicationPlay.getDeveloper().getDevId());
+        app.setDeveloperUrl(applicationPlay.getDeveloper().getUrl());
         app.setIcon(applicationPlay.getIcon());
         app.setScore(applicationPlay.getScore());
         app.setPrice(applicationPlay.getPrice());
@@ -137,7 +141,7 @@ public class AppInformationService extends AppCommonService {
      * @param languageCode Language code
      * @param appId        App id
      */
-    private ApplicationPlay getAppInformationByLanguage(String languageCode, String appId) throws GooglePlayRuntimeException, IOException {
+    private ApplicationPlay getAppInformationByLanguage(String languageCode, String appId) throws Exception {
         ApplicationPlay applicationPlay =
                 informationApplicationPlayService.getInformationApplications(appId, languageCode);
         StringBuilder path = createAppInformationJSONPath(appId, languageCode);

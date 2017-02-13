@@ -1,14 +1,14 @@
 package com.zuzuapps.task.app.googleplay;
 
 import com.zuzuapps.task.app.common.*;
-import com.zuzuapps.task.app.elasticsearch.models.AppIndexElasticSearch;
-import com.zuzuapps.task.app.elasticsearch.models.AppTrendElasticSearch;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
 import com.zuzuapps.task.app.master.models.AppIndexMaster;
 import com.zuzuapps.task.app.master.models.CountryMaster;
+import com.zuzuapps.task.app.solr.models.AppIndexSolr;
+import com.zuzuapps.task.app.solr.models.AppTrendSolr;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,13 +59,17 @@ public class AppIndexService extends AppCommonService {
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
-                processAppIndexStoreData(files);
+                try {
+                    processAppIndexStoreData(files);
+                } catch (Exception ex) {
+                    logger.error("[ProcessError]Error " + ex.getMessage(), ex);
+                }
             }
             CommonUtils.delay(timeWaitRuntimeLocal);
         }
     }
 
-    private void processAppIndexStoreData(File[] files) {
+    private void processAppIndexStoreData(File[] files) throws Exception {
         logger.info("[Application Index Store]Task start at: " + new Date());
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();
@@ -89,7 +93,7 @@ public class AppIndexService extends AppCommonService {
                     if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
                         logger.error("[Application Index Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
                     } else {
-                        logger.warn("[Application Index Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
+                        logger.info("[Application Index Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
                     }
                 } catch (Exception ex) {
                     logger.error("[Application Index Store][" + countryCode + "][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
@@ -126,7 +130,11 @@ public class AppIndexService extends AppCommonService {
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
-                processIndexUpdate(files);
+                try {
+                    processIndexUpdate(files);
+                } catch (Exception ex) {
+                    logger.error("[ProcessError]Error " + ex.getMessage(), ex);
+                }
             }
             CommonUtils.delay(timeWaitRuntimeLocal);
         }
@@ -137,7 +145,7 @@ public class AppIndexService extends AppCommonService {
      *
      * @param files File data
      */
-    public void processIndexUpdate(File[] files) {
+    public void processIndexUpdate(File[] files) throws Exception {
         logger.debug("[Application Summary --> Index]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();
@@ -147,8 +155,8 @@ public class AppIndexService extends AppCommonService {
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 4) {
                 List<AppIndexMaster> appIndexMasters = new ArrayList<AppIndexMaster>();
-                List<AppIndexElasticSearch> appIndexElasticSearches = new ArrayList<AppIndexElasticSearch>();
-                List<AppTrendElasticSearch> appTrendElasticSearches = new ArrayList<AppTrendElasticSearch>();
+                List<AppIndexSolr> appIndexs = new ArrayList<AppIndexSolr>();
+                List<AppTrendSolr> appTrends = new ArrayList<AppTrendSolr>();
                 String countryCode = data[0];
                 String languageCode = data[1];
                 CategoryEnum category = CategoryEnum.valueOf(data[2].toUpperCase());
@@ -161,8 +169,8 @@ public class AppIndexService extends AppCommonService {
                     short index = 1;
                     for (SummaryApplicationPlay app : apps.getResults()) {
                         createAppIndexMaster(appIndexMasters, countryCode, category, collection, fileDateTime, index, app);
-                        createAppIndexElasticSearch(appIndexElasticSearches, countryCode, category, collection, fileDateTime, index, app);
-                        createAppTrendElasticSearch(appTrendElasticSearches, countryCode, category, collection, fileDateTime, index, app);
+                        createAppIndexElasticSearch(appIndexs, countryCode, category, collection, fileDateTime, index, app);
+                        createAppTrendElasticSearch(appTrends, countryCode, category, collection, fileDateTime, index, app);
                         index++;
                     }
                     // Create app info json
@@ -172,9 +180,9 @@ public class AppIndexService extends AppCommonService {
                     appIndexMasterRepository.save(appIndexMasters);
                     // Add data to ElasticSearch
                     logger.debug("[Application Summary --> Index]Index to elastichsearch");
-                    appIndexElasticSearchRepository.save(appIndexElasticSearches);
+                    appIndexService.save(appIndexs);
                     logger.debug("[Application Summary --> Index]Trend to elastichsearch");
-                    appTrendElasticSearchRepository.save(appTrendElasticSearches);
+                    appTrendService.save(appTrends);
                     // Move data to log folder
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
                 } catch (Exception ex) {
@@ -200,32 +208,32 @@ public class AppIndexService extends AppCommonService {
         appIndexMasters.add(appIndexMaster);
     }
 
-    private void createAppIndexElasticSearch(List<AppIndexElasticSearch> appIndexElasticSearches, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, int index, SummaryApplicationPlay app) {
-        AppIndexElasticSearch appIndexElasticSearch = new AppIndexElasticSearch();
-        appIndexElasticSearch.setId(country + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + index);
-        appIndexElasticSearch.setIndex(index);
-        appIndexElasticSearch.setTitle(app.getTitle());
-        appIndexElasticSearch.setAppId(app.getAppId());
-        appIndexElasticSearch.setCategory(category.name().toLowerCase());
-        appIndexElasticSearch.setCollection(collection.name());
-        appIndexElasticSearch.setCountryCode(country);
-        appIndexElasticSearch.setIndex(index);
-        appIndexElasticSearch.setIcon(app.getIcon());
-        appIndexElasticSearches.add(appIndexElasticSearch);
+    private void createAppIndexElasticSearch(List<AppIndexSolr> appIndexs, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, int index, SummaryApplicationPlay app) {
+        AppIndexSolr appIndex = new AppIndexSolr();
+        appIndex.setId(country + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + index);
+        appIndex.setIndex(index);
+        appIndex.setTitle(app.getTitle());
+        appIndex.setAppId(app.getAppId());
+        appIndex.setCategory(category.name().toLowerCase());
+        appIndex.setCollection(collection.name());
+        appIndex.setCountryCode(country);
+        appIndex.setIndex(index);
+        appIndex.setIcon(app.getIcon());
+        appIndexs.add(appIndex);
     }
 
-    private void createAppTrendElasticSearch(List<AppTrendElasticSearch> appTrendElasticSearches, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, int index, SummaryApplicationPlay app) {
-        AppTrendElasticSearch appTrendElasticSearch = new AppTrendElasticSearch();
-        appTrendElasticSearch.setId(country + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getAppId() + "_" + CommonUtils.getTimeBy(fileDateTime, "yyyyMMdd"));
-        appTrendElasticSearch.setIndex(index);
-        appTrendElasticSearch.setTitle(app.getTitle());
-        appTrendElasticSearch.setAppId(app.getAppId());
-        appTrendElasticSearch.setCategory(category.name().toLowerCase());
-        appTrendElasticSearch.setCollection(collection.name());
-        appTrendElasticSearch.setCountryCode(country);
-        appTrendElasticSearch.setIndex(index);
-        appTrendElasticSearch.setIcon(app.getIcon());
-        appTrendElasticSearch.setCreateAt(fileDateTime);
-        appTrendElasticSearches.add(appTrendElasticSearch);
+    private void createAppTrendElasticSearch(List<AppTrendSolr> appTrends, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, int index, SummaryApplicationPlay app) {
+        AppTrendSolr appTrend = new AppTrendSolr();
+        appTrend.setId(country + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getAppId() + "_" + CommonUtils.getTimeBy(fileDateTime, "yyyyMMdd"));
+        appTrend.setIndex(index);
+        appTrend.setTitle(app.getTitle());
+        appTrend.setAppId(app.getAppId());
+        appTrend.setCategory(category.name().toLowerCase());
+        appTrend.setCollection(collection.name());
+        appTrend.setCountryCode(country);
+        appTrend.setIndex(index);
+        appTrend.setIcon(app.getIcon());
+        appTrend.setCreateAt(fileDateTime);
+        appTrends.add(appTrend);
     }
 }

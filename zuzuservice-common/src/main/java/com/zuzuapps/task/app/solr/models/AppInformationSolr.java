@@ -1,78 +1,98 @@
-package com.zuzuapps.task.app.master.models;
+package com.zuzuapps.task.app.solr.models;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.solr.core.mapping.Indexed;
+import org.springframework.data.solr.core.mapping.SolrDocument;
 
-import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author tuanta17
  */
-@Entity
-@Table(name = "master_application_s",
-        indexes = {
-                @Index(name = "app_id_index", columnList = "app_id"),
-                @Index(name = "developer_id_index", columnList = "developer_id")
-        }
-)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class AppMaster {
+@SolrDocument(solrCoreName = "app-information-index")
+public class AppInformationSolr {
+    @Indexed
     @Id
-    @Column(name = "app_id", length = 128, nullable = false)
+    private String id;
+    @Indexed(name = "app_id", type = "string")
     private String appId;
+    @Indexed(type = "string")
     private String url;
-    private String icon;
-    private float score;
-    @Column(name = "price", length = 64)
-    private String price;
-    private boolean free;
-    @Column(name = "developer_id", length = 128)
+    @Indexed(type = "string")
+    private String title;
+    @Indexed(type = "string")
+    private String summary;
+    @Indexed(name = "developer_id", type = "string")
     private String developerId;
-    @Column(name = "developer_url")
+    @Indexed(name = "development_url", type = "string")
     private String developerUrl;
-    @Column(name = "developer_email", length = 64)
+    @Indexed(type = "string")
+    private String icon;
+    @Indexed(type = "double")
+    private float score;
+    @Indexed(type = "string")
+    private String price;
+    @Indexed(type = "boolean")
+    private boolean free;
+    @Indexed(name = "developer_email", type = "string")
     private String developerEmail;
-    @Column(name = "developer_website")
+    @Indexed(name = "developer_website", type = "string")
     private String developerWebsite;
+    @Indexed(type = "string")
     private String updated;
-    @Column(name = "app_version", length = 64)
-    private String appVersion;
-    @Column(name = "min_installs")
+    @Indexed(type = "string")
+    private String version;
+    @Indexed(name = "min_installs", type = "int")
     private int minInstalls;
-    @Column(name = "max_installs")
+    @Indexed(name = "max_installs", type = "int")
     private int maxInstalls;
-    @Column(name = "genre", length = 64)
+    @Indexed(type = "string")
     private String genre;
-    @Column(name = "genre_id", length = 64)
+    @Indexed(name = "genre_id", type = "string")
     private String genreId;
-    @Column(name = "family_genre", length = 64)
+    @Indexed(type = "string")
+    private String description;
+    @Indexed(name = "description_html", type = "string")
+    private String descriptionHTML;
+    @Indexed(name = "family_genre", type = "string")
     private String familyGenre;
-    @Column(name = "family_genre_id", length = 64)
+    @Indexed(name = "family_genre_id", type = "string")
     private String familyGenreId;
-    @Column(name = "offers_iap")
+    @Indexed(name = "offers_iap", type = "boolean")
     private boolean offersIAP;
-    @Column(name = "ad_supported")
+    @Indexed(name = "ad_supported", type = "boolean")
     private boolean adSupported;
-    @Column(name = "android_version_text", length = 36)
+    @Indexed(name = "android_version_text", type = "string")
     private String androidVersionText;
-    @Column(name = "android_version", length = 36)
+    @Indexed(name = "android_version", type = "string")
     private String androidVersion;
-    @Column(name = "content_rating", length = 64)
+    @Indexed(name = "content_rating", type = "string")
     private String contentRating;
+    @Indexed
+    private List<String> screenshots;
+    @Indexed(type = "boolean")
     private boolean preregister;
+    @Indexed(type = "string")
     private String video;
-    @Column(name = "playstore_url")
+    @Indexed(name = "playstore_url", type = "string")
     private String playstoreUrl;
+    @Indexed(type = "string")
     private String permissions;
+    @Indexed(type = "string")
     private String similar;
+    @Indexed(type = "string")
     private String reviews;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Indexed(name = "create_at", type = "date")
     private Date createAt;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "update_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private Date updateAt;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getAppId() {
         return appId;
@@ -88,6 +108,22 @@ public class AppMaster {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     public String getDeveloperId() {
@@ -162,12 +198,12 @@ public class AppMaster {
         this.updated = updated;
     }
 
-    public String getAppVersion() {
-        return appVersion;
+    public String getVersion() {
+        return version;
     }
 
-    public void setAppVersion(String appVersion) {
-        this.appVersion = appVersion;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public int getMinInstalls() {
@@ -200,6 +236,22 @@ public class AppMaster {
 
     public void setGenreId(String genreId) {
         this.genreId = genreId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescriptionHTML() {
+        return descriptionHTML;
+    }
+
+    public void setDescriptionHTML(String descriptionHTML) {
+        this.descriptionHTML = descriptionHTML;
     }
 
     public String getFamilyGenre() {
@@ -258,6 +310,14 @@ public class AppMaster {
         this.contentRating = contentRating;
     }
 
+    public List<String> getScreenshots() {
+        return screenshots;
+    }
+
+    public void setScreenshots(List<String> screenshots) {
+        this.screenshots = screenshots;
+    }
+
     public boolean isPreregister() {
         return preregister;
     }
@@ -312,13 +372,5 @@ public class AppMaster {
 
     public void setCreateAt(Date createAt) {
         this.createAt = createAt;
-    }
-
-    public Date getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
     }
 }

@@ -62,7 +62,11 @@ public class ScheduleApplicationTest {
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
         if (files != null && files.length != 0) {
-            scheduleService.processIndexUpdate(files);
+            try {
+                scheduleService.processIndexUpdate(files);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

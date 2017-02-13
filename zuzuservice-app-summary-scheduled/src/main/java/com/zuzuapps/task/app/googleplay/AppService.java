@@ -42,14 +42,18 @@ public class AppService extends AppCommonService {
                 File dir = new File(dirPath);
                 File[] files = dir.listFiles();
                 if (files != null && files.length != 0) {
-                    processDailyApp(files);
+                    try {
+                        processDailyApp(files);
+                    } catch (Exception ex) {
+                        logger.error("[ProcessError]Error " + ex.getMessage(), ex);
+                    }
                 }
             }
             CommonUtils.delay(timeWaitRuntimeLocal);
         }
     }
 
-    private void processDailyApp(File[] files) {
+    private void processDailyApp(File[] files) throws Exception {
         logger.debug("[Application Store]Cronjob start at: " + new Date());
         for (File json : files) {
             logger.info("[Application Store]File " + json.getAbsolutePath());
@@ -85,7 +89,7 @@ public class AppService extends AppCommonService {
                     if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
                         logger.error("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
                     } else {
-                        logger.warn("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                        logger.info("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     }
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
                 } catch (Exception ex) {

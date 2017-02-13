@@ -4,11 +4,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.Indexed;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
+import java.util.Date;
+
 /**
  * @author tuanta17
  */
-@SolrDocument(solrCoreName = "app-index")
-public class AppIndexSolr {
+@SolrDocument(solrCoreName = "app-trend-index")
+public class AppTrendSolr {
     @Indexed
     @Id
     private String id;
@@ -26,6 +28,8 @@ public class AppIndexSolr {
     private String collection;
     @Indexed(type = "string")
     private String icon;
+    @Indexed(name = "create_at", type = "date")
+    private Date createAt;
 
     public String getId() {
         return id;
@@ -89,5 +93,13 @@ public class AppIndexSolr {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
     }
 }

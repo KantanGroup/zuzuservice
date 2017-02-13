@@ -44,7 +44,11 @@ public class AppSummaryService extends AppCommonService {
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
-                processAppSummaryStore(files);
+                try {
+                    processAppSummaryStore(files);
+                } catch (Exception ex) {
+                    logger.error("[ProcessError]Error " + ex.getMessage(), ex);
+                }
             }
             CommonUtils.delay(timeWaitRuntimeLocal);
         }
@@ -53,7 +57,7 @@ public class AppSummaryService extends AppCommonService {
     /**
      * Get all in USA
      */
-    private void processAppSummaryStore(File[] files) {
+    private void processAppSummaryStore(File[] files) throws Exception {
         logger.info("[Application Summary Store]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
         for (File json : files) {
@@ -78,7 +82,7 @@ public class AppSummaryService extends AppCommonService {
                         if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
                             logger.error("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
                         } else {
-                            logger.warn("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
+                            logger.info("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
                         }
                         break;
                     } catch (Exception ex) {
@@ -117,13 +121,17 @@ public class AppSummaryService extends AppCommonService {
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
-                processAppSummary(files);
+                try {
+                    processAppSummary(files);
+                } catch (Exception ex) {
+                    logger.error("[ProcessError]Error " + ex.getMessage(), ex);
+                }
             }
             CommonUtils.delay(timeWaitRuntimeLocal);
         }
     }
 
-    private void processAppSummary(File[] files) {
+    private void processAppSummary(File[] files) throws Exception {
         logger.debug("[Application Summary --> Information]Cronjob end at: " + new Date());
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();

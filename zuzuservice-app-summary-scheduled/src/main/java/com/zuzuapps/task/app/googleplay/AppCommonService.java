@@ -18,6 +18,10 @@ import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
 import com.zuzuapps.task.app.master.models.AppScreenshotMaster;
 import com.zuzuapps.task.app.master.models.CountryMaster;
 import com.zuzuapps.task.app.master.repositories.*;
+import com.zuzuapps.task.app.solr.repositories.AppIndexSolrRepository;
+import com.zuzuapps.task.app.solr.repositories.AppInformationSolrRepository;
+import com.zuzuapps.task.app.solr.repositories.AppScreenshotSolrRepository;
+import com.zuzuapps.task.app.solr.repositories.AppTrendSolrRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,13 +83,13 @@ public class AppCommonService {
     @Autowired
     protected AppScreenshotMasterRepository appScreenshotMasterRepository;
     @Autowired
-    protected AppIndexElasticSearchRepository appIndexElasticSearchRepository;
+    protected AppIndexSolrRepository appIndexService;
     @Autowired
-    protected AppTrendElasticSearchRepository appTrendElasticSearchRepository;
+    protected AppTrendSolrRepository appTrendService;
     @Autowired
-    protected AppInformationElasticSearchRepository appInformationElasticSearchRepository;
+    protected AppInformationSolrRepository appInformationService;
     @Autowired
-    protected AppScreenshotElasticSearchRepository appScreenshotElasticSearchRepository;
+    protected AppScreenshotSolrRepository appScreenshotSolrService;
     @Autowired
     protected InformationApplicationPlayService informationApplicationPlayService;
     @Autowired
