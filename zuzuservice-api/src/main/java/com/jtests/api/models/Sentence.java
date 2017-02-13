@@ -17,17 +17,8 @@ public class Sentence implements java.io.Serializable {
     private String kanjiTransliteration;//`	VARCHAR,
     @Column(name = "kana_transliteration")
     private String kanaTransliteration;//`	VARCHAR,
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "kanji_code", nullable = false)
-    private Kanji kanji;
-
-    public Kanji getKanji() {
-        return kanji;
-    }
-
-    public void setKanji(Kanji kanji) {
-        this.kanji = kanji;
-    }
+    @Column(name = "kanji_code", nullable = false)
+    private int kanjiCode;
 
     public int getId() {
         return id;
@@ -69,12 +60,12 @@ public class Sentence implements java.io.Serializable {
         this.kanaTransliteration = kanaTransliteration;
     }
 
-//    public int getKanjiCode() {
-//        return kanjiCode;
-//    }
-//
-//    public void setKanjiCode(int kanjiCode) {
-//        this.kanjiCode = kanjiCode;
-//    }
+    public int getKanjiCode() {
+        return kanjiCode;
+    }
+
+    public void setKanjiCode(int kanjiCode) {
+        this.kanjiCode = kanjiCode;
+    }
 }
 

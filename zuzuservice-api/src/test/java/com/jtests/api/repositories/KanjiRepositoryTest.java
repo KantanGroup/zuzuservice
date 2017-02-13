@@ -11,8 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Created by tuanta on 11/19/16.
+ * @author tuanta17
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -37,5 +43,19 @@ public class KanjiRepositoryTest {
         for (Sentence sentence : kanji.getSentences()) {
             System.out.println(sentence.getSentence());
         }
+    }
+
+    @Test
+    public void testAllJLPTKanji() throws Exception {
+        List<Kanji> kanjis = repository.findAllByOrderByCodeAsc();
+        System.out.println(repository.count());
+        List<Kanji> filterKanjis = new ArrayList<>();
+        for (Kanji kanji : kanjis) {
+            if (kanji.getJlptLevel() > 0 || kanji.getGradeLevel() > 0)
+                filterKanjis.add(kanji);
+        }
+        System.out.println(filterKanjis.size());
+        final ObjectMapper mapper = new ObjectMapper();
+        Files.write(Paths.get("/tmp/kanjis.json"), mapper.writeValueAsString(filterKanjis).getBytes(), StandardOpenOption.CREATE);
     }
 }

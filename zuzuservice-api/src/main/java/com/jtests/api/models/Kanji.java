@@ -47,7 +47,7 @@ public class Kanji implements java.io.Serializable {
             joinColumns = @JoinColumn(name = "kanji_code", referencedColumnName = "code", nullable = false, updatable = false),
             inverseJoinColumns = @JoinColumn(name = "example_word_id", referencedColumnName = "id", nullable = false, updatable = false))
     private Set<Word> words;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "kanji", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "kanjiCode", orphanRemoval = true)
     private Set<Sentence> sentences;
 
     public List<Radical> getRadicals() {

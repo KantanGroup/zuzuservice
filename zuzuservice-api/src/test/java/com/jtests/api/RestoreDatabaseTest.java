@@ -23,7 +23,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RestoreDatabaseTest {
-    static final String PATH = "/home/tuanta/Documents/gcloud-server/kanjistudy/";
+    static final String PATH = "/tmp/kanjistudy/";
     @Autowired
     KanjiRepository kanjiRepository;
     @Autowired
