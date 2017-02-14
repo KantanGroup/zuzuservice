@@ -26,6 +26,14 @@ public class AppIndexSolr {
     private String collection;
     @Indexed(type = "string")
     private String icon;
+    @Indexed(name = "developer_id", type = "string")
+    private String developerId;
+    @Indexed(type = "double")
+    private float score;
+    @Indexed(type = "boolean")
+    private boolean free;
+    @Indexed(type = "string")
+    private String price;
 
     public String getId() {
         return id;
@@ -89,5 +97,37 @@ public class AppIndexSolr {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getDeveloperId() {
+        return developerId;
+    }
+
+    public void setDeveloperId(String developerId) {
+        this.developerId = developerId;
+    }
+
+    public float getScore() {
+        return score;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
+    }
+
+    public boolean isFree() {
+        return free;
+    }
+
+    public void setFree(boolean free) {
+        this.free = free;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 }

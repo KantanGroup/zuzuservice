@@ -169,8 +169,8 @@ public class AppIndexService extends AppCommonService {
                     short index = 1;
                     for (SummaryApplicationPlay app : apps.getResults()) {
                         createAppIndexMaster(appIndexMasters, countryCode, category, collection, fileDateTime, index, app);
-                        createAppIndexElasticSearch(appIndexs, countryCode, category, collection, fileDateTime, index, app);
-                        createAppTrendElasticSearch(appTrends, countryCode, category, collection, fileDateTime, index, app);
+                        createAppIndexInSearchEngine(appIndexs, countryCode, category, collection, fileDateTime, index, app);
+                        createAppTrendInSearchEngine(appTrends, countryCode, category, collection, fileDateTime, index, app);
                         index++;
                     }
                     // Create app info json
@@ -208,7 +208,7 @@ public class AppIndexService extends AppCommonService {
         appIndexMasters.add(appIndexMaster);
     }
 
-    private void createAppIndexElasticSearch(List<AppIndexSolr> appIndexs, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, int index, SummaryApplicationPlay app) {
+    private void createAppIndexInSearchEngine(List<AppIndexSolr> appIndexs, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, int index, SummaryApplicationPlay app) {
         AppIndexSolr appIndex = new AppIndexSolr();
         appIndex.setId(country + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + index);
         appIndex.setIndex(index);
@@ -219,10 +219,14 @@ public class AppIndexService extends AppCommonService {
         appIndex.setCountryCode(country);
         appIndex.setIndex(index);
         appIndex.setIcon(app.getIcon());
+        appIndex.setDeveloperId(app.getDeveloper().getDevId());
+        appIndex.setFree(app.isFree());
+        appIndex.setPrice(app.getPrice());
+        appIndex.setScore(app.getScore());
         appIndexs.add(appIndex);
     }
 
-    private void createAppTrendElasticSearch(List<AppTrendSolr> appTrends, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, int index, SummaryApplicationPlay app) {
+    private void createAppTrendInSearchEngine(List<AppTrendSolr> appTrends, String country, CategoryEnum category, CollectionEnum collection, Date fileDateTime, int index, SummaryApplicationPlay app) {
         AppTrendSolr appTrend = new AppTrendSolr();
         appTrend.setId(country + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getAppId() + "_" + CommonUtils.getTimeBy(fileDateTime, "yyyyMMdd"));
         appTrend.setIndex(index);
@@ -233,6 +237,10 @@ public class AppIndexService extends AppCommonService {
         appTrend.setCountryCode(country);
         appTrend.setIndex(index);
         appTrend.setIcon(app.getIcon());
+        appTrend.setDeveloperId(app.getDeveloper().getDevId());
+        appTrend.setFree(app.isFree());
+        appTrend.setPrice(app.getPrice());
+        appTrend.setScore(app.getScore());
         appTrend.setCreateAt(fileDateTime);
         appTrends.add(appTrend);
     }
