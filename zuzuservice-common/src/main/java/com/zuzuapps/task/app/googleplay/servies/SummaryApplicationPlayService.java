@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 /**
@@ -54,6 +55,8 @@ public class SummaryApplicationPlayService {
                 return applicationPlays;
             }
         } catch (ResourceAccessException ex) {
+            throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);
+        } catch (HttpClientErrorException ex) {
             throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);
         } catch (GooglePlayRuntimeException e) {
             throw e;

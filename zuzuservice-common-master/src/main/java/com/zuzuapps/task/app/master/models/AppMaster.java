@@ -38,9 +38,9 @@ public class AppMaster {
     @Column(name = "app_version", length = 64)
     private String appVersion;
     @Column(name = "min_installs")
-    private int minInstalls;
+    private long minInstalls;
     @Column(name = "max_installs")
-    private int maxInstalls;
+    private long maxInstalls;
     @Column(name = "genre", length = 64)
     private String genre;
     @Column(name = "genre_id", length = 64)
@@ -170,19 +170,19 @@ public class AppMaster {
         this.appVersion = appVersion;
     }
 
-    public int getMinInstalls() {
+    public long getMinInstalls() {
         return minInstalls;
     }
 
-    public void setMinInstalls(int minInstalls) {
+    public void setMinInstalls(long minInstalls) {
         this.minInstalls = minInstalls;
     }
 
-    public int getMaxInstalls() {
+    public long getMaxInstalls() {
         return maxInstalls;
     }
 
-    public void setMaxInstalls(int maxInstalls) {
+    public void setMaxInstalls(long maxInstalls) {
         this.maxInstalls = maxInstalls;
     }
 

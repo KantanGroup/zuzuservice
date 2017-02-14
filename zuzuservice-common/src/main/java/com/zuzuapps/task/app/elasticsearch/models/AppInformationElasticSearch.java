@@ -30,8 +30,8 @@ public class AppInformationElasticSearch {
     private String developerWebsite;
     private String updated;
     private String version;
-    private int minInstalls;
-    private int maxInstalls;
+    private long minInstalls;
+    private long maxInstalls;
     private String genre;
     private String genreId;
     private String description;
@@ -168,19 +168,19 @@ public class AppInformationElasticSearch {
         this.version = version;
     }
 
-    public int getMinInstalls() {
+    public long getMinInstalls() {
         return minInstalls;
     }
 
-    public void setMinInstalls(int minInstalls) {
+    public void setMinInstalls(long minInstalls) {
         this.minInstalls = minInstalls;
     }
 
-    public int getMaxInstalls() {
+    public long getMaxInstalls() {
         return maxInstalls;
     }
 
-    public void setMaxInstalls(int maxInstalls) {
+    public void setMaxInstalls(long maxInstalls) {
         this.maxInstalls = maxInstalls;
     }
 

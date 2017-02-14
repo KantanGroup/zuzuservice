@@ -15,21 +15,10 @@ public class AppLanguageMaster {
 
     @EmbeddedId
     private AppLanguageId id;
-
-    private String title;
-    @Column(columnDefinition = "TEXT")
-    private String summary;
-    @Column(columnDefinition = "TEXT")
-    private String description;
-    @Column(columnDefinition = "TEXT", name = "description_html")
-    private String descriptionHTML;
-
+    private String path;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Date createAt;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "update_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private Date updateAt;
 
     public AppLanguageId getId() {
         return id;
@@ -39,36 +28,12 @@ public class AppLanguageMaster {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getPath() {
+        return path;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getDescriptionHTML() {
-        return descriptionHTML;
-    }
-
-    public void setDescriptionHTML(String descriptionHTML) {
-        this.descriptionHTML = descriptionHTML;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public Date getCreateAt() {
@@ -77,13 +42,5 @@ public class AppLanguageMaster {
 
     public void setCreateAt(Date createAt) {
         this.createAt = createAt;
-    }
-
-    public Date getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
     }
 }

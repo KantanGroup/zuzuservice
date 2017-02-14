@@ -43,10 +43,10 @@ public class AppInformationSolr {
     private String updated;
     @Indexed(type = "string")
     private String version;
-    @Indexed(name = "min_installs", type = "int")
-    private int minInstalls;
-    @Indexed(name = "max_installs", type = "int")
-    private int maxInstalls;
+    @Indexed(name = "min_installs", type = "long")
+    private long minInstalls;
+    @Indexed(name = "max_installs", type = "long")
+    private long maxInstalls;
     @Indexed(type = "string")
     private String genre;
     @Indexed(name = "genre_id", type = "string")
@@ -206,19 +206,19 @@ public class AppInformationSolr {
         this.version = version;
     }
 
-    public int getMinInstalls() {
+    public long getMinInstalls() {
         return minInstalls;
     }
 
-    public void setMinInstalls(int minInstalls) {
+    public void setMinInstalls(long minInstalls) {
         this.minInstalls = minInstalls;
     }
 
-    public int getMaxInstalls() {
+    public long getMaxInstalls() {
         return maxInstalls;
     }
 
-    public void setMaxInstalls(int maxInstalls) {
+    public void setMaxInstalls(long maxInstalls) {
         this.maxInstalls = maxInstalls;
     }
 

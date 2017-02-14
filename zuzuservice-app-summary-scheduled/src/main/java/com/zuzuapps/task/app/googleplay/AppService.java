@@ -67,7 +67,7 @@ public class AppService extends AppCommonService {
                     ApplicationPlay app = mapper.readValue(json, ApplicationPlay.class);
                     // 2. Write data to database
                     AppMaster appMaster = createAppMaster(app);
-                    AppLanguageMaster appLanguageMaster = createAppLanguageMaster(app, languageCode);
+                    AppLanguageMaster appLanguageMaster = createAppLanguageMaster(app, languageCode, filename);
                     logger.debug("[Application Store]App " + appId + " info store to database");
                     appLanguageMasterRepository.save(appLanguageMaster);
                     appMasterRepository.save(appMaster);
@@ -119,14 +119,16 @@ public class AppService extends AppCommonService {
         }
     }
 
-    private AppLanguageMaster createAppLanguageMaster(ApplicationPlay applicationPlay, String languageCode) {
+    private AppLanguageMaster createAppLanguageMaster(ApplicationPlay applicationPlay, String languageCode, String filename) {
+        StringBuilder path = new StringBuilder(DataServiceEnum.app.name());
+        path.append("/").append(DataTypeEnum.log.name());
+        path.append("/").append(CommonUtils.getDailyByTime());
+        path.append("/").append(filename);
+        path.append(".gz");
         AppLanguageMaster app = new AppLanguageMaster();
         AppLanguageId id = new AppLanguageId(applicationPlay.getAppId(), languageCode);
         app.setId(id);
-        app.setTitle(applicationPlay.getTitle());
-        app.setSummary(applicationPlay.getSummary());
-        app.setDescription(applicationPlay.getDescription());
-        app.setDescriptionHTML(applicationPlay.getDescriptionHTML());
+        app.setPath(path.toString());
         return app;
     }
 
