@@ -82,8 +82,8 @@ public class ScreenshotApplicationPlayService {
             logger.debug("[ScreenshotApplicationPlayService][" + appId + "]Extract image from " + imageLink);
             byte[] imageBytes = restTemplate.getForObject(imageLink, byte[].class, addHeaders());
             String appImageOriginPath = appId + (type == ImageTypeEnum.screenshot ? "/" + System.currentTimeMillis() + ".png" : "/icon.png");
-            CommonUtils.folderBy(imageStore, appId);
-            Path imagePath = Paths.get(imageStore, appImageOriginPath);
+            CommonUtils.folderBy(imageStore, type == ImageTypeEnum.screenshot ? ImageTypeEnum.screenshot.name() : ImageTypeEnum.icon.name() , appId);
+            Path imagePath = Paths.get(imageStore, type == ImageTypeEnum.screenshot ? ImageTypeEnum.screenshot.name() : ImageTypeEnum.icon.name(), appImageOriginPath);
             logger.debug("[ScreenshotApplicationPlayService][" + appId + "]Write image to " + imagePath.toFile().getAbsolutePath());
             Files.write(imagePath, imageBytes);
             ScreenshotPlay screenshot = new ScreenshotPlay();
