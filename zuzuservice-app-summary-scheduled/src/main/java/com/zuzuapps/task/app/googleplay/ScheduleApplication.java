@@ -43,6 +43,8 @@ public class ScheduleApplication {
     @Autowired
     private AppIndexService appIndexService;
     @Autowired
+    private AppTopService appTopService;
+    @Autowired
     private AppSummaryService appSummaryService;
     @Autowired
     private AppInformationService appInformationService;
@@ -65,8 +67,8 @@ public class ScheduleApplication {
                 executor.execute(new DailyAppInformationUpdateRunnable());
                 executor.execute(new DailyAppUpdateRunnable());
                 executor.execute(new DailyAppScreenshotRunnable());
-                executor.execute(new GenerationIndexRunnable());
-                executor.execute(new GenerationSummaryRunnable());
+                //executor.execute(new GenerationIndexRunnable());
+                //executor.execute(new GenerationSummaryRunnable());
                 executor.execute(new ProcessIndexStoreRunnable());
                 executor.execute(new ProcessSummaryStoreRunnable());
             }
@@ -78,7 +80,7 @@ public class ScheduleApplication {
      */
     @Scheduled(cron = "0 0 0 * * *")
     public void scheduleAppTop() {
-        appIndexService.generateAppIndexStore();
+        appTopService.generateAppIndexStore();
     }
 
     /**
@@ -139,7 +141,7 @@ public class ScheduleApplication {
         @Override
         public void run() {
             logger.info("[ScheduleApplication][GenerationIndexRunnable]Start at " + new Date());
-            appIndexService.generateAppIndexStore();
+            appTopService.generateAppIndexStore();
         }
     }
 
@@ -157,7 +159,7 @@ public class ScheduleApplication {
         @Override
         public void run() {
             logger.info("[ScheduleApplication][ProcessIndexStoreRunnable]Start at " + new Date());
-            appIndexService.processAppIndexStoreData();
+            appTopService.processAppIndexStoreData();
         }
     }
 

@@ -51,8 +51,13 @@ public class InformationApplicationPlayService {
         } catch (ResourceAccessException ex) {
             throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);
         } catch (HttpClientErrorException ex) {
-            throw new GooglePlayRuntimeException(ExceptionCodes.APP_NOT_FOUND, ex);
-        } catch (GooglePlayRuntimeException e) {
+            if (ex.getMessage().contains("400")) {
+                throw new GooglePlayRuntimeException(ExceptionCodes.APP_NOT_FOUND, ex);
+            } else if (ex.getMessage().contains("503")) {
+                throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_LIMITED_EXCEPTION, ex);
+            } else {
+                throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);
+            }        } catch (GooglePlayRuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new GooglePlayRuntimeException(ExceptionCodes.UNKNOWN_EXCEPTION, e);

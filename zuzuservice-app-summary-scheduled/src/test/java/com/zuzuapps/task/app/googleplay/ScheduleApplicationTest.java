@@ -39,13 +39,15 @@ public class ScheduleApplicationTest {
     @Autowired
     private AppIndexService scheduleService;
     @Autowired
+    private AppTopService topScheduleService;
+    @Autowired
     private AppSummaryService appSummaryService;
     @Autowired
     private AppIndexElasticSearchRepository appIndexElasticSearchRepository;
 
     @Test
     public void appTop() {
-        scheduleService.processAppIndexStoreData();
+        topScheduleService.processAppIndexStoreData();
     }
 
     @Test

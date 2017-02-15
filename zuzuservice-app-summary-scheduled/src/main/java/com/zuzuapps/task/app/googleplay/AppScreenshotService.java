@@ -37,6 +37,7 @@ public class AppScreenshotService extends AppCommonService {
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
                 try {
+                    CommonUtils.sortFilesOrderByTime(files);
                     processDailyAppScreenshots(files);
                 } catch (Exception ex) {
                     logger.error("[ProcessError]Error " + ex.getMessage(), ex);
@@ -76,12 +77,16 @@ public class AppScreenshotService extends AppCommonService {
                     appScreenshotSolrService.save(appScreenshotSolr);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.log.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
                 } catch (GooglePlayRuntimeException ex) {
-                    if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
-                        logger.error("[Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
-                    } else {
+                    if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
                         logger.info("[Screenshot Store][" + appId + "]Error " + ex.getMessage());
+                    } else {
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                        if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
+                            logger.error("[Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
+                        } else {
+                            logger.info("[Screenshot Store][" + appId + "]Error " + ex.getMessage());
+                        }
                     }
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
                 } catch (Exception ex) {
                     logger.error("[Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());

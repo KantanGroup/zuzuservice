@@ -43,6 +43,7 @@ public class AppService extends AppCommonService {
                 File[] files = dir.listFiles();
                 if (files != null && files.length != 0) {
                     try {
+                        CommonUtils.sortFilesOrderByTime(files);
                         processDailyApp(files);
                     } catch (Exception ex) {
                         logger.error("[ProcessError]Error " + ex.getMessage(), ex);
@@ -86,12 +87,16 @@ public class AppService extends AppCommonService {
                     logger.error("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
                 } catch (GooglePlayRuntimeException ex) {
-                    if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
-                        logger.error("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
-                    } else {
+                    if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
                         logger.info("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                    } else {
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                        if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
+                            logger.error("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
+                        } else {
+                            logger.info("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                        }
                     }
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
                 } catch (Exception ex) {
                     logger.error("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
@@ -94,6 +95,14 @@ public class ScreenshotApplicationPlayService {
             return screenshot;
         } catch (IOException ex) {
             throw new GooglePlayRuntimeException(ExceptionCodes.DATA_READ_WRITE_EXCEPTION, ex);
+        } catch (HttpClientErrorException ex) {
+            if (ex.getMessage().contains("400")) {
+                throw new GooglePlayRuntimeException(ExceptionCodes.APP_NOT_FOUND, ex);
+            } else if (ex.getMessage().contains("400")) {
+                throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_LIMITED_EXCEPTION, ex);
+            } else {
+                throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);
+            }
         } catch (ResourceAccessException ex) {
             throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);
         } catch (Exception ex) {

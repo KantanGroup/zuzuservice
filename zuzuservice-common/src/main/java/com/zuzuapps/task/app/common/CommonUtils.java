@@ -7,10 +7,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -132,4 +129,15 @@ public class CommonUtils {
         return userAgents.get(randomNum);
     }
 
+    public static void sortFilesOrderByTime(File[] files) {
+        try {
+            Arrays.sort(files, new Comparator<File>() {
+                public int compare(File f1, File f2) {
+                    return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+                }
+            });
+        } catch (Exception ex) {
+            ex.getMessage();
+        }
+    }
 }

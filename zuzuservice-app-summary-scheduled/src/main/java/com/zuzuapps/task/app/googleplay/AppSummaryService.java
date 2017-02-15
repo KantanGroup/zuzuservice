@@ -45,6 +45,7 @@ public class AppSummaryService extends AppCommonService {
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
                 try {
+                    CommonUtils.sortFilesOrderByTime(files);
                     processAppSummaryStore(files);
                 } catch (Exception ex) {
                     logger.error("[ProcessError]Error " + ex.getMessage(), ex);
@@ -106,7 +107,6 @@ public class AppSummaryService extends AppCommonService {
         path.append(LANGUAGE_CODE_DEFAULT).append(REGEX_3_UNDER_LINE);
         path.append(category.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
         path.append(collection.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
-        path.append(time).append(REGEX_3_UNDER_LINE);
         path.append(page).append(JSON_FILE_EXTENSION);
         return path;
     }
@@ -122,6 +122,7 @@ public class AppSummaryService extends AppCommonService {
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
                 try {
+                    CommonUtils.sortFilesOrderByTime(files);
                     processAppSummary(files);
                 } catch (Exception ex) {
                     logger.error("[ProcessError]Error " + ex.getMessage(), ex);
