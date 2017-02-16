@@ -6,10 +6,6 @@ import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
 import com.zuzuapps.task.app.common.GZipUtil;
-import com.zuzuapps.task.app.elasticsearch.repositories.AppIndexElasticSearchRepository;
-import com.zuzuapps.task.app.elasticsearch.repositories.AppInformationElasticSearchRepository;
-import com.zuzuapps.task.app.elasticsearch.repositories.AppScreenshotElasticSearchRepository;
-import com.zuzuapps.task.app.elasticsearch.repositories.AppTrendElasticSearchRepository;
 import com.zuzuapps.task.app.googleplay.models.ScreenshotPlay;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
@@ -72,8 +68,6 @@ public class AppCommonService {
 
     @Autowired
     protected SummaryApplicationPlayService summaryApplicationPlayService;
-    @Autowired
-    protected CountryMasterRepository countryRepository;
     @Autowired
     protected AppIndexMasterRepository appIndexMasterRepository;
     @Autowired
@@ -140,10 +134,12 @@ public class AppCommonService {
      * Get distinct language
      */
     protected Set<String> findDistinctByLanguageCode() {
-        List<CountryMaster> countries = countryRepository.findAllByTypeGreaterThanOrderByTypeDesc(0);
+        List<CountryMaster> countries = getCountries();
         Set<String> languages = new HashSet<String>();
         for (CountryMaster country : countries) {
-            languages.add(country.getLanguageCode());
+            if (country.getType() != 0) {
+                languages.add(country.getLanguageCode());
+            }
         }
         return languages;
     }
@@ -161,16 +157,16 @@ public class AppCommonService {
         return appTime_.equalsIgnoreCase(currentTime_);
     }
 
-    public void importCountries() {
-        if (!countryRepository.findAll().iterator().hasNext()) {
-            try {
-                Path file = Paths.get("countries.json");
-                List<CountryMaster> countries = mapper.readValue(file.toFile().getAbsoluteFile(), new TypeReference<List<CountryMaster>>() {
-                });
-                countryRepository.save(countries);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    /**
+     * Get countries from json
+     */
+    protected List<CountryMaster> getCountries() {
+        try {
+            Path file = Paths.get("countries.json");
+            return mapper.readValue(file.toFile().getAbsoluteFile(), new TypeReference<List<CountryMaster>>() {
+            });
+        } catch (IOException e) {
+            return new ArrayList<CountryMaster>();
         }
     }
 }

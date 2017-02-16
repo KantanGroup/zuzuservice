@@ -30,7 +30,7 @@ public class AppIndexService extends AppCommonService {
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
         if (files == null || files.length == 0) {
-            List<CountryMaster> countries = countryRepository.findAllByTypeGreaterThanOrderByTypeDesc(0);
+            List<CountryMaster> countries = getCountries();
             for (CountryMaster countryMaster : countries) {
                 for (CollectionEnum collection : CollectionEnum.values()) {
                     CommonUtils.createFile(Paths.get(dirPath, countryMaster.getCountryCode() + REGEX_3_UNDER_LINE + countryMaster.getLanguageCode() + REGEX_3_UNDER_LINE + collection.name() + REGEX_3_UNDER_LINE + CategoryEnum.ALL.name().toLowerCase() + REGEX_3_UNDER_LINE + time + JSON_FILE_EXTENSION));
