@@ -57,7 +57,8 @@ public class InformationApplicationPlayService {
                 throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_LIMITED_EXCEPTION, ex);
             } else {
                 throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);
-            }        } catch (GooglePlayRuntimeException e) {
+            }
+        } catch (GooglePlayRuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new GooglePlayRuntimeException(ExceptionCodes.UNKNOWN_EXCEPTION, e);

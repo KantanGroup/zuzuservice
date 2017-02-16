@@ -88,13 +88,13 @@ public class AppIndexStoreService extends AppCommonService {
                     logger.debug("[Application Index Store]Trend to search engine");
                     appTrendService.save(appTrends);
                     // Move data to log folder
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
                 } catch (Exception ex) {
                     logger.error("[Application Index Store][" + countryCode + "][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
                 }
             } else {
-                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.summary.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
+                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
             }
             CommonUtils.delay(5);
         }

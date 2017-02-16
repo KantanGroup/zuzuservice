@@ -34,18 +34,15 @@ public class AppService extends AppCommonService {
     public void dailyAppUpdate() {
         while (true) {
             // something that should execute on weekdays only
-            Set<String> languages = findDistinctByLanguageCode();
-            for (String languageCode : languages) {
-                String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.queue.name(), languageCode).getAbsolutePath();
-                File dir = new File(dirPath);
-                File[] files = dir.listFiles();
-                if (files != null && files.length != 0) {
-                    try {
-                        CommonUtils.sortFilesOrderByTime(files);
-                        processDailyApp(files);
-                    } catch (Exception ex) {
-                        logger.error("[ProcessError]Error " + ex.getMessage(), ex);
-                    }
+            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.queue.name()).getAbsolutePath();
+            File dir = new File(dirPath);
+            File[] files = dir.listFiles();
+            if (files != null && files.length != 0) {
+                try {
+                    CommonUtils.sortFilesOrderByTime(files);
+                    processDailyApp(files);
+                } catch (Exception ex) {
+                    logger.error("[ProcessError]Error " + ex.getMessage(), ex);
                 }
             }
             CommonUtils.delay(timeWaitRuntimeLocal);
@@ -59,7 +56,7 @@ public class AppService extends AppCommonService {
             String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 2) {
-                String appId = data[1];
+                String appId = data[1].replaceAll(JSON_FILE_EXTENSION, "");
                 String languageCode = data[0];
                 long startTime = System.currentTimeMillis();
                 try {

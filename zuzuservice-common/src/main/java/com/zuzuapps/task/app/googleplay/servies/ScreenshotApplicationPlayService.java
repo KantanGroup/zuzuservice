@@ -80,7 +80,7 @@ public class ScreenshotApplicationPlayService {
             if (imageLink.startsWith("//")) {
                 imageLink = "http:" + imageLink;
             }
-            logger.debug("[ScreenshotApplicationPlayService][" + appId + "]Extract image from " + imageLink);
+            logger.info("[ScreenshotApplicationPlayService][" + appId + "]Extract image from " + imageLink);
             byte[] imageBytes = restTemplate.getForObject(imageLink, byte[].class, addHeaders());
             String appImageOriginPath = appId + (type == ImageTypeEnum.screenshot ? "/" + System.currentTimeMillis() + ".png" : "/icon.png");
             CommonUtils.folderBy(imageStore, type == ImageTypeEnum.screenshot ? ImageTypeEnum.screenshot.name() : ImageTypeEnum.icon.name() , appId);

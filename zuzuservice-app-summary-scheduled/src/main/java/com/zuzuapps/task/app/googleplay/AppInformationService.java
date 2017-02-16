@@ -73,9 +73,14 @@ public class AppInformationService extends AppCommonService {
                         logger.debug("[Information Store]Save app " + appId + " by language " + languageCode);
                         appInformationService.save(app);
                         moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
+                        long delayTime = System.currentTimeMillis() - startTime;
+                        CommonUtils.delay(timeGetAppInformation - delayTime);
                     }
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
+                        logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                    } else if (ex.getCode() == ExceptionCodes.APP_NOT_FOUND) {
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.not_found.name(), time).getAbsolutePath());
                         logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     } else {
                         moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
@@ -89,8 +94,6 @@ public class AppInformationService extends AppCommonService {
                     logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
                 }
-                long delayTime = System.currentTimeMillis() - startTime;
-                CommonUtils.delay(timeGetAppInformation - delayTime);
             } else {
                 moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
             }
@@ -155,7 +158,7 @@ public class AppInformationService extends AppCommonService {
     }
 
     private StringBuilder createAppInformationJSONPath(String appId, String languageCode) {
-        StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.queue.name(), languageCode).getAbsolutePath());
+        StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.queue.name()).getAbsolutePath());
         path.append("/");
         path.append(languageCode).append(REGEX_3_UNDER_LINE);
         path.append(appId.toLowerCase()).append(JSON_FILE_EXTENSION);

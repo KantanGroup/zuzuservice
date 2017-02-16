@@ -67,7 +67,7 @@ public class AppSummaryService extends AppCommonService {
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 2) {
                 CollectionEnum collection = CollectionEnum.valueOf(data[0]);
-                CategoryEnum category = CategoryEnum.valueOf(data[1].toUpperCase());
+                CategoryEnum category = CategoryEnum.valueOf(data[1].replaceAll(JSON_FILE_EXTENSION, "").toUpperCase());
                 int page = 1;
                 while (true) {
                     long startTime = System.currentTimeMillis();
@@ -81,11 +81,7 @@ public class AppSummaryService extends AppCommonService {
                             break;
                         }
                     } catch (GooglePlayRuntimeException ex) {
-                        if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
-                            logger.error("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
-                        } else {
-                            logger.info("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
-                        }
+                        logger.info("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
                         break;
                     } catch (Exception ex) {
                         logger.error("[Application Summary Store][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);

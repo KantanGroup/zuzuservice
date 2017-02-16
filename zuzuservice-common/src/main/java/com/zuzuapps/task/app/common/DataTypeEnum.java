@@ -8,5 +8,6 @@ public enum DataTypeEnum {
     queue,
     log,
     error,
-    master
+    master,
+    not_found
 }
