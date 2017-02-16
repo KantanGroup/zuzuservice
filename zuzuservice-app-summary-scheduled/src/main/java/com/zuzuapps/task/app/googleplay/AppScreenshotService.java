@@ -3,7 +3,6 @@ package com.zuzuapps.task.app.googleplay;
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
-import com.zuzuapps.task.app.elasticsearch.models.AppScreenshotElasticSearch;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.ScreenshotPlay;
@@ -58,8 +57,6 @@ public class AppScreenshotService extends AppCommonService {
                 try {
                     ScreenshotPlays screenshotPlays = mapper.readValue(json, ScreenshotPlays.class);
                     List<AppScreenshotMaster> appScreenshotMasters = new ArrayList<AppScreenshotMaster>();
-                    //AppScreenshotElasticSearch appScreenshotElasticSearch = new AppScreenshotElasticSearch();
-                    //appScreenshotElasticSearch.setId(appId);
                     AppScreenshotSolr appScreenshotSolr = new AppScreenshotSolr();
                     appScreenshotSolr.setId(appId);
                     for (String screenshot : screenshotPlays.getScreenshots()) {
@@ -67,13 +64,11 @@ public class AppScreenshotService extends AppCommonService {
                         ScreenshotPlay screenshotPlay = screenshotApplicationPlayService.extractOriginalScreenshot(appId, screenshot);
                         AppScreenshotMaster appScreenshotMaster = createAppScreenshotMaster(screenshotPlay);
                         appScreenshotMasters.add(appScreenshotMaster);
-                        //appScreenshotElasticSearch.getScreenshotPlays().add(screenshotPlay);
                         appScreenshotSolr.getScreenshotOrigins().add(screenshotPlay.getOriginal());
                         appScreenshotSolr.getScreenshotSources().add(screenshotPlay.getSource());
                         CommonUtils.delay(timeGetAppScreenshot);
                     }
                     appScreenshotMasterRepository.save(appScreenshotMasters);
-                    //appScreenshotElasticSearchRepository.save(appScreenshotElasticSearch);
                     appScreenshotSolrService.save(appScreenshotSolr);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.log.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
                 } catch (GooglePlayRuntimeException ex) {
@@ -91,7 +86,7 @@ public class AppScreenshotService extends AppCommonService {
                     logger.error("[Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
                 }
-                CommonUtils.delay(timeGetAppInformation);
+                CommonUtils.delay(timeGetAppScreenshot);
             } else {
                 moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
             }

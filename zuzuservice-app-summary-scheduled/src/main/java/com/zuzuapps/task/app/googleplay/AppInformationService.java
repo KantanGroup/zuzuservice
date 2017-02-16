@@ -56,6 +56,7 @@ public class AppInformationService extends AppCommonService {
                 String languageCode = data[1];
                 String appId = data[2].replaceAll(JSON_FILE_EXTENSION, "");
                 logger.debug("[Information Store]Get app " + appId + " by language " + languageCode + " in elastic search");
+                long startTime = System.currentTimeMillis();
                 try {
                     AppInformationSolr app = appInformationService.findOne(appId + "_" + languageCode);
                     if (app == null || isTimeToUpdate(app.getCreateAt())) {
@@ -69,7 +70,7 @@ public class AppInformationService extends AppCommonService {
                         // Get app information
                         app = createAppInformation(applicationPlay, languageCode);
                         // Index to elastic search
-                        logger.debug("[Information Store]Get app " + appId + " by language " + languageCode);
+                        logger.debug("[Information Store]Save app " + appId + " by language " + languageCode);
                         appInformationService.save(app);
                         moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
                     }
@@ -88,7 +89,8 @@ public class AppInformationService extends AppCommonService {
                     logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
                 }
-                CommonUtils.delay(timeGetAppInformation);
+                long delayTime = System.currentTimeMillis() - startTime;
+                CommonUtils.delay(timeGetAppInformation - delayTime);
             } else {
                 moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
             }

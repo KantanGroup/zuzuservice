@@ -28,9 +28,9 @@ public class AppSummaryService extends AppCommonService {
         File[] files = dir.listFiles();
         if (files == null || files.length == 0) {
             for (CollectionEnum collection : CollectionEnum.values()) {
-                CommonUtils.createFile(Paths.get(dirPath, collection.name() + REGEX_3_UNDER_LINE + CategoryEnum.ALL.name().toLowerCase()));
+                CommonUtils.createFile(Paths.get(dirPath, collection.name() + REGEX_3_UNDER_LINE + CategoryEnum.ALL.name().toLowerCase() + JSON_FILE_EXTENSION));
                 for (CategoryEnum category : CategoryEnum.values()) {
-                    CommonUtils.createFile(Paths.get(dirPath, collection.name() + REGEX_3_UNDER_LINE + category.name().toLowerCase()));
+                    CommonUtils.createFile(Paths.get(dirPath, collection.name() + REGEX_3_UNDER_LINE + category.name().toLowerCase() + JSON_FILE_EXTENSION));
                 }
             }
         }
@@ -70,6 +70,7 @@ public class AppSummaryService extends AppCommonService {
                 CategoryEnum category = CategoryEnum.valueOf(data[1].toUpperCase());
                 int page = 1;
                 while (true) {
+                    long startTime = System.currentTimeMillis();
                     try {
                         SummaryApplicationPlays summaryApplicationPlays
                                 = summaryApplicationPlayService.getSummaryApplications(category, collection, LANGUAGE_CODE_DEFAULT, COUNTRY_CODE_DEFAULT, page);
@@ -91,7 +92,8 @@ public class AppSummaryService extends AppCommonService {
                         break;
                     }
                     page++;
-                    CommonUtils.delay(timeGetAppSummary);
+                    long delayTime = System.currentTimeMillis() - startTime;
+                    CommonUtils.delay(timeGetAppSummary - delayTime);
                 }
             }
             FileUtils.deleteQuietly(json);

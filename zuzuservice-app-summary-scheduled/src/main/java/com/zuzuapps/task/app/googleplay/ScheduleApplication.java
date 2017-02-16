@@ -41,9 +41,9 @@ public class ScheduleApplication {
     @Autowired
     private AppCommonService appCommonService;
     @Autowired
-    private AppIndexService appIndexService;
+    private AppIndexStoreService appIndexService;
     @Autowired
-    private AppTopService appTopService;
+    private AppIndexService appTopService;
     @Autowired
     private AppSummaryService appSummaryService;
     @Autowired

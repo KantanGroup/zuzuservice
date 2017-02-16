@@ -6,12 +6,10 @@ import com.zuzuapps.task.app.common.DataTypeEnum;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
-import com.zuzuapps.task.app.googleplay.models.ScreenshotPlay;
 import com.zuzuapps.task.app.googleplay.models.ScreenshotPlays;
 import com.zuzuapps.task.app.master.models.AppLanguageId;
 import com.zuzuapps.task.app.master.models.AppLanguageMaster;
 import com.zuzuapps.task.app.master.models.AppMaster;
-import com.zuzuapps.task.app.master.models.AppScreenshotMaster;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.exception.GenericJDBCException;
@@ -63,6 +61,7 @@ public class AppService extends AppCommonService {
             if (data.length >= 2) {
                 String appId = data[1];
                 String languageCode = data[0];
+                long startTime = System.currentTimeMillis();
                 try {
                     // 1. Get data
                     ApplicationPlay app = mapper.readValue(json, ApplicationPlay.class);
@@ -75,11 +74,7 @@ public class AppService extends AppCommonService {
                     // 3. Index data
 
                     // 4. Create icon
-                    ScreenshotPlay screenshotPlay = screenshotApplicationPlayService.extractOriginalIcon(app.getAppId(), app.getIcon());
-                    AppScreenshotMaster appScreenshotMaster = createAppScreenshotMaster(screenshotPlay);
-                    logger.debug("[Application Store]Icon store to database");
-                    appScreenshotMasterRepository.save(appScreenshotMaster);
-                    CommonUtils.delay(timeGetAppScreenshot);
+                    screenshotApplicationPlayService.extractOriginalIcon(app.getAppId(), app.getIcon());
                     // 5. Create screenshot
                     queueAppScreenshot(app);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.log.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
@@ -101,7 +96,8 @@ public class AppService extends AppCommonService {
                     logger.error("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
                 }
-                CommonUtils.delay(timeGetAppInformation);
+                long delayTime = System.currentTimeMillis() - startTime;
+                CommonUtils.delay(timeGetAppInformation - delayTime);
             } else {
                 moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
             }

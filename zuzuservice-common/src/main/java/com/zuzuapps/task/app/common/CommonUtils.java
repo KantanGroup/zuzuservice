@@ -21,6 +21,7 @@ public class CommonUtils {
                 Files.createFile(filePath);
                 return true;
             }
+            delay(10);
         } catch (Exception ex) {
         }
         return false;

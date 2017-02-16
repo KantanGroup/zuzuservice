@@ -37,9 +37,9 @@ public class ScheduleApplicationTest {
     @Value("${data.root.path:/tmp}")
     private String rootPath;
     @Autowired
-    private AppIndexService scheduleService;
+    private AppIndexStoreService scheduleService;
     @Autowired
-    private AppTopService topScheduleService;
+    private AppIndexService topScheduleService;
     @Autowired
     private AppSummaryService appSummaryService;
     @Autowired
