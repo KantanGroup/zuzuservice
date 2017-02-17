@@ -81,13 +81,15 @@ public class ScreenshotApplicationPlayService {
                 imageLink = "http:" + imageLink;
             }
             String folderName = type == ImageTypeEnum.screenshot ? ImageTypeEnum.screenshot.name() : ImageTypeEnum.icon.name();
-            logger.info("[ScreenshotApplicationPlayService][" + appId + "][" + folderName + "]Extract image from " + imageLink);
-            byte[] imageBytes = restTemplate.getForObject(imageLink, byte[].class, addHeaders());
             String appImageOriginPath = appId + (type == ImageTypeEnum.screenshot ? "/" + System.currentTimeMillis() + ".png" : "/icon.png");
             CommonUtils.folderBy(imageStore, folderName, appId);
             Path imagePath = Paths.get(imageStore, folderName, appImageOriginPath);
-            logger.debug("[ScreenshotApplicationPlayService][" + appId + "][]Write image to " + imagePath.toFile().getAbsolutePath());
-            Files.write(imagePath, imageBytes);
+            if (!imagePath.toFile().exists()) {
+                logger.info("[ScreenshotApplicationPlayService][" + appId + "][" + folderName + "]Extract image from " + imageLink);
+                byte[] imageBytes = restTemplate.getForObject(imageLink, byte[].class, addHeaders());
+                logger.debug("[ScreenshotApplicationPlayService][" + appId + "][]Write image to " + imagePath.toFile().getAbsolutePath());
+                Files.write(imagePath, imageBytes);
+            }
             ScreenshotPlay screenshot = new ScreenshotPlay();
             screenshot.setAppId(appId);
             screenshot.setOriginal(appImageOriginPath);
