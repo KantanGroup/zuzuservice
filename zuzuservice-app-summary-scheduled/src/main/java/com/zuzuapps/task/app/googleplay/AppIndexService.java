@@ -26,7 +26,7 @@ public class AppIndexService extends AppCommonService {
     public void generateAppIndexStore() {
         logger.info("[Application Index Generation]Task start at: " + new Date());
         String time = CommonUtils.getDailyByTime();
-        String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.generate.name(), time).getAbsolutePath();
+        String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.generate.name(), time).getAbsolutePath();
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
         if (files == null || files.length == 0) {
@@ -50,7 +50,7 @@ public class AppIndexService extends AppCommonService {
         while (true) {
             // something that should execute on weekdays only
             String time = CommonUtils.getDailyByTime();
-            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.generate.name(), time).getAbsolutePath();
+            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.generate.name(), time).getAbsolutePath();
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
@@ -114,7 +114,7 @@ public class AppIndexService extends AppCommonService {
 
 
     private StringBuilder queueAppIndexJSONPath(String time, String countryCode, String languageCode, CollectionEnum collection, CategoryEnum category) {
-        StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.queue.name(), time).getAbsolutePath());
+        StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.queue.name(), time).getAbsolutePath());
         path.append("/");
         path.append(countryCode).append(REGEX_3_UNDER_LINE);
         path.append(languageCode).append(REGEX_3_UNDER_LINE);

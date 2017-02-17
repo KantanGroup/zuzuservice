@@ -29,7 +29,7 @@ public class AppIndexStoreService extends AppCommonService {
         while (true) {
             // something that should execute on weekdays only
             String time = CommonUtils.getDailyByTime();
-            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.queue.name(), time).getAbsolutePath();
+            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.queue.name(), time).getAbsolutePath();
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
@@ -78,7 +78,7 @@ public class AppIndexStoreService extends AppCommonService {
                         index++;
                     }
                     // Create app info json
-                    queueAppInformation(apps.getResults(), countryCode, languageCode);
+                    queueAppInformation(apps.getResults(), countryCode, languageCode, true);
                     // Add data to mysql
                     logger.debug("[Application Index Store]Store to database");
                     appIndexMasterRepository.save(appIndexMasters);
@@ -88,13 +88,13 @@ public class AppIndexStoreService extends AppCommonService {
                     logger.debug("[Application Index Store]Trend to search engine");
                     appTrendService.save(appTrends);
                     // Move data to log folder
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
                 } catch (Exception ex) {
                     logger.error("[Application Index Store][" + countryCode + "][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
                 }
             } else {
-                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
+                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
             }
             CommonUtils.delay(5);
         }

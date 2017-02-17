@@ -13,13 +13,13 @@ import com.zuzuapps.task.app.master.models.AppMaster;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.exception.GenericJDBCException;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.Set;
 
 /**
  * @author tuanta17
@@ -34,7 +34,28 @@ public class AppService extends AppCommonService {
     public void dailyAppUpdate() {
         while (true) {
             // something that should execute on weekdays only
-            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.queue.name()).getAbsolutePath();
+            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.app_daily.name(), DataTypeEnum.queue.name()).getAbsolutePath();
+            File dir = new File(dirPath);
+            File[] files = dir.listFiles();
+            if (files != null && files.length != 0) {
+                try {
+                    CommonUtils.sortFilesOrderByTime(files);
+                    processDailyApp(files);
+                } catch (Exception ex) {
+                    logger.error("[ProcessError]Error " + ex.getMessage(), ex);
+                }
+            }
+            CommonUtils.delay(timeWaitRuntimeLocal);
+        }
+    }
+
+    /**
+     * Summary app update
+     */
+    public void summaryAppUpdate() {
+        while (true) {
+            // something that should execute on weekdays only
+            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath();
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
@@ -138,7 +159,7 @@ public class AppService extends AppCommonService {
         app.setScore(applicationPlay.getScore());
         app.setPrice(applicationPlay.getPrice());
         app.setFree(applicationPlay.isFree());
-        app.setDeveloperId(applicationPlay.getDeveloper().getDevId());
+        app.setDeveloperId(new String(Base64.encode(applicationPlay.getDeveloper().getDevId().getBytes())));
         app.setDeveloperUrl(applicationPlay.getDeveloper().getUrl());
         app.setDeveloperEmail(applicationPlay.getDeveloperEmail());
         app.setDeveloperWebsite(applicationPlay.getDeveloperWebsite());

@@ -4,9 +4,12 @@ package com.zuzuapps.task.app.common;
  * @author tuanta17
  */
 public enum DataServiceEnum {
-    information,
-    summary,
-    top,
+    information_daily,
+    information_summary,
     app,
-    screenshoot
+    screenshoot,
+    top_app_daily,
+    top_app_summary,
+    app_daily,
+    app_summary
 }

@@ -6,6 +6,7 @@ import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
 import com.zuzuapps.task.app.common.GZipUtil;
+import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
 import com.zuzuapps.task.app.googleplay.models.ScreenshotPlay;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
@@ -13,7 +14,11 @@ import com.zuzuapps.task.app.googleplay.servies.ScreenshotApplicationPlayService
 import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
 import com.zuzuapps.task.app.master.models.AppScreenshotMaster;
 import com.zuzuapps.task.app.master.models.CountryMaster;
-import com.zuzuapps.task.app.master.repositories.*;
+import com.zuzuapps.task.app.master.repositories.AppIndexMasterRepository;
+import com.zuzuapps.task.app.master.repositories.AppLanguageMasterRepository;
+import com.zuzuapps.task.app.master.repositories.AppMasterRepository;
+import com.zuzuapps.task.app.master.repositories.AppScreenshotMasterRepository;
+import com.zuzuapps.task.app.solr.models.AppInformationSolr;
 import com.zuzuapps.task.app.solr.repositories.AppIndexSolrRepository;
 import com.zuzuapps.task.app.solr.repositories.AppInformationSolrRepository;
 import com.zuzuapps.task.app.solr.repositories.AppScreenshotSolrRepository;
@@ -89,10 +94,18 @@ public class AppCommonService {
     @Autowired
     protected ScreenshotApplicationPlayService screenshotApplicationPlayService;
 
-    protected void queueAppInformation(List<SummaryApplicationPlay> summaryApplicationPlays, String countryCode, String languageCode) {
+    protected void queueAppInformation(List<SummaryApplicationPlay> summaryApplicationPlays, String countryCode, String languageCode, boolean isDaily) {
+        if (isDaily) {
+            queueDailyInformation(summaryApplicationPlays, countryCode, languageCode);
+        } else {
+            queueSummaryInformation(summaryApplicationPlays, countryCode, languageCode);
+        }
+    }
+
+    private void queueSummaryInformation(List<SummaryApplicationPlay> summaryApplicationPlays, String countryCode, String languageCode) {
         for (SummaryApplicationPlay summaryApplicationPlay : summaryApplicationPlays) {
             try {
-                StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+                StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.information_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath());
                 path.append("/").append(countryCode).append(REGEX_3_UNDER_LINE);
                 path.append(languageCode).append(REGEX_3_UNDER_LINE);
                 path.append(summaryApplicationPlay.getAppId().toLowerCase()).append(JSON_FILE_EXTENSION);
@@ -100,6 +113,21 @@ public class AppCommonService {
                 Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlay));
             } catch (Exception ex) {
                 logger.error("Write summary of app error " + ex.getMessage(), ex);
+            }
+        }
+    }
+
+    private void queueDailyInformation(List<SummaryApplicationPlay> summaryApplicationPlays, String countryCode, String languageCode) {
+        for (SummaryApplicationPlay summaryApplicationPlay : summaryApplicationPlays) {
+            try {
+                StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.information_daily.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+                path.append("/").append(countryCode).append(REGEX_3_UNDER_LINE);
+                path.append(languageCode).append(REGEX_3_UNDER_LINE);
+                path.append(summaryApplicationPlay.getAppId().toLowerCase()).append(JSON_FILE_EXTENSION);
+                logger.debug("Write daily of app " + summaryApplicationPlay.getAppId().toLowerCase() + " to queue folder " + path.toString());
+                Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlay));
+            } catch (Exception ex) {
+                logger.error("Write daily of app error " + ex.getMessage(), ex);
             }
         }
     }
@@ -158,15 +186,123 @@ public class AppCommonService {
     }
 
     /**
-     * Get countries from json
+     * Get all countries from json
      */
-    protected List<CountryMaster> getCountries() {
+    private List<CountryMaster> getAllCountries() {
         try {
             Path file = Paths.get("countries.json");
             return mapper.readValue(file.toFile().getAbsoluteFile(), new TypeReference<List<CountryMaster>>() {
             });
         } catch (IOException e) {
             return new ArrayList<CountryMaster>();
+        }
+    }
+
+    /**
+     * Get countries from json
+     */
+    protected List<CountryMaster> getCountries() {
+        List<CountryMaster> allCountries = getAllCountries();
+        List<CountryMaster> countries = new ArrayList<CountryMaster>();
+        for (CountryMaster country : allCountries) {
+            if (country.getType() != 0) {
+                countries.add(country);
+            }
+        }
+        Collections.sort(countries, new Comparator<CountryMaster>(){
+            public int compare(CountryMaster o1, CountryMaster o2){
+                if(o1.getType() == o2.getType())
+                    return 0;
+                return o1.getType() > o2.getType() ? -1 : 1;
+            }
+        });
+        return countries;
+    }
+
+    protected AppInformationSolr createAppInformation(ApplicationPlay applicationPlay, String languageCode) {
+        AppInformationSolr app = new AppInformationSolr();
+        app.setId(applicationPlay.getAppId() + "_" + languageCode);
+        app.setAppId(applicationPlay.getAppId());
+        app.setUrl(applicationPlay.getUrl());
+        app.setTitle(applicationPlay.getTitle());
+        app.setSummary(applicationPlay.getSummary());
+        app.setDeveloperId(applicationPlay.getDeveloper().getDevId());
+        app.setDeveloperUrl(applicationPlay.getDeveloper().getUrl());
+        app.setIcon(applicationPlay.getIcon());
+        app.setScore(applicationPlay.getScore());
+        app.setPrice(applicationPlay.getPrice());
+        app.setFree(applicationPlay.isFree());
+        app.setDeveloperEmail(applicationPlay.getDeveloperEmail());
+        app.setDeveloperWebsite(applicationPlay.getDeveloperWebsite());
+        app.setUpdated(applicationPlay.getUpdated());
+        app.setVersion(applicationPlay.getVersion());
+        app.setMinInstalls(applicationPlay.getMinInstalls());
+        app.setMaxInstalls(applicationPlay.getMaxInstalls());
+        app.setGenre(applicationPlay.getGenre());
+        app.setGenreId(applicationPlay.getGenreId());
+        app.setDescription(applicationPlay.getDescription());
+        app.setDescriptionHTML(applicationPlay.getDescriptionHTML());
+        app.setFamilyGenre(applicationPlay.getFamilyGenre());
+        app.setFamilyGenreId(applicationPlay.getFamilyGenreId());
+        app.setOffersIAP(applicationPlay.isOffersIAP());
+        app.setAdSupported(applicationPlay.isAdSupported());
+        app.setAndroidVersion(applicationPlay.getAndroidVersion());
+        app.setAndroidVersionText(applicationPlay.getAndroidVersionText());
+        app.setContentRating(applicationPlay.getContentRating());
+        app.setScreenshots(applicationPlay.getScreenshots());
+        app.setPreregister(applicationPlay.isPreregister());
+        app.setVideo(applicationPlay.getVideo());
+        app.setPlaystoreUrl(applicationPlay.getPlaystoreUrl());
+        app.setPermissions(applicationPlay.getPermissions());
+        app.setSimilar(applicationPlay.getSimilar());
+        app.setReviews(applicationPlay.getReviews());
+        // Update current data
+        app.setCreateAt(new Date());
+        return app;
+    }
+
+    /**
+     * Get app information by language
+     *
+     * @param languageCode Language code
+     * @param appId        App id
+     */
+    protected ApplicationPlay getAppInformationByLanguage(String languageCode, String appId, boolean isDaily) throws Exception {
+        ApplicationPlay applicationPlay =
+                informationApplicationPlayService.getInformationApplications(appId, languageCode);
+        StringBuilder path = createAppInformationJSONPath(appId, languageCode, isDaily);;
+        Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
+        return applicationPlay;
+    }
+
+    protected StringBuilder createAppInformationJSONPath(String appId, String languageCode, boolean isDaily) {
+        StringBuilder path;
+        if (isDaily) {
+            path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.app_daily.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+        } else {
+            path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+        }
+        path.append("/");
+        path.append(languageCode).append(REGEX_3_UNDER_LINE);
+        path.append(appId.toLowerCase()).append(JSON_FILE_EXTENSION);
+        return path;
+    }
+
+    protected void extractAppInformation(String languageCode, String appId, boolean isDaily) throws Exception {
+        AppInformationSolr app = appInformationService.findOne(appId + "_" + languageCode);
+        if (app == null || isTimeToUpdate(app.getCreateAt())) {
+            logger.debug("[Information Store]Get app " + appId + " by language " + languageCode);
+            ApplicationPlay applicationPlay = getAppInformationByLanguage(languageCode, appId, isDaily);
+            if (app == null) {
+                logger.debug("[Information Store]App " + appId + " by language " + languageCode + " not found");
+            } else {
+                logger.debug("[Information Store]Time to update app " + appId + " by language " + languageCode);
+            }
+            // Get app information
+            app = createAppInformation(applicationPlay, languageCode);
+            // Index to elastic search
+            logger.debug("[Information Store]Save app " + appId + " by language " + languageCode);
+            appInformationService.save(app);
         }
     }
 }

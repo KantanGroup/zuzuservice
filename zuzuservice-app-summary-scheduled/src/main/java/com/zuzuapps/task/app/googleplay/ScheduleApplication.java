@@ -47,7 +47,11 @@ public class ScheduleApplication {
     @Autowired
     private AppSummaryService appSummaryService;
     @Autowired
-    private AppInformationService appInformationService;
+    private AppSummaryStoreService appSummaryStoreService;
+    @Autowired
+    private AppInformationDailyService appInformationDailyService;
+    @Autowired
+    private AppInformationSummaryService appInformationSummaryService;
     @Autowired
     private AppScreenshotService appScreenshotService;
     @Autowired
@@ -64,7 +68,9 @@ public class ScheduleApplication {
                 executor.execute(new DailyIndexUpdateRunnable());
                 executor.execute(new DailySummaryUpdateRunnable());
                 executor.execute(new DailyAppInformationUpdateRunnable());
+                executor.execute(new SummaryAppInformationUpdateRunnable());
                 executor.execute(new DailyAppUpdateRunnable());
+                executor.execute(new SummaryAppUpdateRunnable());
                 executor.execute(new DailyAppScreenshotRunnable());
                 //executor.execute(new GenerationIndexRunnable());
                 //executor.execute(new GenerationSummaryRunnable());
@@ -104,7 +110,7 @@ public class ScheduleApplication {
         @Override
         public void run() {
             logger.info("[ScheduleApplication][DailySummaryUpdateRunnable]Start at " + new Date());
-            appSummaryService.dailyAppSummaryUpdate();
+            appSummaryStoreService.dailyAppSummaryUpdate();
         }
     }
 
@@ -113,7 +119,16 @@ public class ScheduleApplication {
         @Override
         public void run() {
             logger.info("[ScheduleApplication][DailyAppInformationUpdateRunnable]Start at " + new Date());
-            appInformationService.dailyAppInformationUpdate();
+            appInformationDailyService.dailyAppInformationUpdate();
+        }
+    }
+
+    class SummaryAppInformationUpdateRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            logger.info("[ScheduleApplication][SummaryAppInformationUpdateRunnable]Start at " + new Date());
+            appInformationSummaryService.summaryAppInformationUpdate();
         }
     }
 
@@ -123,6 +138,15 @@ public class ScheduleApplication {
         public void run() {
             logger.info("[ScheduleApplication][DailyAppUpdateRunnable]Start at " + new Date());
             appService.dailyAppUpdate();
+        }
+    }
+
+    class SummaryAppUpdateRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            logger.info("[ScheduleApplication][SummaryAppUpdateRunnable]Start at " + new Date());
+            appService.summaryAppUpdate();
         }
     }
 

@@ -80,12 +80,13 @@ public class ScreenshotApplicationPlayService {
             if (imageLink.startsWith("//")) {
                 imageLink = "http:" + imageLink;
             }
-            logger.info("[ScreenshotApplicationPlayService][" + appId + "]Extract image from " + imageLink);
+            String folderName = type == ImageTypeEnum.screenshot ? ImageTypeEnum.screenshot.name() : ImageTypeEnum.icon.name();
+            logger.info("[ScreenshotApplicationPlayService][" + appId + "][" + folderName + "]Extract image from " + imageLink);
             byte[] imageBytes = restTemplate.getForObject(imageLink, byte[].class, addHeaders());
             String appImageOriginPath = appId + (type == ImageTypeEnum.screenshot ? "/" + System.currentTimeMillis() + ".png" : "/icon.png");
-            CommonUtils.folderBy(imageStore, type == ImageTypeEnum.screenshot ? ImageTypeEnum.screenshot.name() : ImageTypeEnum.icon.name() , appId);
-            Path imagePath = Paths.get(imageStore, type == ImageTypeEnum.screenshot ? ImageTypeEnum.screenshot.name() : ImageTypeEnum.icon.name(), appImageOriginPath);
-            logger.debug("[ScreenshotApplicationPlayService][" + appId + "]Write image to " + imagePath.toFile().getAbsolutePath());
+            CommonUtils.folderBy(imageStore, folderName, appId);
+            Path imagePath = Paths.get(imageStore, folderName, appImageOriginPath);
+            logger.debug("[ScreenshotApplicationPlayService][" + appId + "][]Write image to " + imagePath.toFile().getAbsolutePath());
             Files.write(imagePath, imageBytes);
             ScreenshotPlay screenshot = new ScreenshotPlay();
             screenshot.setAppId(appId);
@@ -98,10 +99,8 @@ public class ScreenshotApplicationPlayService {
         } catch (HttpClientErrorException ex) {
             if (ex.getMessage().contains("400")) {
                 throw new GooglePlayRuntimeException(ExceptionCodes.APP_NOT_FOUND, ex);
-            } else if (ex.getMessage().contains("400")) {
-                throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_LIMITED_EXCEPTION, ex);
             } else {
-                throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);
+                throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_LIMITED_EXCEPTION, ex);
             }
         } catch (ResourceAccessException ex) {
             throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);

@@ -60,7 +60,7 @@ public class ScheduleApplicationTest {
     public void testProcessAppIndexQueue() {
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();
-        String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top.name(), DataTypeEnum.queue.name(), time).getAbsolutePath();
+        String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.queue.name(), time).getAbsolutePath();
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
         if (files != null && files.length != 0) {
