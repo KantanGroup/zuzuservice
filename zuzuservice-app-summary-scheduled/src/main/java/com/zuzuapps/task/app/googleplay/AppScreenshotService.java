@@ -55,21 +55,26 @@ public class AppScreenshotService extends AppCommonService {
             if (data.length >= 2) {
                 String appId = data[0];
                 try {
-                    ScreenshotPlays screenshotPlays = mapper.readValue(json, ScreenshotPlays.class);
-                    List<AppScreenshotMaster> appScreenshotMasters = new ArrayList<AppScreenshotMaster>();
-                    AppScreenshotSolr appScreenshotSolr = new AppScreenshotSolr();
-                    appScreenshotSolr.setId(appId);
-                    for (String screenshot : screenshotPlays.getScreenshots()) {
-                        // 5. Create screenshot
-                        ScreenshotPlay screenshotPlay = screenshotApplicationPlayService.extractOriginalScreenshot(appId, screenshot);
-                        AppScreenshotMaster appScreenshotMaster = createAppScreenshotMaster(screenshotPlay);
-                        appScreenshotMasters.add(appScreenshotMaster);
-                        appScreenshotSolr.getScreenshotOrigins().add(screenshotPlay.getOriginal());
-                        appScreenshotSolr.getScreenshotSources().add(screenshotPlay.getSource());
-                        CommonUtils.delay(timeGetAppScreenshot);
+                    AppScreenshotSolr screenshotObject = appScreenshotSolrService.findOne(appId);
+                    if (screenshotObject == null) {
+                        ScreenshotPlays screenshotPlays = mapper.readValue(json, ScreenshotPlays.class);
+                        List<ScreenshotPlay> screenshotObjects = new ArrayList<ScreenshotPlay>();
+                        AppScreenshotMaster appScreenshotMaster = new AppScreenshotMaster();
+                        appScreenshotMaster.setAppId(appId);
+                        AppScreenshotSolr appScreenshotSolr = new AppScreenshotSolr();
+                        appScreenshotSolr.setId(appId);
+                        for (String screenshotLink : screenshotPlays.getScreenshots()) {
+                            // 5. Create screenshot
+                            ScreenshotPlay screenshotPlay = screenshotApplicationPlayService.extractOriginalScreenshot(appId, screenshotLink);
+                            screenshotObjects.add(screenshotPlay);
+                            appScreenshotSolr.getScreenshotOrigins().add(screenshotPlay.getOriginal());
+                            appScreenshotSolr.getScreenshotSources().add(screenshotPlay.getSource());
+                            CommonUtils.delay(timeGetAppScreenshot);
+                        }
+                        appScreenshotMaster.setData(mapper.writeValueAsString(screenshotObjects));
+                        appScreenshotMasterRepository.save(appScreenshotMaster);
+                        appScreenshotSolrService.save(appScreenshotSolr);
                     }
-                    appScreenshotMasterRepository.save(appScreenshotMasters);
-                    appScreenshotSolrService.save(appScreenshotSolr);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.log.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
@@ -86,7 +91,6 @@ public class AppScreenshotService extends AppCommonService {
                     logger.error("[Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
                 }
-                CommonUtils.delay(timeGetAppScreenshot);
             } else {
                 moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
             }
