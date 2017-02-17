@@ -1,6 +1,7 @@
 package com.zuzuapps.task.app.master.models;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @author tuanta17
@@ -17,6 +18,9 @@ public class AppScreenshotMaster {
     private String appId;
     @Column(columnDefinition = "TEXT")
     private String data;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Date createAt;
 
     public String getAppId() {
         return appId;
@@ -32,5 +36,13 @@ public class AppScreenshotMaster {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
     }
 }

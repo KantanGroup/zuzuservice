@@ -6,6 +6,7 @@ import org.springframework.data.solr.core.mapping.Indexed;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,6 +21,8 @@ public class AppScreenshotSolr {
     private List<String> screenshotOrigins;
     @Field(value = "sources")
     private List<String> screenshotSources;
+    @Indexed(name = "create_at", type = "date")
+    private Date createAt;
 
     public String getId() {
         return id;
@@ -49,5 +52,13 @@ public class AppScreenshotSolr {
 
     public void setScreenshotSources(List<String> screenshotSources) {
         this.screenshotSources = screenshotSources;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
     }
 }

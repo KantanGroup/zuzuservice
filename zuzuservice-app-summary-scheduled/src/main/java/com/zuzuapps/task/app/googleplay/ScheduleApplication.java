@@ -53,7 +53,9 @@ public class ScheduleApplication {
     @Autowired
     private AppInformationSummaryService appInformationSummaryService;
     @Autowired
-    private AppScreenshotService appScreenshotService;
+    private AppScreenshotSummaryService appScreenshotSummaryService;
+    @Autowired
+    private AppScreenshotIndexService appScreenshotIndexService;
     @Autowired
     private AppService appService;
 
@@ -65,17 +67,22 @@ public class ScheduleApplication {
     public CommandLineRunner schedulingRunner(final TaskExecutor executor) {
         return new CommandLineRunner() {
             public void run(String... args) throws Exception {
+                //*
+                executor.execute(new GenerationIndexRunnable());
                 executor.execute(new DailyIndexUpdateRunnable());
-                executor.execute(new DailySummaryUpdateRunnable());
                 executor.execute(new DailyAppInformationUpdateRunnable());
-                executor.execute(new SummaryAppInformationUpdateRunnable());
                 executor.execute(new DailyAppUpdateRunnable());
-                executor.execute(new SummaryAppUpdateRunnable());
-                executor.execute(new DailyAppScreenshotRunnable());
-                //executor.execute(new GenerationIndexRunnable());
-                //executor.execute(new GenerationSummaryRunnable());
+                executor.execute(new ProcessAppScreenshotIndexRunnable());
                 executor.execute(new ProcessIndexStoreRunnable());
+                //*/
+                //*
+                executor.execute(new GenerationSummaryRunnable());
+                executor.execute(new SummaryIndexUpdateRunnable());
+                executor.execute(new SummaryAppInformationUpdateRunnable());
+                executor.execute(new SummaryAppUpdateRunnable());
+                executor.execute(new ProcessAppScreenshotIndexRunnable());
                 executor.execute(new ProcessSummaryStoreRunnable());
+                //*/
             }
         };
     }
@@ -91,10 +98,12 @@ public class ScheduleApplication {
     /**
      * Write app summary in USA to json
      */
+    /*
     @Scheduled(cron = "0 0 0 1 * *")
     public void scheduleAppSummary() {
         appSummaryService.generateAppSummaryStore();
     }
+    */
 
     class DailyIndexUpdateRunnable implements Runnable {
 
@@ -105,12 +114,12 @@ public class ScheduleApplication {
         }
     }
 
-    class DailySummaryUpdateRunnable implements Runnable {
+    class SummaryIndexUpdateRunnable implements Runnable {
 
         @Override
         public void run() {
-            logger.info("[ScheduleApplication][DailySummaryUpdateRunnable]Start at " + new Date());
-            appSummaryStoreService.dailyAppSummaryUpdate();
+            logger.info("[ScheduleApplication][SummaryIndexUpdateRunnable]Start at " + new Date());
+            appSummaryStoreService.summaryAppIndexUpdate();
         }
     }
 
@@ -150,12 +159,21 @@ public class ScheduleApplication {
         }
     }
 
-    class DailyAppScreenshotRunnable implements Runnable {
+    class ProcessAppScreenshotIndexRunnable implements Runnable {
         
         @Override
         public void run() {
-            logger.info("[ScheduleApplication][DailyAppScreenshotRunnable]Start at " + new Date());
-            appScreenshotService.dailyAppScreenshotUpdate();
+            logger.info("[ScheduleApplication][ProcessAppScreenshotIndexRunnable]Start at " + new Date());
+            appScreenshotIndexService.processAppScreenshotIndexUpdate();
+        }
+    }
+
+    class ProcessAppScreenshotSummaryRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            logger.info("[ScheduleApplication][ProcessAppScreenshotSummaryRunnable]Start at " + new Date());
+            appScreenshotSummaryService.processAppScreenshotUpdate();
         }
     }
 

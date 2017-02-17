@@ -40,7 +40,7 @@ public class AppService extends AppCommonService {
             if (files != null && files.length != 0) {
                 try {
                     CommonUtils.sortFilesOrderByTime(files);
-                    processDailyApp(files);
+                    processDailyApp(files, DataServiceEnum.screenshot_daily);
                 } catch (Exception ex) {
                     logger.error("[ProcessError]Error " + ex.getMessage(), ex);
                 }
@@ -61,7 +61,7 @@ public class AppService extends AppCommonService {
             if (files != null && files.length != 0) {
                 try {
                     CommonUtils.sortFilesOrderByTime(files);
-                    processDailyApp(files);
+                    processDailyApp(files, DataServiceEnum.screenshot_summary);
                 } catch (Exception ex) {
                     logger.error("[ProcessError]Error " + ex.getMessage(), ex);
                 }
@@ -70,7 +70,7 @@ public class AppService extends AppCommonService {
         }
     }
 
-    private void processDailyApp(File[] files) throws Exception {
+    private void processDailyApp(File[] files, DataServiceEnum screenshot) throws Exception {
         logger.debug("[Application Store]Cronjob start at: " + new Date());
         for (File json : files) {
             logger.info("[Application Store]File " + json.getAbsolutePath());
@@ -94,7 +94,7 @@ public class AppService extends AppCommonService {
                     // 4. Create icon
                     screenshotApplicationPlayService.extractOriginalIcon(app.getAppId(), app.getIcon());
                     // 5. Create screenshot
-                    queueAppScreenshot(app);
+                    queueAppScreenshot(app, screenshot);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.log.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
                 } catch (GenericJDBCException ex) {
                     logger.error("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
@@ -123,12 +123,12 @@ public class AppService extends AppCommonService {
         logger.debug("[Application Store]Cronjob end at: " + new Date());
     }
 
-    private void queueAppScreenshot(ApplicationPlay app) {
+    private void queueAppScreenshot(ApplicationPlay app, DataServiceEnum screenshot) {
         try {
             ScreenshotPlays screenshotPlays = new ScreenshotPlays();
             screenshotPlays.setAppId(app.getAppId());
             screenshotPlays.setScreenshots(app.getScreenshots());
-            StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.screenshoot.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+            StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, screenshot.name(), DataTypeEnum.queue.name()).getAbsolutePath());
             path.append("/").append(app.getAppId()).append(REGEX_3_UNDER_LINE);
             path.append("screenshots").append(JSON_FILE_EXTENSION);
             logger.debug("[Image Store]Write screenshot of app " + app.getAppId().toLowerCase() + " to queue folder " + path.toString());

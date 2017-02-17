@@ -3,6 +3,7 @@ package com.zuzuapps.task.app.master.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.zuzuapps.task.app.common.CategoryEnum;
 import com.zuzuapps.task.app.common.CollectionEnum;
+import org.springframework.data.solr.core.mapping.Indexed;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -21,8 +22,7 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppIndexMaster {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private String id;
 
     @Column(name = "app_id", length = 128, nullable = false)
     private String appId;
@@ -35,16 +35,24 @@ public class AppIndexMaster {
     @Column(name = "app_index")
     private short index;
     private String icon;
+    @Column(name = "developerId")
+    private String developerId;
+    @Column(name = "score")
+    private float score;
+    @Column(name = "free")
+    private boolean free;
+    @Column(name = "price", length = 64)
+    private String price;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Date createAt;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -94,6 +102,38 @@ public class AppIndexMaster {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getDeveloperId() {
+        return developerId;
+    }
+
+    public void setDeveloperId(String developerId) {
+        this.developerId = developerId;
+    }
+
+    public float getScore() {
+        return score;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
+    }
+
+    public boolean isFree() {
+        return free;
+    }
+
+    public void setFree(boolean free) {
+        this.free = free;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 
     public Date getCreateAt() {

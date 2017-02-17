@@ -7,8 +7,11 @@ import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
 import com.zuzuapps.task.app.common.GZipUtil;
+import com.zuzuapps.task.app.exceptions.ExceptionCodes;
+import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
 import com.zuzuapps.task.app.googleplay.models.ScreenshotPlay;
+import com.zuzuapps.task.app.googleplay.models.ScreenshotPlays;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
 import com.zuzuapps.task.app.googleplay.servies.ScreenshotApplicationPlayService;
@@ -20,16 +23,19 @@ import com.zuzuapps.task.app.master.repositories.AppLanguageMasterRepository;
 import com.zuzuapps.task.app.master.repositories.AppMasterRepository;
 import com.zuzuapps.task.app.master.repositories.AppScreenshotMasterRepository;
 import com.zuzuapps.task.app.solr.models.AppInformationSolr;
+import com.zuzuapps.task.app.solr.models.AppScreenshotSolr;
 import com.zuzuapps.task.app.solr.repositories.AppIndexSolrRepository;
 import com.zuzuapps.task.app.solr.repositories.AppInformationSolrRepository;
 import com.zuzuapps.task.app.solr.repositories.AppScreenshotSolrRepository;
 import com.zuzuapps.task.app.solr.repositories.AppTrendSolrRepository;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -75,7 +81,7 @@ public class AppCommonService {
     @Autowired
     protected SummaryApplicationPlayService summaryApplicationPlayService;
     @Autowired
-    protected AppIndexMasterRepository appIndexMasterRepository;
+    protected AppIndexMasterRepository appIndexDatabaseService;
     @Autowired
     protected AppMasterRepository appMasterRepository;
     @Autowired
@@ -95,18 +101,10 @@ public class AppCommonService {
     @Autowired
     protected ScreenshotApplicationPlayService screenshotApplicationPlayService;
 
-    protected void queueAppInformation(List<SummaryApplicationPlay> summaryApplicationPlays, String countryCode, String languageCode, boolean isDaily) {
-        if (isDaily) {
-            queueDailyInformation(summaryApplicationPlays, countryCode, languageCode);
-        } else {
-            queueSummaryInformation(summaryApplicationPlays, countryCode, languageCode);
-        }
-    }
-
-    private void queueSummaryInformation(List<SummaryApplicationPlay> summaryApplicationPlays, String countryCode, String languageCode) {
+    protected void queueAppInformation(List<SummaryApplicationPlay> summaryApplicationPlays, String countryCode, String languageCode, DataServiceEnum information) {
         for (SummaryApplicationPlay summaryApplicationPlay : summaryApplicationPlays) {
             try {
-                StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.information_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+                StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, information.name(), DataTypeEnum.queue.name()).getAbsolutePath());
                 path.append("/").append(countryCode).append(REGEX_3_UNDER_LINE);
                 path.append(languageCode).append(REGEX_3_UNDER_LINE);
                 path.append(summaryApplicationPlay.getAppId().toLowerCase()).append(JSON_FILE_EXTENSION);
@@ -114,21 +112,6 @@ public class AppCommonService {
                 Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlay));
             } catch (Exception ex) {
                 logger.error("Write summary of app error " + ex.getMessage(), ex);
-            }
-        }
-    }
-
-    private void queueDailyInformation(List<SummaryApplicationPlay> summaryApplicationPlays, String countryCode, String languageCode) {
-        for (SummaryApplicationPlay summaryApplicationPlay : summaryApplicationPlays) {
-            try {
-                StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.information_daily.name(), DataTypeEnum.queue.name()).getAbsolutePath());
-                path.append("/").append(countryCode).append(REGEX_3_UNDER_LINE);
-                path.append(languageCode).append(REGEX_3_UNDER_LINE);
-                path.append(summaryApplicationPlay.getAppId().toLowerCase()).append(JSON_FILE_EXTENSION);
-                logger.debug("Write daily of app " + summaryApplicationPlay.getAppId().toLowerCase() + " to queue folder " + path.toString());
-                Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlay));
-            } catch (Exception ex) {
-                logger.error("Write daily of app error " + ex.getMessage(), ex);
             }
         }
     }
@@ -177,6 +160,7 @@ public class AppCommonService {
      * @param appTime App time
      */
     protected boolean isTimeToUpdate(Date appTime) {
+        if (appTime == null) return true;
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -timeUpdateAppInformation);
         return appTime.before(cal.getTime());
@@ -301,5 +285,107 @@ public class AppCommonService {
             logger.debug("[Information Store]Save app " + appId + " by language " + languageCode);
             appInformationService.save(app);
         }
+    }
+
+    protected void processAppInformation(File[] files, boolean isDaily) throws Exception {
+        logger.debug("[Information Store]Task start at: " + new Date());
+        String time = CommonUtils.getDailyByTime();
+        for (File json : files) {
+            logger.info("[Information Store]File " + json.getAbsolutePath());
+            String filename = json.getName();
+            String[] data = filename.split(REGEX_3_UNDER_LINE);
+            if (data.length >= 3) {
+                String countryCode = data[0];
+                String languageCode = data[1];
+                String appId = data[2].replaceAll(JSON_FILE_EXTENSION, "");
+                logger.debug("[Information Store]Get app " + appId + " by language " + languageCode + " in elastic search");
+                long startTime = System.currentTimeMillis();
+                try {
+                    AppInformationSolr app = appInformationService.findOne(appId + "_" + languageCode);
+                    if (app == null || isTimeToUpdate(app.getCreateAt())) {
+                        extractAppInformation(languageCode, appId, isDaily);
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
+                        long delayTime = System.currentTimeMillis() - startTime;
+                        CommonUtils.delay(timeGetAppInformation - delayTime);
+                    } else {
+                        FileUtils.deleteQuietly(json);
+                    }
+                } catch (GooglePlayRuntimeException ex) {
+                    if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
+                        logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                    } else if (ex.getCode() == ExceptionCodes.APP_NOT_FOUND) {
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.not_found.name(), time).getAbsolutePath());
+                        logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                    } else {
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
+                        if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
+                            logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
+                        } else {
+                            logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                        }
+                    }
+                } catch (Exception ex) {
+                    logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
+                }
+            } else {
+                FileUtils.deleteQuietly(json);
+            }
+        }
+        logger.debug("[Information Store]Task end at: " + new Date());
+    }
+
+    protected void processDailyAppScreenshots(File[] files) throws Exception {
+        logger.debug("[Screenshot Store]Task start at: " + new Date());
+        for (File json : files) {
+            logger.info("[Screenshot Store]File " + json.getAbsolutePath());
+            String filename = json.getName();
+            String[] data = filename.split(REGEX_3_UNDER_LINE);
+            if (data.length >= 2) {
+                String appId = data[0];
+                try {
+                    AppScreenshotSolr screenshotObject = appScreenshotSolrService.findOne(appId);
+                    if (screenshotObject == null || isTimeToUpdate(screenshotObject.getCreateAt())) {
+                        ScreenshotPlays screenshotPlays = mapper.readValue(json, ScreenshotPlays.class);
+                        List<ScreenshotPlay> screenshotObjects = new ArrayList<ScreenshotPlay>();
+                        AppScreenshotMaster appScreenshotMaster = new AppScreenshotMaster();
+                        appScreenshotMaster.setAppId(appId);
+                        AppScreenshotSolr appScreenshotSolr = new AppScreenshotSolr();
+                        appScreenshotSolr.setId(appId);
+                        for (String screenshotLink : screenshotPlays.getScreenshots()) {
+                            // 5. Create screenshot
+                            ScreenshotPlay screenshotPlay = screenshotApplicationPlayService.extractOriginalScreenshot(appId, screenshotLink);
+                            screenshotObjects.add(screenshotPlay);
+                            appScreenshotSolr.getScreenshotOrigins().add(screenshotPlay.getOriginal());
+                            appScreenshotSolr.getScreenshotSources().add(screenshotPlay.getSource());
+                            CommonUtils.delay(timeGetAppScreenshot);
+                        }
+                        appScreenshotMaster.setData(mapper.writeValueAsString(screenshotObjects));
+                        appScreenshotMasterRepository.save(appScreenshotMaster);
+                        appScreenshotSolrService.save(appScreenshotSolr);
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.log.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                    } else {
+                        FileUtils.deleteQuietly(json);
+                    }
+                } catch (GooglePlayRuntimeException ex) {
+                    if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
+                        logger.info("[Screenshot Store][" + appId + "]Error " + ex.getMessage());
+                    } else {
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                        if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
+                            logger.error("[Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
+                        } else {
+                            logger.info("[Screenshot Store][" + appId + "]Error " + ex.getMessage());
+                        }
+                    }
+                } catch (Exception ex) {
+                    logger.error("[Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                }
+            } else {
+                FileUtils.deleteQuietly(json);
+            }
+        }
+        logger.debug("[Screenshot Store]Task end at: " + new Date());
     }
 }

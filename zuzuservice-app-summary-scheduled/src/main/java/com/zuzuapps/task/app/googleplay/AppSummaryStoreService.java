@@ -2,6 +2,7 @@ package com.zuzuapps.task.app.googleplay;
 
 import com.zuzuapps.task.app.common.*;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class AppSummaryStoreService extends AppCommonService {
     /**
      * Daily app summary update
      */
-    public void dailyAppSummaryUpdate() {
+    public void summaryAppIndexUpdate() {
         while (true) {
             // something that should execute on weekdays only
             String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath();
@@ -53,7 +54,7 @@ public class AppSummaryStoreService extends AppCommonService {
                 try {
                     SummaryApplicationPlays apps = mapper.readValue(json, SummaryApplicationPlays.class);
                     // Create app info json
-                    queueAppInformation(apps.getResults(), countryCode, languageCode, false);
+                    queueAppInformation(apps.getResults(), countryCode, languageCode, DataServiceEnum.information_summary);
                     // Move data to log folder
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
                 } catch (Exception ex) {
@@ -61,7 +62,7 @@ public class AppSummaryStoreService extends AppCommonService {
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
                 }
             } else {
-                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
+                FileUtils.deleteQuietly(json);
             }
             CommonUtils.delay(5);
         }
