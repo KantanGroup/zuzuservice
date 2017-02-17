@@ -179,9 +179,7 @@ public class AppCommonService {
     protected boolean isTimeToUpdate(Date appTime) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -timeUpdateAppInformation);
-        String appTime_ = CommonUtils.getTimeBy(appTime, "yyyyMMdd");
-        String currentTime_ = CommonUtils.getTimeBy(cal.getTime(), "yyyyMMdd");
-        return appTime_.equalsIgnoreCase(currentTime_);
+        return appTime.before(cal.getTime());
     }
 
     /**
