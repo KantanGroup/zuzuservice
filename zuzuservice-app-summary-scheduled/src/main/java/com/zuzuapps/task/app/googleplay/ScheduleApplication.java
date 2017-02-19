@@ -38,6 +38,13 @@ public class ScheduleApplication {
 
     @Value("${data.root.path:/tmp}")
     private String rootPath;
+
+    @Value("${process.daily.service:/false}")
+    protected boolean isProcessDailyService;
+
+    @Value("${process.summary.service:/false}")
+    protected boolean isProcessSummaryService;
+
     @Autowired
     private AppCommonService appCommonService;
     @Autowired
@@ -67,22 +74,22 @@ public class ScheduleApplication {
     public CommandLineRunner schedulingRunner(final TaskExecutor executor) {
         return new CommandLineRunner() {
             public void run(String... args) throws Exception {
-                //*
-                executor.execute(new GenerationIndexRunnable());
-                executor.execute(new DailyIndexUpdateRunnable());
-                executor.execute(new DailyAppInformationUpdateRunnable());
-                executor.execute(new DailyAppUpdateRunnable());
-                executor.execute(new ProcessAppScreenshotIndexRunnable());
-                executor.execute(new ProcessIndexStoreRunnable());
-                //*/
-                //*
-                executor.execute(new GenerationSummaryRunnable());
-                executor.execute(new SummaryIndexUpdateRunnable());
-                executor.execute(new SummaryAppInformationUpdateRunnable());
-                executor.execute(new SummaryAppUpdateRunnable());
-                executor.execute(new ProcessAppScreenshotIndexRunnable());
-                executor.execute(new ProcessSummaryStoreRunnable());
-                //*/
+                if (isProcessDailyService) {
+                    executor.execute(new GenerationIndexRunnable());
+                    executor.execute(new DailyIndexUpdateRunnable());
+                    executor.execute(new DailyAppInformationUpdateRunnable());
+                    executor.execute(new DailyAppUpdateRunnable());
+                    executor.execute(new ProcessAppScreenshotIndexRunnable());
+                    executor.execute(new ProcessIndexStoreRunnable());
+                }
+                if (isProcessSummaryService) {
+                    executor.execute(new GenerationSummaryRunnable());
+                    executor.execute(new SummaryIndexUpdateRunnable());
+                    executor.execute(new SummaryAppInformationUpdateRunnable());
+                    executor.execute(new SummaryAppUpdateRunnable());
+                    executor.execute(new ProcessAppScreenshotIndexRunnable());
+                    executor.execute(new ProcessSummaryStoreRunnable());
+                }
             }
         };
     }
@@ -98,12 +105,10 @@ public class ScheduleApplication {
     /**
      * Write app summary in USA to json
      */
-    /*
     @Scheduled(cron = "0 0 0 1 * *")
     public void scheduleAppSummary() {
         appSummaryService.generateAppSummaryStore();
     }
-    */
 
     class DailyIndexUpdateRunnable implements Runnable {
 
