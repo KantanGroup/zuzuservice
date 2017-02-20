@@ -1,8 +1,8 @@
-package com.jtests.api.commons;
+package com.jtests.api.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jtests.api.exceptions.ExceptionCodes;
-import com.jtests.api.exceptions.ExceptionResponse;
+import com.zuzuapps.task.app.exceptions.ExceptionCodes;
+import com.zuzuapps.task.app.exceptions.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 

@@ -1,4 +1,4 @@
-package com.jtests.api.commons;
+package com.jtests.api.common;
 
 import com.jtests.api.models.*;
 import org.springframework.context.annotation.Configuration;
