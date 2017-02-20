@@ -49,7 +49,7 @@ public class KanjiRepositoryTest {
     public void testAllJLPTKanji() throws Exception {
         List<Kanji> kanjis = repository.findAllByOrderByCodeAsc();
         System.out.println(repository.count());
-        List<Kanji> filterKanjis = new ArrayList<>();
+        List<Kanji> filterKanjis = new ArrayList<Kanji>();
         for (Kanji kanji : kanjis) {
             if (kanji.getJlptLevel() > 0 || kanji.getGradeLevel() > 0)
                 filterKanjis.add(kanji);
