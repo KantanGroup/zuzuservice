@@ -12,8 +12,8 @@ import com.zuzuapps.task.app.appstore.models.AppLanguageMaster;
 import com.zuzuapps.task.app.appstore.models.AppMaster;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.solr.common.util.Base64;
 import org.hibernate.exception.GenericJDBCException;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -159,7 +159,7 @@ public class AppService extends AppCommonService {
         app.setScore(applicationPlay.getScore());
         app.setPrice(applicationPlay.getPrice());
         app.setFree(applicationPlay.isFree());
-        app.setDeveloperId(new String(Base64.encode(applicationPlay.getDeveloper().getDevId().getBytes())));
+        app.setDeveloperId(Base64.byteArrayToBase64(applicationPlay.getDeveloper().getDevId().getBytes()));
         app.setDeveloperUrl(applicationPlay.getDeveloper().getUrl());
         app.setDeveloperEmail(applicationPlay.getDeveloperEmail());
         app.setDeveloperWebsite(applicationPlay.getDeveloperWebsite());

@@ -9,7 +9,7 @@ import com.zuzuapps.task.app.solr.models.AppTrendSolr;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.security.crypto.codec.Base64;
+import org.apache.solr.common.util.Base64;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -109,7 +109,7 @@ public class AppIndexStoreService extends AppCommonService {
         appIndexMaster.setCountryCode(countryCode);
         appIndexMaster.setIndex(index);
         appIndexMaster.setIcon(app.getIcon());
-        appIndexMaster.setDeveloperId(new String(Base64.encode(app.getDeveloper().getDevId().getBytes())));
+        appIndexMaster.setDeveloperId(Base64.byteArrayToBase64(app.getDeveloper().getDevId().getBytes()));
         appIndexMaster.setFree(app.isFree());
         appIndexMaster.setPrice(app.getPrice());
         appIndexMaster.setScore(app.getScore());

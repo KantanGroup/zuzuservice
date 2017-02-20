@@ -19,8 +19,6 @@ package com.zuzuapps.task.app.googleplay;
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
-import com.zuzuapps.task.app.elasticsearch.models.AppIndexElasticSearch;
-import com.zuzuapps.task.app.elasticsearch.repositories.AppIndexElasticSearchRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +40,6 @@ public class ScheduleApplicationTest {
     private AppIndexService topScheduleService;
     @Autowired
     private AppSummaryService appSummaryService;
-    @Autowired
-    private AppIndexElasticSearchRepository appIndexElasticSearchRepository;
 
     @Test
     public void appTop() {
@@ -69,16 +65,6 @@ public class ScheduleApplicationTest {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        }
-    }
-
-    @Test
-    public void testDataInElastichSearch() {
-        Iterator<AppIndexElasticSearch> appIndexElasticSearches = appIndexElasticSearchRepository.findAll().iterator();
-        while (appIndexElasticSearches.hasNext()) {
-            AppIndexElasticSearch appIndexElasticSearch = appIndexElasticSearches.next();
-            System.out.println(appIndexElasticSearch.getId());
-            System.out.println(appIndexElasticSearch.getAppId());
         }
     }
 }

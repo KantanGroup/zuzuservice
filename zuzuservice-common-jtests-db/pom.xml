@@ -56,10 +56,6 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-elasticsearch</artifactId>
-        </dependency>
         <!-- Dependencies for SQLite -->
         <dependency>
             <groupId>org.xerial</groupId>
