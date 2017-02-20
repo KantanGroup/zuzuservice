@@ -16,7 +16,7 @@
 
 package com.zuzuapps.task.app.googleplay;
 
-import com.zuzuapps.task.app.GooglePlayCommonConfiguration;
+import com.zuzuapps.task.app.AppstoreCommonConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.util.Date;
 
 @SpringBootApplication
-@Import({GooglePlayCommonConfiguration.class})
+@Import({AppstoreCommonConfiguration.class})
 public class ScheduleApplication {
     final Log logger = LogFactory.getLog("ScheduleApplication");
 
@@ -75,7 +75,7 @@ public class ScheduleApplication {
         return new CommandLineRunner() {
             public void run(String... args) throws Exception {
                 if (isProcessDailyService) {
-                    executor.execute(new GenerationIndexRunnable());
+                    //executor.execute(new GenerationIndexRunnable());
                     executor.execute(new DailyIndexUpdateRunnable());
                     executor.execute(new DailyAppInformationUpdateRunnable());
                     executor.execute(new DailyAppUpdateRunnable());
@@ -165,7 +165,7 @@ public class ScheduleApplication {
     }
 
     class ProcessAppScreenshotIndexRunnable implements Runnable {
-        
+
         @Override
         public void run() {
             logger.info("[ScheduleApplication][ProcessAppScreenshotIndexRunnable]Start at " + new Date());

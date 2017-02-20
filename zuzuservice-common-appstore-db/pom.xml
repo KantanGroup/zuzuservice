@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zuzuapps.task.app</groupId>
-    <artifactId>google-play-common-master</artifactId>
+    <artifactId>google-play-common-appstore-db</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
-    <name>google-play-common-master</name>
-    <description>Google Play Common Master</description>
+    <name>google-play-common-appstore-db</name>
+    <description>Google Play Common Appstore DB</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

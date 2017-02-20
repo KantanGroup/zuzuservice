@@ -108,7 +108,7 @@ public class AppCommonService {
                 path.append("/").append(countryCode).append(REGEX_3_UNDER_LINE);
                 path.append(languageCode).append(REGEX_3_UNDER_LINE);
                 path.append(summaryApplicationPlay.getAppId().toLowerCase()).append(JSON_FILE_EXTENSION);
-                logger.debug("Write summary of app " + summaryApplicationPlay.getAppId().toLowerCase() + " to queue folder " + path.toString());
+                //logger.debug("Write summary of app " + summaryApplicationPlay.getAppId().toLowerCase() + " to queue folder " + path.toString());
                 Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlay));
             } catch (Exception ex) {
                 logger.error("Write summary of app error " + ex.getMessage(), ex);

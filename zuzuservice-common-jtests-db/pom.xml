@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zuzuapps.task.app</groupId>
-    <artifactId>zuzuapp-service-api</artifactId>
+    <artifactId>google-play-common-jtests-db</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
-    <name>zuzuservice-service-api</name>
-    <description>Zuzuapp Service API</description>
+    <name>google-play-common-jtests-db</name>
+    <description>Google Play Common Jtests DB</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

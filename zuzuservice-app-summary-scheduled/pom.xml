@@ -20,7 +20,17 @@
     <dependencies>
         <dependency>
             <groupId>com.zuzuapps.task.app</groupId>
-            <artifactId>google-play-common-master</artifactId>
+            <artifactId>google-play-common-appstore-db</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zuzuapps.task.app</groupId>
+            <artifactId>google-play-common-jtests-db</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zuzuapps.task.app</groupId>
+            <artifactId>google-play-common</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>

@@ -1,7 +1,7 @@
 package com.zuzuapps.task.app.queue.repositories;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zuzuapps.task.app.GooglePlayCommonConfiguration;
+import com.zuzuapps.task.app.AppstoreCommonConfiguration;
 import com.zuzuapps.task.app.master.models.CountryMaster;
 import com.zuzuapps.task.app.master.repositories.CountryMasterRepository;
 import org.junit.Test;
@@ -24,7 +24,7 @@ import java.util.List;
  * @author tuanta17
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@Import({GooglePlayCommonConfiguration.class})
+@Import({AppstoreCommonConfiguration.class})
 public class CountryTest {
     @Autowired
     CountryMasterRepository countryRepository;
