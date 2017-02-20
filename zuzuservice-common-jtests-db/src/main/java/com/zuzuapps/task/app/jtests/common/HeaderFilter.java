@@ -1,4 +1,4 @@
-package com.jtests.api.common;
+package com.zuzuapps.task.app.jtests.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;

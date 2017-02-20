@@ -3,7 +3,7 @@ package com.zuzuapps.task.app.googleplay;
 import com.zuzuapps.task.app.common.*;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
-import com.zuzuapps.task.app.master.models.AppIndexMaster;
+import com.zuzuapps.task.app.appstore.models.AppIndexMaster;
 import com.zuzuapps.task.app.solr.models.AppIndexSolr;
 import com.zuzuapps.task.app.solr.models.AppTrendSolr;
 import org.apache.commons.io.FileUtils;

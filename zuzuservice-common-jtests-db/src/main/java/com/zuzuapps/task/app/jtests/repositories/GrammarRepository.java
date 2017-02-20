@@ -1,6 +1,6 @@
-package com.jtests.api.repositories;
+package com.zuzuapps.task.app.jtests.repositories;
 
-import com.jtests.api.models.Grammar;
+import com.zuzuapps.task.app.jtests.models.Grammar;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RestResource;
 

@@ -1,9 +1,8 @@
-package com.zuzuapps.task.app.master.models;
+package com.zuzuapps.task.app.appstore.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.zuzuapps.task.app.common.CategoryEnum;
 import com.zuzuapps.task.app.common.CollectionEnum;
-import org.springframework.data.solr.core.mapping.Indexed;
 
 import javax.persistence.*;
 import java.util.Date;

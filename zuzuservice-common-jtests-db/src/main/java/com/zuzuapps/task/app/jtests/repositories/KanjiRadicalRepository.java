@@ -1,7 +1,7 @@
-package com.jtests.api.repositories;
+package com.zuzuapps.task.app.jtests.repositories;
 
-import com.jtests.api.models.KanjiRadical;
-import com.jtests.api.models.KanjiRadicalId;
+import com.zuzuapps.task.app.jtests.models.KanjiRadical;
+import com.zuzuapps.task.app.jtests.models.KanjiRadicalId;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**

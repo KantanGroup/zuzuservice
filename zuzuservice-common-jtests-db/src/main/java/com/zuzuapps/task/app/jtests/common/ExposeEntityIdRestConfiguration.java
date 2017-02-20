@@ -1,6 +1,6 @@
-package com.jtests.api.common;
+package com.zuzuapps.task.app.jtests.common;
 
-import com.jtests.api.models.*;
+import com.zuzuapps.task.app.jtests.models.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;

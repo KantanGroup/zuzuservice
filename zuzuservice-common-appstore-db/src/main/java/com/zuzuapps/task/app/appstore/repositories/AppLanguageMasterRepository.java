@@ -1,7 +1,7 @@
-package com.zuzuapps.task.app.master.repositories;
+package com.zuzuapps.task.app.appstore.repositories;
 
-import com.zuzuapps.task.app.master.models.AppLanguageId;
-import com.zuzuapps.task.app.master.models.AppLanguageMaster;
+import com.zuzuapps.task.app.appstore.models.AppLanguageId;
+import com.zuzuapps.task.app.appstore.models.AppLanguageMaster;
 import org.springframework.data.repository.CrudRepository;
 
 /**

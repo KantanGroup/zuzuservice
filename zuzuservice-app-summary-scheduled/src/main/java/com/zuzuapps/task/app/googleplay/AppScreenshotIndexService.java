@@ -3,20 +3,11 @@ package com.zuzuapps.task.app.googleplay;
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
-import com.zuzuapps.task.app.exceptions.ExceptionCodes;
-import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
-import com.zuzuapps.task.app.googleplay.models.ScreenshotPlay;
-import com.zuzuapps.task.app.googleplay.models.ScreenshotPlays;
-import com.zuzuapps.task.app.master.models.AppScreenshotMaster;
-import com.zuzuapps.task.app.solr.models.AppScreenshotSolr;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author tuanta17

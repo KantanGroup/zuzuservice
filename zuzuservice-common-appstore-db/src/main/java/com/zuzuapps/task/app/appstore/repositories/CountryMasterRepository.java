@@ -1,6 +1,6 @@
-package com.zuzuapps.task.app.master.repositories;
+package com.zuzuapps.task.app.appstore.repositories;
 
-import com.zuzuapps.task.app.master.models.CountryMaster;
+import com.zuzuapps.task.app.appstore.models.CountryMaster;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

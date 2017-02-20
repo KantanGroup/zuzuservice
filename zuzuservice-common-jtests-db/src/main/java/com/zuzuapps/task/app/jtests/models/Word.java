@@ -1,4 +1,4 @@
-package com.jtests.api.models;
+package com.zuzuapps.task.app.jtests.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

@@ -4,7 +4,7 @@ import com.zuzuapps.task.app.common.*;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
-import com.zuzuapps.task.app.master.models.CountryMaster;
+import com.zuzuapps.task.app.appstore.models.CountryMaster;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

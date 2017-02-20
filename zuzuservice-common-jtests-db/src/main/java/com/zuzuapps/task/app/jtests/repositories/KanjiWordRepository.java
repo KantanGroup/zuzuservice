@@ -1,6 +1,6 @@
-package com.jtests.api.repositories;
+package com.zuzuapps.task.app.jtests.repositories;
 
-import com.jtests.api.models.KanjiWord;
+import com.zuzuapps.task.app.jtests.models.KanjiWord;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**

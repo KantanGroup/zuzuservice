@@ -2,8 +2,8 @@ package com.zuzuapps.task.app.queue.repositories;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzuapps.task.app.AppstoreCommonConfiguration;
-import com.zuzuapps.task.app.master.models.CountryMaster;
-import com.zuzuapps.task.app.master.repositories.CountryMasterRepository;
+import com.zuzuapps.task.app.appstore.models.CountryMaster;
+import com.zuzuapps.task.app.appstore.repositories.CountryMasterRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

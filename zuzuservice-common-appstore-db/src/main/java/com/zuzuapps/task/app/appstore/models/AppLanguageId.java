@@ -1,4 +1,4 @@
-package com.zuzuapps.task.app.master.models;
+package com.zuzuapps.task.app.appstore.models;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
