@@ -12,7 +12,7 @@ buildNumber.properties
 # Exclude maven wrapper
 !/.mvn/wrapper/maven-wrapper.jar
 .idea/
-google-play-app-summary-scheduled.iml
+*.iml
 data
 logs
 build
