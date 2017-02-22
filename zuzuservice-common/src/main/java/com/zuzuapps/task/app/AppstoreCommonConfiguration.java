@@ -18,7 +18,7 @@ import java.util.List;
  */
 @SpringBootApplication // same as @Configuration @EnableAutoConfiguration @ComponentScan
 @EnableElasticsearchRepositories(basePackages = "com.zuzuapps.task.app.elasticsearch.repositories")
-@EnableSolrRepositories(basePackages={"com.zuzuapps.task.app.solr.repositories"}, multicoreSupport=true)
+@EnableSolrRepositories(basePackages = {"com.zuzuapps.task.app.solr.repositories"}, multicoreSupport = true)
 @EnableJpaRepositories
 public class AppstoreCommonConfiguration {
 

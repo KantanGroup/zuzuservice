@@ -55,8 +55,8 @@ public class AppSummaryStoreService extends AppCommonService {
                     SummaryApplicationPlays apps = mapper.readValue(json, SummaryApplicationPlays.class);
                     // Create app info json
                     queueAppInformation(apps.getResults(), countryCode, languageCode, DataServiceEnum.information_summary);
-                    // Move data to log folder
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
+                    // Remove data
+                    FileUtils.deleteQuietly(json);
                 } catch (Exception ex) {
                     logger.error("[Application Summary --> Information][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.error.name(), time).getAbsolutePath());

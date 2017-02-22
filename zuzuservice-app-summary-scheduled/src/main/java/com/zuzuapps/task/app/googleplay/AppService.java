@@ -1,5 +1,8 @@
 package com.zuzuapps.task.app.googleplay;
 
+import com.zuzuapps.task.app.appstore.models.AppLanguageId;
+import com.zuzuapps.task.app.appstore.models.AppLanguageMaster;
+import com.zuzuapps.task.app.appstore.models.AppMaster;
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
@@ -7,9 +10,6 @@ import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
 import com.zuzuapps.task.app.googleplay.models.ScreenshotPlays;
-import com.zuzuapps.task.app.appstore.models.AppLanguageId;
-import com.zuzuapps.task.app.appstore.models.AppLanguageMaster;
-import com.zuzuapps.task.app.appstore.models.AppMaster;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.exception.GenericJDBCException;

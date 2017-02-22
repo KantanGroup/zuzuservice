@@ -1,5 +1,7 @@
 package com.zuzuapps.task.app.common;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -138,7 +140,13 @@ public class CommonUtils {
                 }
             });
         } catch (Exception ex) {
-            ex.getMessage();
+        }
+    }
+
+    public static void deleteDirectory(File directory) {
+        try {
+            FileUtils.deleteDirectory(directory);
+        } catch (Exception ex) {
         }
     }
 }

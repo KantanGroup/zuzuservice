@@ -1,9 +1,9 @@
 package com.zuzuapps.task.app.googleplay;
 
+import com.zuzuapps.task.app.appstore.models.AppIndexMaster;
 import com.zuzuapps.task.app.common.*;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
-import com.zuzuapps.task.app.appstore.models.AppIndexMaster;
 import com.zuzuapps.task.app.solr.models.AppIndexSolr;
 import com.zuzuapps.task.app.solr.models.AppTrendSolr;
 import org.apache.commons.io.FileUtils;
@@ -87,14 +87,15 @@ public class AppIndexStoreService extends AppCommonService {
                     appTrendService.save(appTrendSolr);
                     // Create app info json
                     queueAppInformation(apps.getResults(), countryCode, languageCode, DataServiceEnum.information_daily);
-                    // Move data to log folder
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
+                    // Remove data
+                    FileUtils.deleteQuietly(json);
                 } catch (Exception ex) {
                     logger.error("[Application Index Store][" + countryCode + "][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
                 }
             } else {
-                FileUtils.deleteQuietly(json);            }
+                FileUtils.deleteQuietly(json);
+            }
             CommonUtils.delay(5);
         }
         logger.debug("[Application Index Store]Cronjob end at: " + new Date());

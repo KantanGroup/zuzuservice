@@ -23,6 +23,6 @@ public class GrammarRepositoryTest {
     @Test
     public void testGetAllKanji() throws Exception {
         final ObjectMapper mapper = new ObjectMapper();
-        Files.write(Paths.get("/tmp/grammars.json"), mapper.writeValueAsString(repository.findAllByOrderById().subList(0,488)).getBytes(), StandardOpenOption.CREATE);
+        Files.write(Paths.get("/tmp/grammars.json"), mapper.writeValueAsString(repository.findAllByOrderById().subList(0, 488)).getBytes(), StandardOpenOption.CREATE);
     }
 }
