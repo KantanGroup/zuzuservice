@@ -1,12 +1,14 @@
 package com.zuzuapps.task.app.googleplay;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zuzuapps.task.app.common.CommonUtils;
-import com.zuzuapps.task.app.common.DataServiceEnum;
-import com.zuzuapps.task.app.common.DataTypeEnum;
-import com.zuzuapps.task.app.common.GZipUtil;
+import com.zuzuapps.task.app.appstore.models.AppScreenshotMaster;
+import com.zuzuapps.task.app.appstore.models.CountryMaster;
+import com.zuzuapps.task.app.appstore.repositories.AppIndexMasterRepository;
+import com.zuzuapps.task.app.appstore.repositories.AppLanguageMasterRepository;
+import com.zuzuapps.task.app.appstore.repositories.AppMasterRepository;
+import com.zuzuapps.task.app.appstore.repositories.AppScreenshotMasterRepository;
+import com.zuzuapps.task.app.common.*;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
@@ -16,12 +18,6 @@ import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
 import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
 import com.zuzuapps.task.app.googleplay.servies.ScreenshotApplicationPlayService;
 import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
-import com.zuzuapps.task.app.appstore.models.AppScreenshotMaster;
-import com.zuzuapps.task.app.appstore.models.CountryMaster;
-import com.zuzuapps.task.app.appstore.repositories.AppIndexMasterRepository;
-import com.zuzuapps.task.app.appstore.repositories.AppLanguageMasterRepository;
-import com.zuzuapps.task.app.appstore.repositories.AppMasterRepository;
-import com.zuzuapps.task.app.appstore.repositories.AppScreenshotMasterRepository;
 import com.zuzuapps.task.app.solr.models.AppInformationSolr;
 import com.zuzuapps.task.app.solr.models.AppScreenshotSolr;
 import com.zuzuapps.task.app.solr.repositories.AppIndexSolrRepository;
@@ -129,29 +125,8 @@ public class AppCommonService {
             logger.debug("Remove json file " + inputFile);
             Files.delete(inputFile);
         } catch (Exception ex) {
-            logger.warn("Move json file error " + ex.getMessage(), ex);
+            logger.info("Move json file error " + ex.getMessage());
         }
-    }
-
-    protected AppScreenshotMaster createAppScreenshotMaster(ScreenshotPlay screenshotPlay) throws JsonProcessingException {
-        AppScreenshotMaster app = new AppScreenshotMaster();
-        app.setAppId(screenshotPlay.getAppId());
-        app.setData(mapper.writeValueAsString(screenshotPlay));
-        return app;
-    }
-
-    /**
-     * Get distinct language
-     */
-    protected Set<String> findDistinctByLanguageCode() {
-        List<CountryMaster> countries = getCountries();
-        Set<String> languages = new HashSet<String>();
-        for (CountryMaster country : countries) {
-            if (country.getType() != 0) {
-                languages.add(country.getLanguageCode());
-            }
-        }
-        return languages;
     }
 
     /**
@@ -190,9 +165,9 @@ public class AppCommonService {
                 countries.add(country);
             }
         }
-        Collections.sort(countries, new Comparator<CountryMaster>(){
-            public int compare(CountryMaster o1, CountryMaster o2){
-                if(o1.getType() == o2.getType())
+        Collections.sort(countries, new Comparator<CountryMaster>() {
+            public int compare(CountryMaster o1, CountryMaster o2) {
+                if (o1.getType() == o2.getType())
                     return 0;
                 return o1.getType() > o2.getType() ? -1 : 1;
             }
@@ -251,7 +226,7 @@ public class AppCommonService {
     protected ApplicationPlay getAppInformationByLanguage(String languageCode, String appId, boolean isDaily) throws Exception {
         ApplicationPlay applicationPlay =
                 informationApplicationPlayService.getInformationApplications(appId, languageCode);
-        StringBuilder path = createAppInformationJSONPath(appId, languageCode, isDaily);;
+        StringBuilder path = createAppInformationJSONPath(appId, languageCode, isDaily);
         Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
         return applicationPlay;
     }
@@ -304,12 +279,10 @@ public class AppCommonService {
                     AppInformationSolr app = appInformationService.findOne(appId + "_" + languageCode);
                     if (app == null || isTimeToUpdate(app.getCreateAt())) {
                         extractAppInformation(languageCode, appId, isDaily);
-                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.log.name(), time, countryCode).getAbsolutePath());
                         long delayTime = System.currentTimeMillis() - startTime;
                         CommonUtils.delay(timeGetAppInformation - delayTime);
-                    } else {
-                        FileUtils.deleteQuietly(json);
                     }
+                    FileUtils.deleteQuietly(json);
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
                         logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
@@ -346,6 +319,8 @@ public class AppCommonService {
                 try {
                     AppScreenshotSolr screenshotObject = appScreenshotSolrService.findOne(appId);
                     if (screenshotObject == null || isTimeToUpdate(screenshotObject.getCreateAt())) {
+                        // Remove all old screenshot
+                        CommonUtils.deleteDirectory(CommonUtils.folderBy(imageStore, ImageTypeEnum.screenshot.name(), appId));
                         ScreenshotPlays screenshotPlays = mapper.readValue(json, ScreenshotPlays.class);
                         List<ScreenshotPlay> screenshotObjects = new ArrayList<ScreenshotPlay>();
                         AppScreenshotMaster appScreenshotMaster = new AppScreenshotMaster();
@@ -364,9 +339,8 @@ public class AppCommonService {
                         appScreenshotMasterRepository.save(appScreenshotMaster);
                         appScreenshotSolrService.save(appScreenshotSolr);
                         moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.log.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
-                    } else {
-                        FileUtils.deleteQuietly(json);
                     }
+                    FileUtils.deleteQuietly(json);
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
                         logger.info("[Screenshot Store][" + appId + "]Error " + ex.getMessage());

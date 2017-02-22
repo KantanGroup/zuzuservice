@@ -35,16 +35,12 @@ import java.util.Date;
 @Import({AppstoreCommonConfiguration.class})
 public class ScheduleApplication {
     final Log logger = LogFactory.getLog("ScheduleApplication");
-
-    @Value("${data.root.path:/tmp}")
-    private String rootPath;
-
     @Value("${process.daily.service:/false}")
     protected boolean isProcessDailyService;
-
     @Value("${process.summary.service:/false}")
     protected boolean isProcessSummaryService;
-
+    @Value("${data.root.path:/tmp}")
+    private String rootPath;
     @Autowired
     private AppCommonService appCommonService;
     @Autowired
@@ -83,7 +79,7 @@ public class ScheduleApplication {
                     executor.execute(new ProcessIndexStoreRunnable());
                 }
                 if (isProcessSummaryService) {
-                    executor.execute(new GenerationSummaryRunnable());
+                    //executor.execute(new GenerationSummaryRunnable());
                     executor.execute(new SummaryIndexUpdateRunnable());
                     executor.execute(new SummaryAppInformationUpdateRunnable());
                     executor.execute(new SummaryAppUpdateRunnable());
