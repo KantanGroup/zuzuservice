@@ -41,12 +41,16 @@ public class ScheduleApplication {
     protected boolean isProcessDailyScreen;
     @Value("${process.daily.generate:/false}")
     protected boolean isProcessDailyGenerate;
+    @Value("${process.daily.app:/false}")
+    protected boolean isProcessDailyApp;
     @Value("${process.summary.service:/false}")
     protected boolean isProcessSummaryService;
     @Value("${process.summary.screen:/false}")
     protected boolean isProcessSummaryScreen;
     @Value("${process.summary.generate:/false}")
     protected boolean isProcessSummaryGenerate;
+    @Value("${process.summary.app:/false}")
+    protected boolean isProcessSummaryApp;
     @Value("${data.root.path:/tmp}")
     private String rootPath;
     @Autowired
@@ -84,7 +88,9 @@ public class ScheduleApplication {
                     }
                     executor.execute(new DailyIndexUpdateRunnable());
                     executor.execute(new DailyAppInformationUpdateRunnable());
-                    executor.execute(new DailyAppUpdateRunnable());
+                    if (isProcessDailyApp) {
+                        executor.execute(new DailyAppUpdateRunnable());
+                    }
                     if (isProcessDailyScreen) {
                         executor.execute(new ProcessAppScreenshotIndexRunnable());
                     }
@@ -96,7 +102,9 @@ public class ScheduleApplication {
                     }
                     executor.execute(new SummaryIndexUpdateRunnable());
                     executor.execute(new SummaryAppInformationUpdateRunnable());
-                    executor.execute(new SummaryAppUpdateRunnable());
+                    if (isProcessSummaryApp) {
+                        executor.execute(new SummaryAppUpdateRunnable());
+                    }
                     if (isProcessSummaryScreen) {
                         executor.execute(new ProcessAppScreenshotIndexRunnable());
                     }

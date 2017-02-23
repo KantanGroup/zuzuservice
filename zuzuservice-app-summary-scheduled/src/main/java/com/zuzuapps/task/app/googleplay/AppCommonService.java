@@ -245,21 +245,15 @@ public class AppCommonService {
     }
 
     protected void extractAppInformation(String languageCode, String appId, boolean isDaily) throws Exception {
-        AppInformationSolr app = appInformationService.findOne(appId + "_" + languageCode);
-        if (app == null || isTimeToUpdate(app.getCreateAt())) {
-            logger.debug("[Information Store]Get app " + appId + " by language " + languageCode);
-            ApplicationPlay applicationPlay = getAppInformationByLanguage(languageCode, appId, isDaily);
-            if (app == null) {
-                logger.debug("[Information Store]App " + appId + " by language " + languageCode + " not found");
-            } else {
-                logger.debug("[Information Store]Time to update app " + appId + " by language " + languageCode);
-            }
-            // Get app information
-            app = createAppInformation(applicationPlay, languageCode);
-            // Index to elastic search
-            logger.debug("[Information Store]Save app " + appId + " by language " + languageCode);
-            appInformationService.save(app);
-        }
+        logger.debug("[Information Store]Get app " + appId + " by language " + languageCode);
+        ApplicationPlay applicationPlay = getAppInformationByLanguage(languageCode, appId, isDaily);
+        // Get app information
+        AppInformationSolr app = createAppInformation(applicationPlay, languageCode);
+        // Index to elastic search
+        logger.debug("[Information Store]Save app " + appId + " by language " + languageCode);
+        appInformationService.save(app);
+        // 4. Create icon
+        screenshotApplicationPlayService.extractOriginalIcon(app.getAppId(), app.getIcon());
     }
 
     protected void processAppInformation(File[] files, boolean isDaily) throws Exception {
