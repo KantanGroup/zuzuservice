@@ -37,8 +37,16 @@ public class ScheduleApplication {
     final Log logger = LogFactory.getLog("ScheduleApplication");
     @Value("${process.daily.service:/false}")
     protected boolean isProcessDailyService;
+    @Value("${process.daily.screen:/false}")
+    protected boolean isProcessDailyScreen;
+    @Value("${process.daily.generate:/false}")
+    protected boolean isProcessDailyGenerate;
     @Value("${process.summary.service:/false}")
     protected boolean isProcessSummaryService;
+    @Value("${process.summary.screen:/false}")
+    protected boolean isProcessSummaryScreen;
+    @Value("${process.summary.generate:/false}")
+    protected boolean isProcessSummaryGenerate;
     @Value("${data.root.path:/tmp}")
     private String rootPath;
     @Autowired
@@ -71,19 +79,27 @@ public class ScheduleApplication {
         return new CommandLineRunner() {
             public void run(String... args) throws Exception {
                 if (isProcessDailyService) {
-                    //executor.execute(new GenerationIndexRunnable());
+                    if (isProcessDailyGenerate) {
+                        executor.execute(new GenerationIndexRunnable());
+                    }
                     executor.execute(new DailyIndexUpdateRunnable());
                     executor.execute(new DailyAppInformationUpdateRunnable());
                     executor.execute(new DailyAppUpdateRunnable());
-                    executor.execute(new ProcessAppScreenshotIndexRunnable());
+                    if (isProcessDailyScreen) {
+                        executor.execute(new ProcessAppScreenshotIndexRunnable());
+                    }
                     executor.execute(new ProcessIndexStoreRunnable());
                 }
                 if (isProcessSummaryService) {
-                    //executor.execute(new GenerationSummaryRunnable());
+                    if (isProcessSummaryGenerate) {
+                        executor.execute(new GenerationSummaryRunnable());
+                    }
                     executor.execute(new SummaryIndexUpdateRunnable());
                     executor.execute(new SummaryAppInformationUpdateRunnable());
                     executor.execute(new SummaryAppUpdateRunnable());
-                    executor.execute(new ProcessAppScreenshotIndexRunnable());
+                    if (isProcessSummaryScreen) {
+                        executor.execute(new ProcessAppScreenshotIndexRunnable());
+                    }
                     executor.execute(new ProcessSummaryStoreRunnable());
                 }
             }
@@ -103,7 +119,9 @@ public class ScheduleApplication {
      */
     @Scheduled(cron = "0 0 0 1 * *")
     public void scheduleAppSummary() {
-        appSummaryService.generateAppSummaryStore();
+        if (isProcessSummaryGenerate) {
+            appSummaryService.generateAppSummaryStore();
+        }
     }
 
     class DailyIndexUpdateRunnable implements Runnable {
