@@ -95,15 +95,15 @@ public class AppService extends AppCommonService {
                     screenshotApplicationPlayService.extractOriginalIcon(app.getAppId(), app.getIcon());
                     // 5. Create screenshot
                     queueAppScreenshot(app, screenshot);
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.log.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.log.name()).getAbsolutePath());
                 } catch (GenericJDBCException ex) {
                     logger.error("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name()).getAbsolutePath());
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
                         logger.info("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     } else {
-                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name()).getAbsolutePath());
                         if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
                             logger.error("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
                         } else {
@@ -112,12 +112,12 @@ public class AppService extends AppCommonService {
                     }
                 } catch (Exception ex) {
                     logger.error("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name()).getAbsolutePath());
                 }
                 long delayTime = System.currentTimeMillis() - startTime;
                 CommonUtils.delay(timeGetAppInformation - delayTime);
             } else {
-                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name()).getAbsolutePath());
             }
         }
         logger.debug("[Application Store]Cronjob end at: " + new Date());

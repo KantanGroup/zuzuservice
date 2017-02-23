@@ -287,10 +287,10 @@ public class AppCommonService {
                     if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
                         logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     } else if (ex.getCode() == ExceptionCodes.APP_NOT_FOUND) {
-                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.not_found.name(), time).getAbsolutePath());
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.not_found.name()).getAbsolutePath());
                         logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     } else {
-                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name()).getAbsolutePath());
                         if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
                             logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
                         } else {
@@ -299,7 +299,7 @@ public class AppCommonService {
                     }
                 } catch (Exception ex) {
                     logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name()).getAbsolutePath());
                 }
             } else {
                 FileUtils.deleteQuietly(json);
@@ -338,14 +338,14 @@ public class AppCommonService {
                         appScreenshotMaster.setData(mapper.writeValueAsString(screenshotObjects));
                         appScreenshotMasterRepository.save(appScreenshotMaster);
                         appScreenshotSolrService.save(appScreenshotSolr);
-                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.log.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.log.name()).getAbsolutePath());
                     }
                     FileUtils.deleteQuietly(json);
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
                         logger.info("[Screenshot Store][" + appId + "]Error " + ex.getMessage());
                     } else {
-                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.error.name()).getAbsolutePath());
                         if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
                             logger.error("[Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
                         } else {
@@ -354,7 +354,7 @@ public class AppCommonService {
                     }
                 } catch (Exception ex) {
                     logger.error("[Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.error.name(), CommonUtils.getDailyByTime()).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.error.name()).getAbsolutePath());
                 }
             } else {
                 FileUtils.deleteQuietly(json);
