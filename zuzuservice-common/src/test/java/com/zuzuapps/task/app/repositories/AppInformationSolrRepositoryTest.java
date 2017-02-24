@@ -38,18 +38,38 @@ public class AppInformationSolrRepositoryTest {
 
     @Test
     public void testGetAppTrend() {
-        List<AppTrendSolr> data = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndAppId("jp", "all", "topselling_free", "jp.konami.duellinks");
-        //List<AppTrendSolr> data = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndAppId("au", "books_and_reference", "topselling_free", "com.audible.application");
-        List<AppTrendSolr> trends =  new ArrayList<AppTrendSolr>(data);
-        System.out.println(trends.size());
-        if (trends != null && !trends.isEmpty()) {
-            Collections.sort(trends, new Comparator<AppTrendSolr>() {
+        System.out.println("Get app trend");
+        List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndAppId("jp", "all", "topselling_free", "jp.konami.duellinks");
+        //List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndAppId("au", "books_and_reference", "topselling_free", "com.audible.application");
+        List<AppTrendSolr> modifiableList =  new ArrayList<AppTrendSolr>(unmodifiableList);
+        System.out.println(modifiableList.size());
+        if (modifiableList != null && !modifiableList.isEmpty()) {
+            Collections.sort(modifiableList, new Comparator<AppTrendSolr>() {
                 public int compare(AppTrendSolr o1, AppTrendSolr o2) {
                     return o1.getCreateAt().compareTo(o2.getCreateAt());
                 }
             });
         }
-        for(AppTrendSolr app: trends) {
+        for(AppTrendSolr app: modifiableList) {
+            System.out.println(CommonUtils.getTimeBy(app.getCreateAt(), "yyyyMMdd") + "\t\t" + app.getAppId() + "\t\t" + app.getIndex());
+        }
+    }
+
+    @Test
+    public void testGetAppTrendOfCategory() {
+        System.out.println("Get app trend of category");
+        List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndIndex("jp", "game", "topselling_free", 1);
+        //List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndAppId("au", "books_and_reference", "topselling_free", "com.audible.application");
+        List<AppTrendSolr> modifiableList =  new ArrayList<AppTrendSolr>(unmodifiableList);
+        System.out.println(modifiableList.size());
+        if (modifiableList != null && !modifiableList.isEmpty()) {
+            Collections.sort(modifiableList, new Comparator<AppTrendSolr>() {
+                public int compare(AppTrendSolr o1, AppTrendSolr o2) {
+                    return o1.getCreateAt().compareTo(o2.getCreateAt());
+                }
+            });
+        }
+        for(AppTrendSolr app: modifiableList) {
             System.out.println(CommonUtils.getTimeBy(app.getCreateAt(), "yyyyMMdd") + "\t\t" + app.getAppId() + "\t\t" + app.getIndex());
         }
     }
