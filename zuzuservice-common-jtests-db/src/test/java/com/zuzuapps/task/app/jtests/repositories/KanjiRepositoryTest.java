@@ -58,4 +58,20 @@ public class KanjiRepositoryTest {
         final ObjectMapper mapper = new ObjectMapper();
         Files.write(Paths.get("/tmp/kanjis.json"), mapper.writeValueAsString(filterKanjis).getBytes(), StandardOpenOption.CREATE);
     }
+
+    @Test
+    public void testGetKanjiByLevel() throws Exception {
+        for (int i = 1; i < 6; i++) {
+            List<Kanji> kanjis = repository.findByJlptLevel(i);
+            System.out.println(repository.count());
+            final ObjectMapper mapper = new ObjectMapper();
+            Files.write(Paths.get("/tmp/kanjis_jlpt_" + i + ".json"), mapper.writeValueAsString(kanjis).getBytes(), StandardOpenOption.CREATE);
+        }
+        for (int i = 1; i < 10; i++) {
+            List<Kanji> kanjis = repository.findByGradeLevel(i);
+            System.out.println(repository.count());
+            final ObjectMapper mapper = new ObjectMapper();
+            Files.write(Paths.get("/tmp/kanjis__yoyo_grade_" + i + ".json"), mapper.writeValueAsString(kanjis).getBytes(), StandardOpenOption.CREATE);
+        }
+    }
 }

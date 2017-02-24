@@ -80,7 +80,7 @@ public class AppIndexStoreService extends AppCommonService {
                     // Add data to mysql
                     logger.debug("[Application Index Store]Store to database");
                     appIndexDatabaseService.save(appIndexDatabase);
-                    // Add data to ElasticSearch
+                    // Add data to Apache Solr
                     logger.debug("[Application Index Store]Index to search engine");
                     appIndexService.save(appIndexSolr);
                     logger.debug("[Application Index Store]Trend to search engine");
