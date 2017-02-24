@@ -18,10 +18,13 @@
     <appender name="flatfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_FILE}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
             <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 50MB -->
                 <maxFileSize>3MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
+            <!-- keep 30 days' worth of history -->
             <maxHistory>3</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -32,9 +35,6 @@
     ​
     <root level="ERROR">
         <appender-ref ref="flatfile"/>
-    </root>
-    <root level="INFO">
         <appender-ref ref="console"/>
     </root>
-
 </configuration>
