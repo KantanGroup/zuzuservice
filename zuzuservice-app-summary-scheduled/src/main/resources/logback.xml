@@ -33,7 +33,7 @@
         </encoder>
     </appender>
     ​
-    <root level="ERROR">
+    <root level="INFO">
         <appender-ref ref="flatfile"/>
         <appender-ref ref="console"/>
     </root>
