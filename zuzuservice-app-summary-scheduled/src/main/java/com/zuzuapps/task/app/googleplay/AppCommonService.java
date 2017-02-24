@@ -100,8 +100,7 @@ public class AppCommonService {
     protected void queueAppInformation(List<SummaryApplicationPlay> summaryApplicationPlays, String countryCode, String languageCode, DataServiceEnum information) {
         for (SummaryApplicationPlay summaryApplicationPlay : summaryApplicationPlays) {
             try {
-                AppInformationSolr app = appInformationService.findOne(summaryApplicationPlay.getAppId() + "_" + languageCode);
-                if (app == null || isTimeToUpdate(app.getCreateAt())) {
+                if (checkAppInformationSolr(summaryApplicationPlay.getAppId() + "_" + languageCode)) {
                     StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, information.name(), DataTypeEnum.queue.name()).getAbsolutePath());
                     path.append("/").append(countryCode).append(REGEX_3_UNDER_LINE);
                     path.append(languageCode).append(REGEX_3_UNDER_LINE);
@@ -111,6 +110,19 @@ public class AppCommonService {
             } catch (Exception ex) {
                 logger.error("Write summary of app error " + ex.getMessage(), ex);
             }
+        }
+    }
+
+    /**
+     * Check app information avaiable or not
+     */
+    private boolean checkAppInformationSolr(String id) {
+        AppInformationSolr app = appInformationService.findOne(id);
+        if (app == null || isTimeToUpdate(app.getCreateAt())) {
+            return true;
+        } else {
+            CommonUtils.delay(10);
+            return false;
         }
     }
 
@@ -272,8 +284,7 @@ public class AppCommonService {
                 logger.debug("[Information Store]Get app " + appId + " by language " + languageCode + " in elastic search");
                 long startTime = System.currentTimeMillis();
                 try {
-                    AppInformationSolr app = appInformationService.findOne(appId + "_" + languageCode);
-                    if (app == null || isTimeToUpdate(app.getCreateAt())) {
+                    if (checkAppInformationSolr(appId + "_" + languageCode)) {
                         extractAppInformation(languageCode, appId, isDaily);
                         long delayTime = System.currentTimeMillis() - startTime;
                         CommonUtils.delay(timeGetAppInformation - delayTime);
