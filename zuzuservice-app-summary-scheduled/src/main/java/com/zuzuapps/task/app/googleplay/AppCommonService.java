@@ -259,15 +259,25 @@ public class AppCommonService {
     }
 
     protected void extractAppInformation(String languageCode, String appId, boolean isDaily) throws Exception {
-        logger.debug("[Information Store]Get app " + appId + " by language " + languageCode);
         ApplicationPlay applicationPlay = getAppInformationByLanguage(languageCode, appId, isDaily);
         // Get app information
         AppInformationSolr app = createAppInformation(applicationPlay, languageCode);
-        // Index to elastic search
-        logger.debug("[Information Store]Save app " + appId + " by language " + languageCode);
+        // Index to Solr
         appInformationService.save(app);
         // 4. Create icon
         screenshotApplicationPlayService.extractOriginalIcon(app.getAppId(), app.getIcon());
+    }
+
+    protected void extractEmptyAppInformation(String languageCode, String appId) throws Exception {
+        // Get app information
+        AppInformationSolr app = new AppInformationSolr();
+        app.setId(appId + "_" + languageCode);
+        app.setAppId(appId);
+        app.setSummary("App not found");
+        // Update current data
+        app.setCreateAt(new Date());
+        // Index to Solr
+        appInformationService.save(app);
     }
 
     protected void processAppInformation(File[] files, boolean isDaily) throws Exception {
@@ -294,6 +304,7 @@ public class AppCommonService {
                     if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
                         logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     } else if (ex.getCode() == ExceptionCodes.APP_NOT_FOUND) {
+                        extractEmptyAppInformation(appId, languageCode);
                         moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.not_found.name()).getAbsolutePath());
                         logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     } else {
