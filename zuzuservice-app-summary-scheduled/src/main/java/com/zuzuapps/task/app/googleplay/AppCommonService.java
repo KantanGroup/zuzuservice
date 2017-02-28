@@ -11,13 +11,13 @@ import com.zuzuapps.task.app.appstore.repositories.AppScreenshotMasterRepository
 import com.zuzuapps.task.app.common.*;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
-import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
-import com.zuzuapps.task.app.googleplay.models.ScreenshotPlay;
-import com.zuzuapps.task.app.googleplay.models.ScreenshotPlays;
-import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
-import com.zuzuapps.task.app.googleplay.servies.InformationApplicationPlayService;
-import com.zuzuapps.task.app.googleplay.servies.ScreenshotApplicationPlayService;
-import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationPlayService;
+import com.zuzuapps.task.app.googleplay.models.ApplicationGooglePlay;
+import com.zuzuapps.task.app.googleplay.models.ScreenshotGooglePlay;
+import com.zuzuapps.task.app.googleplay.models.ScreenshotGooglePlays;
+import com.zuzuapps.task.app.googleplay.models.SummaryApplicationGooglePlay;
+import com.zuzuapps.task.app.googleplay.servies.InformationApplicationGooglePlayService;
+import com.zuzuapps.task.app.googleplay.servies.ScreenshotApplicationGooglePlayService;
+import com.zuzuapps.task.app.googleplay.servies.SummaryApplicationGooglePlayService;
 import com.zuzuapps.task.app.solr.models.AppInformationSolr;
 import com.zuzuapps.task.app.solr.models.AppScreenshotSolr;
 import com.zuzuapps.task.app.solr.repositories.AppIndexSolrRepository;
@@ -75,7 +75,7 @@ public class AppCommonService {
     protected int timeGetAppScreenshot;
 
     @Autowired
-    protected SummaryApplicationPlayService summaryApplicationPlayService;
+    protected SummaryApplicationGooglePlayService summaryApplicationPlayService;
     @Autowired
     protected AppIndexMasterRepository appIndexDatabaseService;
     @Autowired
@@ -93,12 +93,12 @@ public class AppCommonService {
     @Autowired
     protected AppScreenshotSolrRepository appScreenshotSolrService;
     @Autowired
-    protected InformationApplicationPlayService informationApplicationPlayService;
+    protected InformationApplicationGooglePlayService informationApplicationPlayService;
     @Autowired
-    protected ScreenshotApplicationPlayService screenshotApplicationPlayService;
+    protected ScreenshotApplicationGooglePlayService screenshotApplicationPlayService;
 
-    protected void queueAppInformation(List<SummaryApplicationPlay> summaryApplicationPlays, String countryCode, String languageCode, DataServiceEnum information) {
-        for (SummaryApplicationPlay summaryApplicationPlay : summaryApplicationPlays) {
+    protected void queueAppInformation(List<SummaryApplicationGooglePlay> summaryApplicationPlays, String countryCode, String languageCode, DataServiceEnum information) {
+        for (SummaryApplicationGooglePlay summaryApplicationPlay : summaryApplicationPlays) {
             try {
                 if (checkAppInformationSolr(summaryApplicationPlay.getAppId() + "_" + languageCode)) {
                     StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, information.name(), DataTypeEnum.queue.name()).getAbsolutePath());
@@ -189,7 +189,7 @@ public class AppCommonService {
         return countries;
     }
 
-    protected AppInformationSolr createAppInformation(ApplicationPlay applicationPlay, String languageCode) {
+    protected AppInformationSolr createAppInformation(ApplicationGooglePlay applicationPlay, String languageCode) {
         AppInformationSolr app = new AppInformationSolr();
         app.setId(applicationPlay.getAppId() + "_" + languageCode);
         app.setAppId(applicationPlay.getAppId());
@@ -237,8 +237,8 @@ public class AppCommonService {
      * @param languageCode Language code
      * @param appId        App id
      */
-    protected ApplicationPlay getAppInformationByLanguage(String languageCode, String appId, boolean isDaily) throws Exception {
-        ApplicationPlay applicationPlay =
+    protected ApplicationGooglePlay getAppInformationByLanguage(String languageCode, String appId, boolean isDaily) throws Exception {
+        ApplicationGooglePlay applicationPlay =
                 informationApplicationPlayService.getInformationApplications(appId, languageCode);
         StringBuilder path = createAppInformationJSONPath(appId, languageCode, isDaily);
         Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
@@ -259,7 +259,7 @@ public class AppCommonService {
     }
 
     protected void extractAppInformation(String languageCode, String appId, boolean isDaily) throws Exception {
-        ApplicationPlay applicationPlay = getAppInformationByLanguage(languageCode, appId, isDaily);
+        ApplicationGooglePlay applicationPlay = getAppInformationByLanguage(languageCode, appId, isDaily);
         // Get app information
         AppInformationSolr app = createAppInformation(applicationPlay, languageCode);
         // Index to Solr
@@ -339,15 +339,15 @@ public class AppCommonService {
                     if (screenshotObject == null || isTimeToUpdate(screenshotObject.getCreateAt())) {
                         // Remove all old screenshot
                         CommonUtils.deleteDirectory(CommonUtils.folderBy(imageStore, ImageTypeEnum.screenshot.name(), appId));
-                        ScreenshotPlays screenshotPlays = mapper.readValue(json, ScreenshotPlays.class);
-                        List<ScreenshotPlay> screenshotObjects = new ArrayList<ScreenshotPlay>();
+                        ScreenshotGooglePlays screenshotPlays = mapper.readValue(json, ScreenshotGooglePlays.class);
+                        List<ScreenshotGooglePlay> screenshotObjects = new ArrayList<ScreenshotGooglePlay>();
                         AppScreenshotMaster appScreenshotMaster = new AppScreenshotMaster();
                         appScreenshotMaster.setAppId(appId);
                         AppScreenshotSolr appScreenshotSolr = new AppScreenshotSolr();
                         appScreenshotSolr.setId(appId);
                         for (String screenshotLink : screenshotPlays.getScreenshots()) {
                             // 5. Create screenshot
-                            ScreenshotPlay screenshotPlay = screenshotApplicationPlayService.extractOriginalScreenshot(appId, screenshotLink);
+                            ScreenshotGooglePlay screenshotPlay = screenshotApplicationPlayService.extractOriginalScreenshot(appId, screenshotLink);
                             screenshotObjects.add(screenshotPlay);
                             appScreenshotSolr.getScreenshotOrigins().add(screenshotPlay.getOriginal());
                             appScreenshotSolr.getScreenshotSources().add(screenshotPlay.getSource());

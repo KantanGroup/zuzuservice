@@ -2,7 +2,7 @@ package com.zuzuapps.task.app.googleplay;
 
 import com.zuzuapps.task.app.common.*;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
-import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
+import com.zuzuapps.task.app.googleplay.models.SummaryApplicationGooglePlays;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,7 +71,7 @@ public class AppSummaryService extends AppCommonService {
                 while (true) {
                     long startTime = System.currentTimeMillis();
                     try {
-                        SummaryApplicationPlays summaryApplicationPlays
+                        SummaryApplicationGooglePlays summaryApplicationPlays
                                 = summaryApplicationPlayService.getSummaryApplications(category, collection, LANGUAGE_CODE_DEFAULT, COUNTRY_CODE_DEFAULT, page);
                         StringBuilder path = queueAppSummaryJSONPath(CommonUtils.getDailyByTime(), collection, category, page);
                         logger.debug("[Application Summary Store]Write summary of app to json " + path.toString());

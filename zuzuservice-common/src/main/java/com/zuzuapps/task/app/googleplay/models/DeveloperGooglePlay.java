@@ -3,7 +3,7 @@ package com.zuzuapps.task.app.googleplay.models;
 /**
  * @author tuanta17
  */
-public class DeveloperPlay {
+public class DeveloperGooglePlay {
     private String devId;
     private String url;
 

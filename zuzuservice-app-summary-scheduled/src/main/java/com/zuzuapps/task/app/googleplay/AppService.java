@@ -6,8 +6,8 @@ import com.zuzuapps.task.app.appstore.models.AppMaster;
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
-import com.zuzuapps.task.app.googleplay.models.ApplicationPlay;
-import com.zuzuapps.task.app.googleplay.models.ScreenshotPlays;
+import com.zuzuapps.task.app.googleplay.models.ApplicationGooglePlay;
+import com.zuzuapps.task.app.googleplay.models.ScreenshotGooglePlays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.common.util.Base64;
@@ -80,7 +80,7 @@ public class AppService extends AppCommonService {
                 long startTime = System.currentTimeMillis();
                 try {
                     // 1. Get data
-                    ApplicationPlay app = mapper.readValue(json, ApplicationPlay.class);
+                    ApplicationGooglePlay app = mapper.readValue(json, ApplicationGooglePlay.class);
                     // 2. Write data to database
                     AppMaster appMaster = createAppMaster(app);
                     AppLanguageMaster appLanguageMaster = createAppLanguageMaster(app, languageCode, filename);
@@ -108,9 +108,9 @@ public class AppService extends AppCommonService {
         logger.debug("[Application Store]Cronjob end at: " + new Date());
     }
 
-    private void queueAppScreenshot(ApplicationPlay app, DataServiceEnum screenshot) {
+    private void queueAppScreenshot(ApplicationGooglePlay app, DataServiceEnum screenshot) {
         try {
-            ScreenshotPlays screenshotPlays = new ScreenshotPlays();
+            ScreenshotGooglePlays screenshotPlays = new ScreenshotGooglePlays();
             screenshotPlays.setAppId(app.getAppId());
             screenshotPlays.setScreenshots(app.getScreenshots());
             StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, screenshot.name(), DataTypeEnum.queue.name()).getAbsolutePath());
@@ -123,7 +123,7 @@ public class AppService extends AppCommonService {
         }
     }
 
-    private AppLanguageMaster createAppLanguageMaster(ApplicationPlay applicationPlay, String languageCode, String filename) {
+    private AppLanguageMaster createAppLanguageMaster(ApplicationGooglePlay applicationPlay, String languageCode, String filename) {
         StringBuilder path = new StringBuilder(DataServiceEnum.app.name());
         path.append("/").append(DataTypeEnum.log.name());
         path.append("/").append(CommonUtils.getDailyByTime());
@@ -136,7 +136,7 @@ public class AppService extends AppCommonService {
         return app;
     }
 
-    private AppMaster createAppMaster(ApplicationPlay applicationPlay) {
+    private AppMaster createAppMaster(ApplicationGooglePlay applicationPlay) {
         AppMaster app = new AppMaster();
         app.setAppId(applicationPlay.getAppId());
         app.setUrl(applicationPlay.getUrl());

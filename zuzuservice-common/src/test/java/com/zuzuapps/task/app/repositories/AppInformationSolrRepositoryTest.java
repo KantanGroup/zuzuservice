@@ -37,6 +37,12 @@ public class AppInformationSolrRepositoryTest {
     }
 
     @Test
+    public void testGetAppNotFound() {
+        // System.out.println(appInformationSolrRepository.findBySummary("App not found").size());
+        appInformationSolrRepository.delete(appInformationSolrRepository.findBySummary("App not found"));
+    }
+
+    @Test
     public void testGetAppTrend() {
         System.out.println("Get app trend");
         List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndAppId("jp", "all", "topselling_free", "jp.konami.duellinks");

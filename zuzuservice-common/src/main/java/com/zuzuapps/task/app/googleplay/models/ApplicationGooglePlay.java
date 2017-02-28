@@ -5,12 +5,12 @@ import java.util.List;
 /**
  * @author tuanta17
  */
-public class ApplicationPlay {
+public class ApplicationGooglePlay {
     private String appId;
     private String url;
     private String title;
     private String summary;
-    private DeveloperPlay developer;
+    private DeveloperGooglePlay developer;
     private String icon;
     private float score;
     private String price;
@@ -75,11 +75,11 @@ public class ApplicationPlay {
         this.summary = summary;
     }
 
-    public DeveloperPlay getDeveloper() {
+    public DeveloperGooglePlay getDeveloper() {
         return developer;
     }
 
-    public void setDeveloper(DeveloperPlay developer) {
+    public void setDeveloper(DeveloperGooglePlay developer) {
         this.developer = developer;
     }
 

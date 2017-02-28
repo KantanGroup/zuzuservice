@@ -4,7 +4,7 @@ import com.zuzuapps.task.app.appstore.models.CountryMaster;
 import com.zuzuapps.task.app.common.*;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
-import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
+import com.zuzuapps.task.app.googleplay.models.SummaryApplicationGooglePlays;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -80,7 +80,7 @@ public class AppIndexService extends AppCommonService {
                 CategoryEnum category = CategoryEnum.valueOf(data[3].toUpperCase());
                 long startTime = System.currentTimeMillis();
                 try {
-                    SummaryApplicationPlays summaryApplicationPlays
+                    SummaryApplicationGooglePlays summaryApplicationPlays
                             = summaryApplicationPlayService.getSummaryApplications(category, collection, languageCode, countryCode, 0);
                     StringBuilder path = queueAppIndexJSONPath(time, countryCode, languageCode, collection, category);
                     logger.debug("[Application Index]Write app summary to json " + path.toString());

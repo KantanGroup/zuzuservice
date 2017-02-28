@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * @author tuanta17
  */
-public class ScreenshotPlays {
+public class ScreenshotGooglePlays {
     private String appId;
     private List<String> screenshots;
 

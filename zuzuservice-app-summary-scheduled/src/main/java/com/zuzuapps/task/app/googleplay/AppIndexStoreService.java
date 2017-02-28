@@ -2,8 +2,8 @@ package com.zuzuapps.task.app.googleplay;
 
 import com.zuzuapps.task.app.appstore.models.AppIndexMaster;
 import com.zuzuapps.task.app.common.*;
-import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlay;
-import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
+import com.zuzuapps.task.app.googleplay.models.SummaryApplicationGooglePlay;
+import com.zuzuapps.task.app.googleplay.models.SummaryApplicationGooglePlays;
 import com.zuzuapps.task.app.solr.models.AppIndexSolr;
 import com.zuzuapps.task.app.solr.models.AppTrendSolr;
 import org.apache.commons.io.FileUtils;
@@ -69,9 +69,9 @@ public class AppIndexStoreService extends AppCommonService {
                 CollectionEnum collection = CollectionEnum.valueOf(data[3]);
                 try {
                     logger.debug("[Application Index Store]Convert json data to object");
-                    SummaryApplicationPlays apps = mapper.readValue(json, SummaryApplicationPlays.class);
+                    SummaryApplicationGooglePlays apps = mapper.readValue(json, SummaryApplicationGooglePlays.class);
                     short index = 1;
-                    for (SummaryApplicationPlay app : apps.getResults()) {
+                    for (SummaryApplicationGooglePlay app : apps.getResults()) {
                         createAppIndexMaster(appIndexDatabase, countryCode, category, collection, index, app);
                         createAppIndexInSearchEngine(appIndexSolr, countryCode, category, collection, index, app);
                         createAppTrendInSearchEngine(appTrendSolr, countryCode, category, collection, index, app);
@@ -101,7 +101,7 @@ public class AppIndexStoreService extends AppCommonService {
         logger.debug("[Application Index Store]Cronjob end at: " + new Date());
     }
 
-    private void createAppIndexMaster(List<AppIndexMaster> appIndexMasters, String countryCode, CategoryEnum category, CollectionEnum collection, short index, SummaryApplicationPlay app) {
+    private void createAppIndexMaster(List<AppIndexMaster> appIndexMasters, String countryCode, CategoryEnum category, CollectionEnum collection, short index, SummaryApplicationGooglePlay app) {
         AppIndexMaster appIndexMaster = new AppIndexMaster();
         appIndexMaster.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + index);
         appIndexMaster.setAppId(app.getAppId());
@@ -117,7 +117,7 @@ public class AppIndexStoreService extends AppCommonService {
         appIndexMasters.add(appIndexMaster);
     }
 
-    private void createAppIndexInSearchEngine(List<AppIndexSolr> appIndexs, String countryCode, CategoryEnum category, CollectionEnum collection, int index, SummaryApplicationPlay app) {
+    private void createAppIndexInSearchEngine(List<AppIndexSolr> appIndexs, String countryCode, CategoryEnum category, CollectionEnum collection, int index, SummaryApplicationGooglePlay app) {
         AppIndexSolr appIndex = new AppIndexSolr();
         appIndex.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + index);
         appIndex.setIndex(index);
@@ -135,7 +135,7 @@ public class AppIndexStoreService extends AppCommonService {
         appIndexs.add(appIndex);
     }
 
-    private void createAppTrendInSearchEngine(List<AppTrendSolr> appTrends, String countryCode, CategoryEnum category, CollectionEnum collection, int index, SummaryApplicationPlay app) {
+    private void createAppTrendInSearchEngine(List<AppTrendSolr> appTrends, String countryCode, CategoryEnum category, CollectionEnum collection, int index, SummaryApplicationGooglePlay app) {
         AppTrendSolr appTrend = new AppTrendSolr();
         appTrend.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getAppId() + "_" + CommonUtils.getTimeBy(new Date(), "yyyyMMdd"));
         appTrend.setIndex(index);

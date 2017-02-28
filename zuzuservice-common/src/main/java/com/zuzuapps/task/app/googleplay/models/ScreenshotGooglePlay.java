@@ -3,7 +3,7 @@ package com.zuzuapps.task.app.googleplay.models;
 /**
  * @author tuanta17
  */
-public class ScreenshotPlay {
+public class ScreenshotGooglePlay {
     private String appId;
     private int type; //icon, screen shot
     private String source;

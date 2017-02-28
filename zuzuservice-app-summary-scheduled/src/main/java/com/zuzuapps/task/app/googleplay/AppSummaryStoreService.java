@@ -1,7 +1,7 @@
 package com.zuzuapps.task.app.googleplay;
 
 import com.zuzuapps.task.app.common.*;
-import com.zuzuapps.task.app.googleplay.models.SummaryApplicationPlays;
+import com.zuzuapps.task.app.googleplay.models.SummaryApplicationGooglePlays;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,7 +52,7 @@ public class AppSummaryStoreService extends AppCommonService {
                 CategoryEnum category = CategoryEnum.valueOf(data[2].toUpperCase());
                 CollectionEnum collection = CollectionEnum.valueOf(data[3]);
                 try {
-                    SummaryApplicationPlays apps = mapper.readValue(json, SummaryApplicationPlays.class);
+                    SummaryApplicationGooglePlays apps = mapper.readValue(json, SummaryApplicationGooglePlays.class);
                     // Create app info json
                     queueAppInformation(apps.getResults(), countryCode, languageCode, DataServiceEnum.information_summary);
                     // Remove data
