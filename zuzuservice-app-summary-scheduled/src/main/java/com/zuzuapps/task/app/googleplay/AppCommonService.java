@@ -268,7 +268,7 @@ public class AppCommonService {
         screenshotApplicationPlayService.extractOriginalIcon(app.getAppId(), app.getIcon());
     }
 
-    protected void extractEmptyAppInformation(String languageCode, String appId) throws Exception {
+    protected void extractEmptyAppInformation(String appId, String languageCode) throws Exception {
         // Get app information
         AppInformationSolr app = new AppInformationSolr();
         app.setId(appId + "_" + languageCode);
