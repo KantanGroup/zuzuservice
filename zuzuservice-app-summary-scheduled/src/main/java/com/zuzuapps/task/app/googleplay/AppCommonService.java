@@ -104,7 +104,7 @@ public class AppCommonService {
                     StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, information.name(), DataTypeEnum.queue.name()).getAbsolutePath());
                     path.append("/").append(countryCode).append(REGEX_3_UNDER_LINE);
                     path.append(languageCode).append(REGEX_3_UNDER_LINE);
-                    path.append(summaryApplicationPlay.getAppId().toLowerCase()).append(JSON_FILE_EXTENSION);
+                    path.append(summaryApplicationPlay.getAppId()).append(JSON_FILE_EXTENSION);
                     Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlay));
                 }
             } catch (Exception ex) {
@@ -254,7 +254,7 @@ public class AppCommonService {
         }
         path.append("/");
         path.append(languageCode).append(REGEX_3_UNDER_LINE);
-        path.append(appId.toLowerCase()).append(JSON_FILE_EXTENSION);
+        path.append(appId).append(JSON_FILE_EXTENSION);
         return path;
     }
 
