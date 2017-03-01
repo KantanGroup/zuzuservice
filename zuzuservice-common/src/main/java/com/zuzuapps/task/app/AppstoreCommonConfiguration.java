@@ -1,11 +1,11 @@
 package com.zuzuapps.task.app;
 
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.solr.repository.config.EnableSolrRepositories;
-import org.springframework.data.solr.server.support.MulticoreSolrClientFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -31,7 +31,7 @@ public class AppstoreCommonConfiguration {
     }
 
     @Bean
-    public MulticoreSolrClientFactory solrClientFactory() {
-        return new MulticoreSolrClientFactory(new HttpSolrClient("http://localhost:8983/solr"));
+    public SolrClient solrClient() {
+        return new HttpSolrClient("http://localhost:8983/solr");
     }
 }

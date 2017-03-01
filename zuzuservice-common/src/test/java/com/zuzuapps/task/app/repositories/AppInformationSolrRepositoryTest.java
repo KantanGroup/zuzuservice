@@ -37,11 +37,17 @@ public class AppInformationSolrRepositoryTest {
     }
 
     @Test
+    public void testGetAppNotFound() {
+        // System.out.println(appInformationSolrRepository.findBySummary("App not found").size());
+        appInformationSolrRepository.delete(appInformationSolrRepository.findBySummary("App not found"));
+    }
+
+    @Test
     public void testGetAppTrend() {
         System.out.println("Get app trend");
         List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndAppId("jp", "all", "topselling_free", "jp.konami.duellinks");
         //List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndAppId("au", "books_and_reference", "topselling_free", "com.audible.application");
-        List<AppTrendSolr> modifiableList =  new ArrayList<AppTrendSolr>(unmodifiableList);
+        List<AppTrendSolr> modifiableList = new ArrayList<AppTrendSolr>(unmodifiableList);
         System.out.println(modifiableList.size());
         if (modifiableList != null && !modifiableList.isEmpty()) {
             Collections.sort(modifiableList, new Comparator<AppTrendSolr>() {
@@ -50,7 +56,7 @@ public class AppInformationSolrRepositoryTest {
                 }
             });
         }
-        for(AppTrendSolr app: modifiableList) {
+        for (AppTrendSolr app : modifiableList) {
             System.out.println(CommonUtils.getTimeBy(app.getCreateAt(), "yyyyMMdd") + "\t\t" + app.getAppId() + "\t\t" + app.getIndex());
         }
     }
@@ -60,7 +66,7 @@ public class AppInformationSolrRepositoryTest {
         System.out.println("Get app trend of category");
         List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndIndex("jp", "game", "topselling_free", 1);
         //List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndAppId("au", "books_and_reference", "topselling_free", "com.audible.application");
-        List<AppTrendSolr> modifiableList =  new ArrayList<AppTrendSolr>(unmodifiableList);
+        List<AppTrendSolr> modifiableList = new ArrayList<AppTrendSolr>(unmodifiableList);
         System.out.println(modifiableList.size());
         if (modifiableList != null && !modifiableList.isEmpty()) {
             Collections.sort(modifiableList, new Comparator<AppTrendSolr>() {
@@ -69,7 +75,7 @@ public class AppInformationSolrRepositoryTest {
                 }
             });
         }
-        for(AppTrendSolr app: modifiableList) {
+        for (AppTrendSolr app : modifiableList) {
             System.out.println(CommonUtils.getTimeBy(app.getCreateAt(), "yyyyMMdd") + "\t\t" + app.getAppId() + "\t\t" + app.getIndex());
         }
     }
