@@ -45,7 +45,7 @@ public class AppInformationSolrRepositoryTest {
     @Test
     public void testGetAppTrend() {
         System.out.println("Get app trend");
-        List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndAppId("jp", "all", "topselling_free", "jp.konami.duellinks");
+        List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndAppIdOrderByCreateAtDesc("jp", "all", "topselling_free", "jp.konami.duellinks");
         //List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndAppId("au", "books_and_reference", "topselling_free", "com.audible.application");
         List<AppTrendSolr> modifiableList = new ArrayList<AppTrendSolr>(unmodifiableList);
         System.out.println(modifiableList.size());
@@ -64,7 +64,7 @@ public class AppInformationSolrRepositoryTest {
     @Test
     public void testGetAppTrendOfCategory() {
         System.out.println("Get app trend of category");
-        List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndIndex("jp", "game", "topselling_free", 1);
+        List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndIndexOrderByCreateAtDesc("jp", "game", "topselling_free", 1);
         //List<AppTrendSolr> unmodifiableList = appTrendSolrRepository.findByCountryCodeAndCategoryAndCollectionAndAppId("au", "books_and_reference", "topselling_free", "com.audible.application");
         List<AppTrendSolr> modifiableList = new ArrayList<AppTrendSolr>(unmodifiableList);
         System.out.println(modifiableList.size());
