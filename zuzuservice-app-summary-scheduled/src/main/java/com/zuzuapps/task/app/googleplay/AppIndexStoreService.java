@@ -139,14 +139,11 @@ public class AppIndexStoreService extends AppCommonService {
         AppTrendSolr appTrend = new AppTrendSolr();
         appTrend.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getAppId() + "_" + CommonUtils.getTimeBy(new Date(), "yyyyMMdd"));
         appTrend.setIndex(index);
-        appTrend.setTitle(app.getTitle());
         appTrend.setAppId(app.getAppId());
         appTrend.setCategory(category.name().toLowerCase());
         appTrend.setCollection(collection.name());
         appTrend.setCountryCode(countryCode);
         appTrend.setIndex(index);
-        appTrend.setIcon(app.getIcon());
-        appTrend.setDeveloperId(app.getDeveloper().getDevId());
         appTrend.setFree(app.isFree());
         appTrend.setPrice(app.getPrice());
         appTrend.setScore(app.getScore());
