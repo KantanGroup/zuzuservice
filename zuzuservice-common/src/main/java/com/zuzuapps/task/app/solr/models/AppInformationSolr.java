@@ -59,10 +59,6 @@ public class AppInformationSolr {
     private String familyGenre;
     @Indexed(name = "family_genre_id", type = "string")
     private String familyGenreId;
-    @Indexed(name = "offers_iap", type = "boolean")
-    private boolean offersIAP;
-    @Indexed(name = "ad_supported", type = "boolean")
-    private boolean adSupported;
     @Indexed(name = "android_version_text", type = "string")
     private String androidVersionText;
     @Indexed(name = "android_version", type = "string")
@@ -71,8 +67,6 @@ public class AppInformationSolr {
     private String contentRating;
     @Indexed
     private List<String> screenshots;
-    @Indexed(type = "boolean")
-    private boolean preregister;
     @Indexed(type = "string")
     private String video;
     @Indexed(name = "playstore_url", type = "string")
@@ -270,22 +264,6 @@ public class AppInformationSolr {
         this.familyGenreId = familyGenreId;
     }
 
-    public boolean isOffersIAP() {
-        return offersIAP;
-    }
-
-    public void setOffersIAP(boolean offersIAP) {
-        this.offersIAP = offersIAP;
-    }
-
-    public boolean isAdSupported() {
-        return adSupported;
-    }
-
-    public void setAdSupported(boolean adSupported) {
-        this.adSupported = adSupported;
-    }
-
     public String getAndroidVersionText() {
         return androidVersionText;
     }
@@ -316,14 +294,6 @@ public class AppInformationSolr {
 
     public void setScreenshots(List<String> screenshots) {
         this.screenshots = screenshots;
-    }
-
-    public boolean isPreregister() {
-        return preregister;
-    }
-
-    public void setPreregister(boolean preregister) {
-        this.preregister = preregister;
     }
 
     public String getVideo() {
