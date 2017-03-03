@@ -1,7 +1,5 @@
 package com.zuzuapps.task.app;
 
-import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -28,10 +26,5 @@ public class AppstoreCommonConfiguration {
     @Bean
     public ByteArrayHttpMessageConverter byteArrayHttpMessageConverter() {
         return new ByteArrayHttpMessageConverter();
-    }
-
-    @Bean
-    public SolrClient solrClient() {
-        return new HttpSolrClient("http://localhost:8983/solr");
     }
 }
