@@ -214,13 +214,10 @@ public class AppCommonService {
         app.setDescriptionHTML(applicationPlay.getDescriptionHTML());
         app.setFamilyGenre(applicationPlay.getFamilyGenre());
         app.setFamilyGenreId(applicationPlay.getFamilyGenreId());
-        app.setOffersIAP(applicationPlay.isOffersIAP());
-        app.setAdSupported(applicationPlay.isAdSupported());
         app.setAndroidVersion(applicationPlay.getAndroidVersion());
         app.setAndroidVersionText(applicationPlay.getAndroidVersionText());
         app.setContentRating(applicationPlay.getContentRating());
         app.setScreenshots(applicationPlay.getScreenshots());
-        app.setPreregister(applicationPlay.isPreregister());
         app.setVideo(applicationPlay.getVideo());
         app.setPlaystoreUrl(applicationPlay.getPlaystoreUrl());
         app.setPermissions(applicationPlay.getPermissions());
