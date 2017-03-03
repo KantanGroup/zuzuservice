@@ -406,8 +406,8 @@
   <field name="app_version" type="string" indexed="true" stored="true"/>
   <field name="content_rating" type="string" indexed="true" stored="true"/>
   <field name="create_at" type="date" indexed="true" stored="true"/>
-  <field name="description" type="string" indexed="false" stored="true" compressed="true"/>
-  <field name="description_html" type="string" indexed="false" stored="true" compressed="true"/>
+  <field name="description" type="string" indexed="false" stored="true"/>
+  <field name="description_html" type="string" indexed="false" stored="true"/>
   <field name="developer_email" type="string" indexed="false" stored="true"/>
   <field name="developer_id" type="string" indexed="true" stored="true"/>
   <field name="developer_website" type="string" indexed="false" stored="true"/>
@@ -426,9 +426,9 @@
   <field name="price" type="string" indexed="true" stored="true"/>
   <field name="reviews" type="string" indexed="false" stored="true"/>
   <field name="score" type="double" indexed="true" stored="true"/>
-  <field name="screenshots" type="strings" indexed="false" stored="true" compressed="true"/>
+  <field name="screenshots" type="strings" indexed="false" stored="true"/>
   <field name="similar" type="string" indexed="false" stored="true"/>
-  <field name="summary" type="string" indexed="false" stored="true" compressed="true"/>
+  <field name="summary" type="string" indexed="false" stored="true"/>
   <field name="title" type="string" indexed="true" stored="true"/>
   <field name="updated" type="string" indexed="true" stored="true"/>
   <field name="url" type="string" indexed="false" stored="true"/>
