@@ -9,6 +9,7 @@ import com.zuzuapps.task.app.solr.models.AppIndexSolr;
 import com.zuzuapps.task.app.solr.models.AppInformationSolr;
 import com.zuzuapps.task.app.solr.repositories.AppIndexSolrRepository;
 import com.zuzuapps.task.app.solr.repositories.AppInformationSolrRepository;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ImportDataToSolrTest {
-    static final String root = "/opt/zuzuservice/backups/";
+    static final String root = "/opt/zuzuservice/queue/";
 
     @Autowired
     AppInformationSolrRepository appInformationSolrRepository;
@@ -44,6 +45,7 @@ public class ImportDataToSolrTest {
                 for (File json : files) {
                     List<AppInformationSolr> apps = mapper.readValue(json, new TypeReference<List<AppInformationSolr>>(){});
                     appInformationSolrRepository.save(apps);
+                    FileUtils.deleteQuietly(json);
                     CommonUtils.delay(100);
                 }
             }
