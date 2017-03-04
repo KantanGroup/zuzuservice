@@ -1,6 +1,7 @@
 package com.zuzuapps.task.app.solr.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.Indexed;
 import org.springframework.data.solr.core.mapping.SolrDocument;
@@ -18,8 +19,10 @@ public class AppIndexSolr {
     private int index;
     @Indexed(type = "string")
     private String title;
+    @JsonProperty("app_id")
     @Indexed(name = "app_id", type = "string")
     private String appId;
+    @JsonProperty("country_code")
     @Indexed(name = "country_code", type = "string")
     private String countryCode;
     @Indexed(type = "string")
@@ -28,6 +31,7 @@ public class AppIndexSolr {
     private String collection;
     @Indexed(type = "string")
     private String icon;
+    @JsonProperty("developer_id")
     @Indexed(name = "developer_id", type = "string")
     private String developerId;
     @Indexed(type = "double")

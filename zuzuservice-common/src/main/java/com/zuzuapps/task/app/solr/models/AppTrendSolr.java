@@ -1,6 +1,7 @@
 package com.zuzuapps.task.app.solr.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.Indexed;
 import org.springframework.data.solr.core.mapping.SolrDocument;
@@ -18,8 +19,10 @@ public class AppTrendSolr {
     private String id;
     @Indexed(type = "string")
     private int index;
+    @JsonProperty("app_id")
     @Indexed(name = "app_id", type = "string")
     private String appId;
+    @JsonProperty("country_code")
     @Indexed(name = "country_code", type = "string")
     private String countryCode;
     @Indexed(type = "string")
@@ -32,6 +35,7 @@ public class AppTrendSolr {
     private boolean free;
     @Indexed(type = "string")
     private String price;
+    @JsonProperty("create_at")
     @Indexed(name = "create_at", type = "date")
     private Date createAt;
 
