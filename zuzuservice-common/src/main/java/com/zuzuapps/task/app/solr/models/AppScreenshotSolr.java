@@ -1,5 +1,6 @@
 package com.zuzuapps.task.app.solr.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.Indexed;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * @author tuanta17
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @SolrDocument(solrCoreName = "app-screenshot-index")
 public class AppScreenshotSolr {
     @Indexed

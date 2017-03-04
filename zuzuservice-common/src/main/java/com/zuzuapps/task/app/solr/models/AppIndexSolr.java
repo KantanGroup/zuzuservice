@@ -1,5 +1,6 @@
 package com.zuzuapps.task.app.solr.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.Indexed;
 import org.springframework.data.solr.core.mapping.SolrDocument;
@@ -7,6 +8,7 @@ import org.springframework.data.solr.core.mapping.SolrDocument;
 /**
  * @author tuanta17
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @SolrDocument(solrCoreName = "app-index")
 public class AppIndexSolr {
     @Indexed
