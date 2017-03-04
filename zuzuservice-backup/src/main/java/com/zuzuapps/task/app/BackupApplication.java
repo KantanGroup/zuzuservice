@@ -30,7 +30,7 @@ import java.util.List;
 @SpringBootApplication // same as @Configuration @EnableAutoConfiguration @ComponentScan
 @Import({AppstoreCommonConfiguration.class})
 public class BackupApplication {
-    static final String root = "/opt/zuzuservice/";
+    static final String root = "/opt/zuzuservice/backups";
 
     @Autowired
     AppInformationSolrRepository appInformationSolrRepository;
