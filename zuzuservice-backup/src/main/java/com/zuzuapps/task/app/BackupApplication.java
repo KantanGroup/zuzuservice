@@ -3,12 +3,12 @@ package com.zuzuapps.task.app;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzuapps.task.app.common.CommonUtils;
-import com.zuzuapps.task.app.solr.models.AppIndexSolr;
-import com.zuzuapps.task.app.solr.models.AppInformationSolr;
-import com.zuzuapps.task.app.solr.models.AppTrendSolr;
-import com.zuzuapps.task.app.solr.repositories.AppIndexSolrRepository;
-import com.zuzuapps.task.app.solr.repositories.AppInformationSolrRepository;
-import com.zuzuapps.task.app.solr.repositories.AppTrendSolrRepository;
+import com.zuzuapps.task.app.export.solr.models.AppIndexSolr;
+import com.zuzuapps.task.app.export.solr.models.AppInformationSolr;
+import com.zuzuapps.task.app.export.solr.models.AppTrendSolr;
+import com.zuzuapps.task.app.export.solr.repositories.AppIndexSolrRepository;
+import com.zuzuapps.task.app.export.solr.repositories.AppInformationSolrRepository;
+import com.zuzuapps.task.app.export.solr.repositories.AppTrendSolrRepository;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.data.solr.repository.config.EnableSolrRepositories;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.File;
@@ -28,9 +29,9 @@ import java.util.List;
  * @author tuanta17
  */
 @SpringBootApplication // same as @Configuration @EnableAutoConfiguration @ComponentScan
-@Import({AppstoreCommonConfiguration.class})
+@EnableSolrRepositories(basePackages = {"com.zuzuapps.task.app.export.solr.repositories"}, multicoreSupport = true)
 public class BackupApplication {
-    static final String root = "/opt/zuzuservice/backups";
+    static final String root = "/home/tuanta/Documents/gcloud-server/zuzuservices/zuzuservice/backups";
 
     @Autowired
     AppInformationSolrRepository appInformationSolrRepository;
