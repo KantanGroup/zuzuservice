@@ -18,8 +18,6 @@ public class AppInformationSolr {
     @Indexed(name = "app_id", type = "string")
     private String appId;
     @Indexed(type = "string")
-    private String url;
-    @Indexed(type = "string")
     private String title;
     @Indexed(type = "string")
     private String summary;
@@ -49,16 +47,10 @@ public class AppInformationSolr {
     private long maxInstalls;
     @Indexed(type = "string")
     private String genre;
-    @Indexed(name = "genre_id", type = "string")
-    private String genreId;
-    @Indexed(type = "string")
-    private String description;
     @Indexed(name = "description_html", type = "string")
     private String descriptionHTML;
     @Indexed(name = "family_genre", type = "string")
     private String familyGenre;
-    @Indexed(name = "family_genre_id", type = "string")
-    private String familyGenreId;
     @Indexed(name = "android_version_text", type = "string")
     private String androidVersionText;
     @Indexed(name = "android_version", type = "string")
@@ -71,12 +63,6 @@ public class AppInformationSolr {
     private String video;
     @Indexed(name = "playstore_url", type = "string")
     private String playstoreUrl;
-    @Indexed(type = "string")
-    private String permissions;
-    @Indexed(type = "string")
-    private String similar;
-    @Indexed(type = "string")
-    private String reviews;
     @Indexed(name = "create_at", type = "date")
     private Date createAt;
 
@@ -94,14 +80,6 @@ public class AppInformationSolr {
 
     public void setAppId(String appId) {
         this.appId = appId;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public String getTitle() {
@@ -224,22 +202,6 @@ public class AppInformationSolr {
         this.genre = genre;
     }
 
-    public String getGenreId() {
-        return genreId;
-    }
-
-    public void setGenreId(String genreId) {
-        this.genreId = genreId;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getDescriptionHTML() {
         return descriptionHTML;
     }
@@ -254,14 +216,6 @@ public class AppInformationSolr {
 
     public void setFamilyGenre(String familyGenre) {
         this.familyGenre = familyGenre;
-    }
-
-    public String getFamilyGenreId() {
-        return familyGenreId;
-    }
-
-    public void setFamilyGenreId(String familyGenreId) {
-        this.familyGenreId = familyGenreId;
     }
 
     public String getAndroidVersionText() {
@@ -310,30 +264,6 @@ public class AppInformationSolr {
 
     public void setPlaystoreUrl(String playstoreUrl) {
         this.playstoreUrl = playstoreUrl;
-    }
-
-    public String getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(String permissions) {
-        this.permissions = permissions;
-    }
-
-    public String getSimilar() {
-        return similar;
-    }
-
-    public void setSimilar(String similar) {
-        this.similar = similar;
-    }
-
-    public String getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(String reviews) {
-        this.reviews = reviews;
     }
 
     public Date getCreateAt() {

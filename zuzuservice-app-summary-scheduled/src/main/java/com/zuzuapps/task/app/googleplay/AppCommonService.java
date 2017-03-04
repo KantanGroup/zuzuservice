@@ -193,7 +193,6 @@ public class AppCommonService {
         AppInformationSolr app = new AppInformationSolr();
         app.setId(applicationPlay.getAppId() + "_" + languageCode);
         app.setAppId(applicationPlay.getAppId());
-        app.setUrl(applicationPlay.getUrl());
         app.setTitle(applicationPlay.getTitle());
         app.setSummary(applicationPlay.getSummary());
         app.setDeveloperId(applicationPlay.getDeveloper().getDevId());
@@ -209,20 +208,14 @@ public class AppCommonService {
         app.setMinInstalls(applicationPlay.getMinInstalls());
         app.setMaxInstalls(applicationPlay.getMaxInstalls());
         app.setGenre(applicationPlay.getGenre());
-        app.setGenreId(applicationPlay.getGenreId());
-        app.setDescription(applicationPlay.getDescription());
         app.setDescriptionHTML(applicationPlay.getDescriptionHTML());
         app.setFamilyGenre(applicationPlay.getFamilyGenre());
-        app.setFamilyGenreId(applicationPlay.getFamilyGenreId());
         app.setAndroidVersion(applicationPlay.getAndroidVersion());
         app.setAndroidVersionText(applicationPlay.getAndroidVersionText());
         app.setContentRating(applicationPlay.getContentRating());
         app.setScreenshots(applicationPlay.getScreenshots());
         app.setVideo(applicationPlay.getVideo());
         app.setPlaystoreUrl(applicationPlay.getPlaystoreUrl());
-        app.setPermissions(applicationPlay.getPermissions());
-        app.setSimilar(applicationPlay.getSimilar());
-        app.setReviews(applicationPlay.getReviews());
         // Update current data
         app.setCreateAt(new Date());
         return app;
