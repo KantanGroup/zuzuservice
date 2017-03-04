@@ -43,8 +43,12 @@ public class ImportDataToSolrTest {
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
                 for (File json : files) {
-                    List<AppInformationSolr> apps = mapper.readValue(json, new TypeReference<List<AppInformationSolr>>(){});
-                    appInformationSolrRepository.save(apps);
+                    try {
+                        List<AppInformationSolr> apps = mapper.readValue(json, new TypeReference<List<AppInformationSolr>>(){});
+                        appInformationSolrRepository.save(apps);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                     FileUtils.deleteQuietly(json);
                     CommonUtils.delay(100);
                 }
