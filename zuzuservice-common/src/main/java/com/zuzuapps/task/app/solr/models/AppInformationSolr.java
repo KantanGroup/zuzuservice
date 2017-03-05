@@ -134,6 +134,7 @@ public class AppInformationSolr {
 
     public void setScore(float score) {
         this.score = score;
+        this.point = score;
     }
 
     public String getPrice() {

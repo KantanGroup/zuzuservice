@@ -119,6 +119,7 @@ public class AppIndexSolr {
 
     public void setScore(float score) {
         this.score = score;
+        this.point = score;
     }
 
     public boolean isFree() {
