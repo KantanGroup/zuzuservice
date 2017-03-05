@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * @author tuanta17
  */
+@JsonIgnoreProperties({"_version_"})
 @SolrDocument(solrCoreName = "app-screenshot-index")
 public class AppScreenshotSolr {
     @Indexed

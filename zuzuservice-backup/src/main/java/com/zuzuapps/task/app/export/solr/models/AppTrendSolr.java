@@ -11,6 +11,7 @@ import java.util.Date;
 /**
  * @author tuanta17
  */
+@JsonIgnoreProperties({"_version_", "icon", "title", "developer_id"})
 @SolrDocument(solrCoreName = "app-trend-index")
 public class AppTrendSolr {
     @Indexed

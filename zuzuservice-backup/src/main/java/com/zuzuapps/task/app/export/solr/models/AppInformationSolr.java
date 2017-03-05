@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * @author tuanta17
  */
+@JsonIgnoreProperties({"_version_", "url", "genre_id", "description", "family_genre_id", "offers_iap", "ad_supported", "preregister", "permissions", "similar", "reviews"})
 @SolrDocument(solrCoreName = "app-information-index")
 public class AppInformationSolr {
     @Indexed

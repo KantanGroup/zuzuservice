@@ -9,6 +9,7 @@ import org.springframework.data.solr.core.mapping.SolrDocument;
 /**
  * @author tuanta17
  */
+@JsonIgnoreProperties({"_version_"})
 @SolrDocument(solrCoreName = "app-index")
 public class AppIndexSolr {
     @Indexed
