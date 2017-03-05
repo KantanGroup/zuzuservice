@@ -25,6 +25,8 @@ public class AppTrendSolr {
     @Indexed(type = "string")
     private String collection;
     @Indexed(type = "double")
+    private float point;
+    @Indexed(type = "double")
     private float score;
     @Indexed(type = "boolean")
     private boolean free;
@@ -79,6 +81,10 @@ public class AppTrendSolr {
 
     public void setCollection(String collection) {
         this.collection = collection;
+    }
+
+    public float getPoint() {
+        return point;
     }
 
     public float getScore() {

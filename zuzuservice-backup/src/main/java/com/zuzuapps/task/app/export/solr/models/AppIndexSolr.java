@@ -35,6 +35,8 @@ public class AppIndexSolr {
     @Indexed(name = "developer_id", type = "string")
     private String developerId;
     @Indexed(type = "double")
+    private float point;
+    @Indexed(type = "double")
     private float score;
     @Indexed(type = "boolean")
     private boolean free;
@@ -119,6 +121,10 @@ public class AppIndexSolr {
 
     public void setScore(float score) {
         this.score = score;
+    }
+
+    public float getPoint() {
+        return score;
     }
 
     public boolean isFree() {

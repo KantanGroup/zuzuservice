@@ -420,6 +420,7 @@
   <field name="min_installs" type="long" indexed="true" stored="true"/>
   <field name="playstore_url" type="string" indexed="false" stored="true"/>
   <field name="price" type="string" indexed="true" stored="true"/>
+  <field name="point" type="double" indexed="true" stored="true"/>
   <field name="score" type="double" indexed="true" stored="true"/>
   <field name="screenshots" type="strings" indexed="false" stored="true"/>
   <field name="summary" type="string" indexed="false" stored="true"/>

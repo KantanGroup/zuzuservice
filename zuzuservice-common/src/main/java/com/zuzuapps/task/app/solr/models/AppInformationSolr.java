@@ -28,6 +28,8 @@ public class AppInformationSolr {
     @Indexed(type = "string")
     private String icon;
     @Indexed(type = "double")
+    private float point;
+    @Indexed(type = "double")
     private float score;
     @Indexed(type = "string")
     private String price;
@@ -120,6 +122,10 @@ public class AppInformationSolr {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public float getPoint() {
+        return score;
     }
 
     public float getScore() {
