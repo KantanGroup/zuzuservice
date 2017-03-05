@@ -12,5 +12,5 @@ import java.util.List;
  * @author tuanta17
  */
 public interface AppIndexSolrRepository extends SolrCrudRepository<AppIndexSolr, String> {
-    Page<AppIndexSolr> findByCountryCodeAndCategoryAndCollection(@Param("countryCode") String countryCode, @Param("category") String category, @Param("collection") String collection, Pageable pageable);
+    Page<AppIndexSolr> findByCountryCodeAndCategoryAndCollectionOrderByIndexAsc(@Param("countryCode") String countryCode, @Param("category") String category, @Param("collection") String collection, Pageable pageable);
 }
