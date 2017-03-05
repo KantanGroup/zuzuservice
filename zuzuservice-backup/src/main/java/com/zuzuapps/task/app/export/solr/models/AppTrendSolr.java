@@ -114,7 +114,7 @@ public class AppTrendSolr {
         return createAt;
     }
 
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
+    public void setCreateAt(Date[] createAt) {
+        this.createAt = createAt[0];
     }
 }
