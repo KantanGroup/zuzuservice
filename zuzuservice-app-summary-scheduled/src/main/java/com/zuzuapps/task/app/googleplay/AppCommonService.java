@@ -104,7 +104,7 @@ public class AppCommonService {
                     StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, information.name(), DataTypeEnum.queue.name()).getAbsolutePath());
                     path.append("/").append(countryCode).append(REGEX_3_UNDER_LINE);
                     path.append(languageCode).append(REGEX_3_UNDER_LINE);
-                    path.append(summaryApplicationPlay.getAppId().toLowerCase()).append(JSON_FILE_EXTENSION);
+                    path.append(summaryApplicationPlay.getAppId()).append(JSON_FILE_EXTENSION);
                     Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlay));
                 }
             } catch (Exception ex) {
@@ -193,7 +193,6 @@ public class AppCommonService {
         AppInformationSolr app = new AppInformationSolr();
         app.setId(applicationPlay.getAppId() + "_" + languageCode);
         app.setAppId(applicationPlay.getAppId());
-        app.setUrl(applicationPlay.getUrl());
         app.setTitle(applicationPlay.getTitle());
         app.setSummary(applicationPlay.getSummary());
         app.setDeveloperId(applicationPlay.getDeveloper().getDevId());
@@ -209,23 +208,14 @@ public class AppCommonService {
         app.setMinInstalls(applicationPlay.getMinInstalls());
         app.setMaxInstalls(applicationPlay.getMaxInstalls());
         app.setGenre(applicationPlay.getGenre());
-        app.setGenreId(applicationPlay.getGenreId());
-        app.setDescription(applicationPlay.getDescription());
         app.setDescriptionHTML(applicationPlay.getDescriptionHTML());
         app.setFamilyGenre(applicationPlay.getFamilyGenre());
-        app.setFamilyGenreId(applicationPlay.getFamilyGenreId());
-        app.setOffersIAP(applicationPlay.isOffersIAP());
-        app.setAdSupported(applicationPlay.isAdSupported());
         app.setAndroidVersion(applicationPlay.getAndroidVersion());
         app.setAndroidVersionText(applicationPlay.getAndroidVersionText());
         app.setContentRating(applicationPlay.getContentRating());
         app.setScreenshots(applicationPlay.getScreenshots());
-        app.setPreregister(applicationPlay.isPreregister());
         app.setVideo(applicationPlay.getVideo());
         app.setPlaystoreUrl(applicationPlay.getPlaystoreUrl());
-        app.setPermissions(applicationPlay.getPermissions());
-        app.setSimilar(applicationPlay.getSimilar());
-        app.setReviews(applicationPlay.getReviews());
         // Update current data
         app.setCreateAt(new Date());
         return app;
@@ -254,7 +244,7 @@ public class AppCommonService {
         }
         path.append("/");
         path.append(languageCode).append(REGEX_3_UNDER_LINE);
-        path.append(appId.toLowerCase()).append(JSON_FILE_EXTENSION);
+        path.append(appId).append(JSON_FILE_EXTENSION);
         return path;
     }
 

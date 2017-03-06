@@ -12,6 +12,7 @@
         <module>zuzuservice-common-appstore-db</module>
         <module>zuzuservice-common-jtests-db</module>
         <module>zuzuservice-common</module>
+        <module>zuzuservice-backup</module>
     </modules>
 
     <build>

@@ -1,5 +1,7 @@
-package com.zuzuapps.task.app.solr.models;
+package com.zuzuapps.task.app.export.solr.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.Indexed;
 import org.springframework.data.solr.core.mapping.SolrDocument;
@@ -10,19 +12,23 @@ import java.util.List;
 /**
  * @author tuanta17
  */
+@JsonIgnoreProperties({"_version_", "url", "genre_id", "description", "family_genre_id", "offers_iap", "ad_supported", "preregister", "permissions", "similar", "reviews"})
 @SolrDocument(solrCoreName = "app-information-index")
 public class AppInformationSolr {
     @Indexed
     @Id
     private String id;
+    @JsonProperty("app_id")
     @Indexed(name = "app_id", type = "string")
     private String appId;
     @Indexed(type = "string")
     private String title;
     @Indexed(type = "string")
     private String summary;
+    @JsonProperty("developer_id")
     @Indexed(name = "developer_id", type = "string")
     private String developerId;
+    @JsonProperty("development_url")
     @Indexed(name = "development_url", type = "string")
     private String developerUrl;
     @Indexed(type = "string")
@@ -35,36 +41,47 @@ public class AppInformationSolr {
     private String price;
     @Indexed(type = "boolean")
     private boolean free;
+    @JsonProperty("developer_email")
     @Indexed(name = "developer_email", type = "string")
     private String developerEmail;
+    @JsonProperty("developer_website")
     @Indexed(name = "developer_website", type = "string")
     private String developerWebsite;
     @Indexed(type = "string")
     private String updated;
     @Indexed(type = "string")
     private String version;
+    @JsonProperty("min_installs")
     @Indexed(name = "min_installs", type = "long")
     private long minInstalls;
+    @JsonProperty("max_installs")
     @Indexed(name = "max_installs", type = "long")
     private long maxInstalls;
     @Indexed(type = "string")
     private String genre;
+    @JsonProperty("description_html")
     @Indexed(name = "description_html", type = "string")
     private String descriptionHTML;
+    @JsonProperty("family_genre")
     @Indexed(name = "family_genre", type = "string")
     private String familyGenre;
+    @JsonProperty("android_version_text")
     @Indexed(name = "android_version_text", type = "string")
     private String androidVersionText;
+    @JsonProperty("android_version")
     @Indexed(name = "android_version", type = "string")
     private String androidVersion;
+    @JsonProperty("content_rating")
     @Indexed(name = "content_rating", type = "string")
     private String contentRating;
     @Indexed
     private List<String> screenshots;
     @Indexed(type = "string")
     private String video;
+    @JsonProperty("playstore_url")
     @Indexed(name = "playstore_url", type = "string")
     private String playstoreUrl;
+    @JsonProperty("create_at")
     @Indexed(name = "create_at", type = "date")
     private Date createAt;
 
@@ -124,22 +141,17 @@ public class AppInformationSolr {
         this.icon = icon;
     }
 
-    public void setPoint(float point) {
-        if (point != 0.0)
-            this.point = point;
-    }
-
-    public float getPoint() {
-        return point;
-    }
-
     public float getScore() {
         return score;
     }
 
     public void setScore(float score) {
         this.score = score;
-        setPoint(score);
+        this.point = score;
+    }
+
+    public float getPoint() {
+        return score;
     }
 
     public String getPrice() {

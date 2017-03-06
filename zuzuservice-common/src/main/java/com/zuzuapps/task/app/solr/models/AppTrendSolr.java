@@ -16,8 +16,6 @@ public class AppTrendSolr {
     private String id;
     @Indexed(type = "string")
     private int index;
-    @Indexed(type = "string")
-    private String title;
     @Indexed(name = "app_id", type = "string")
     private String appId;
     @Indexed(name = "country_code", type = "string")
@@ -26,10 +24,8 @@ public class AppTrendSolr {
     private String category;
     @Indexed(type = "string")
     private String collection;
-    @Indexed(type = "string")
-    private String icon;
-    @Indexed(name = "developer_id", type = "string")
-    private String developerId;
+    @Indexed(type = "double")
+    private float point;
     @Indexed(type = "double")
     private float score;
     @Indexed(type = "boolean")
@@ -53,14 +49,6 @@ public class AppTrendSolr {
 
     public void setIndex(int index) {
         this.index = index;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getAppId() {
@@ -95,20 +83,13 @@ public class AppTrendSolr {
         this.collection = collection;
     }
 
-    public String getIcon() {
-        return icon;
+    public void setPoint(float point) {
+        if (point != 0.0)
+            this.point = point;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public String getDeveloperId() {
-        return developerId;
-    }
-
-    public void setDeveloperId(String developerId) {
-        this.developerId = developerId;
+    public float getPoint() {
+        return point;
     }
 
     public float getScore() {
@@ -117,6 +98,7 @@ public class AppTrendSolr {
 
     public void setScore(float score) {
         this.score = score;
+        setPoint(score);
     }
 
     public boolean isFree() {

@@ -1,4 +1,4 @@
-package com.zuzuapps.task.app.solr.models;
+package com.zuzuapps.task.app.export.solr.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.solr.client.solrj.beans.Field;
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author tuanta17
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties({"_version_"})
 @SolrDocument(solrCoreName = "app-screenshot-index")
 public class AppScreenshotSolr {
     @Indexed

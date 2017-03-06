@@ -1,6 +1,6 @@
-package com.zuzuapps.task.app.solr.repositories;
+package com.zuzuapps.task.app.export.solr.repositories;
 
-import com.zuzuapps.task.app.solr.models.AppTrendSolr;
+import com.zuzuapps.task.app.export.solr.models.AppTrendSolr;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.solr.repository.SolrCrudRepository;
 

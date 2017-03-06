@@ -1,33 +1,34 @@
-package com.zuzuapps.task.app.solr.models;
+package com.zuzuapps.task.app.export.solr.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.Indexed;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
+import java.util.Date;
+
 /**
  * @author tuanta17
  */
-@SolrDocument(solrCoreName = "app-index")
-public class AppIndexSolr {
+@JsonIgnoreProperties({"_version_", "icon", "title", "developer_id"})
+@SolrDocument(solrCoreName = "app-trend-index")
+public class AppTrendSolr {
     @Indexed
     @Id
     private String id;
     @Indexed(type = "string")
     private int index;
-    @Indexed(type = "string")
-    private String title;
+    @JsonProperty("app_id")
     @Indexed(name = "app_id", type = "string")
     private String appId;
+    @JsonProperty("country_code")
     @Indexed(name = "country_code", type = "string")
     private String countryCode;
     @Indexed(type = "string")
     private String category;
     @Indexed(type = "string")
     private String collection;
-    @Indexed(type = "string")
-    private String icon;
-    @Indexed(name = "developer_id", type = "string")
-    private String developerId;
     @Indexed(type = "double")
     private float point;
     @Indexed(type = "double")
@@ -36,6 +37,9 @@ public class AppIndexSolr {
     private boolean free;
     @Indexed(type = "string")
     private String price;
+    @JsonProperty("create_at")
+    @Indexed(name = "create_at", type = "date")
+    private Date createAt;
 
     public String getId() {
         return id;
@@ -51,14 +55,6 @@ public class AppIndexSolr {
 
     public void setIndex(int index) {
         this.index = index;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getAppId() {
@@ -93,38 +89,17 @@ public class AppIndexSolr {
         this.collection = collection;
     }
 
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public String getDeveloperId() {
-        return developerId;
-    }
-
-    public void setDeveloperId(String developerId) {
-        this.developerId = developerId;
-    }
-
-    public void setPoint(float point) {
-        if (point != 0.0)
-            this.point = point;
-    }
-
-    public float getPoint() {
-        return point;
-    }
-
     public float getScore() {
         return score;
     }
 
     public void setScore(float score) {
         this.score = score;
-        setPoint(score);
+        this.point = score;
+    }
+
+    public float getPoint() {
+        return score;
     }
 
     public boolean isFree() {
@@ -141,5 +116,13 @@ public class AppIndexSolr {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date[] createAt) {
+        this.createAt = createAt[0];
     }
 }

@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zuzuapps.task.app</groupId>
-    <artifactId>google-play-common-jtests-db</artifactId>
+    <artifactId>google-play-backup</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0</version>
-    <name>google-play-common-jtests-db</name>
-    <description>Google Play Common Jtests DB</description>
+    <name>google-play-backup</name>
+    <description>Google Play Backup</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -21,6 +21,22 @@
             <groupId>com.zuzuapps.task.app</groupId>
             <artifactId>google-play-common</artifactId>
             <version>1.0.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-solr</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>4.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -43,11 +59,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-rest</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+        <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.8</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/net.dongliu/apk-parser -->
+        <dependency>
+            <groupId>net.dongliu</groupId>
+            <artifactId>apk-parser</artifactId>
+            <version>2.1.7</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -64,20 +86,14 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework.cloud.task.app</groupId>
-                <artifactId>spring-cloud-task-app-dependencies</artifactId>
-                <version>1.0.1.RELEASE</version>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Camden.SR3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -117,6 +133,15 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
 </project>

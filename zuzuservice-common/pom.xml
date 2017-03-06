@@ -6,7 +6,7 @@
     <groupId>com.zuzuapps.task.app</groupId>
     <artifactId>google-play-common</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>google-play-common</name>
     <description>Google Play Common</description>
 
