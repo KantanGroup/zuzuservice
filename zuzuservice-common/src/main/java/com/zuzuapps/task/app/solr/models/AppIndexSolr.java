@@ -110,7 +110,7 @@ public class AppIndexSolr {
     }
 
     public void setPoint(float point) {
-        if (point == 0.0)
+        if (point != 0.0)
             this.point = point;
     }
 
