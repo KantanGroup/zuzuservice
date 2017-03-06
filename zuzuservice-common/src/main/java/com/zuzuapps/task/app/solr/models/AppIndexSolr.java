@@ -109,8 +109,13 @@ public class AppIndexSolr {
         this.developerId = developerId;
     }
 
+    public void setPoint(float point) {
+        if (point == 0.0)
+            this.point = point;
+    }
+
     public float getPoint() {
-        return score;
+        return point;
     }
 
     public float getScore() {
@@ -119,7 +124,7 @@ public class AppIndexSolr {
 
     public void setScore(float score) {
         this.score = score;
-        this.point = score;
+        setPoint(score);
     }
 
     public boolean isFree() {

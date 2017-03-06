@@ -83,6 +83,11 @@ public class AppTrendSolr {
         this.collection = collection;
     }
 
+    public void setPoint(float point) {
+        if (point == 0.0)
+            this.point = point;
+    }
+
     public float getPoint() {
         return point;
     }
@@ -93,7 +98,7 @@ public class AppTrendSolr {
 
     public void setScore(float score) {
         this.score = score;
-        this.point = score;
+        setPoint(score);
     }
 
     public boolean isFree() {

@@ -124,8 +124,13 @@ public class AppInformationSolr {
         this.icon = icon;
     }
 
+    public void setPoint(float point) {
+        if (point == 0.0)
+            this.point = point;
+    }
+
     public float getPoint() {
-        return score;
+        return point;
     }
 
     public float getScore() {
@@ -134,7 +139,7 @@ public class AppInformationSolr {
 
     public void setScore(float score) {
         this.score = score;
-        this.point = score;
+        setPoint(score);
     }
 
     public String getPrice() {
