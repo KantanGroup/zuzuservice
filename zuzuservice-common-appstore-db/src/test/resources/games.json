@@ -1,0 +1,20 @@
+[
+  "game",
+  "game_action",
+  "game_adventure",
+  "game_arcade",
+  "game_board",
+  "game_card",
+  "game_casino",
+  "game_casual",
+  "game_educational",
+  "game_music",
+  "game_puzzle",
+  "game_racing",
+  "game_role_playing",
+  "game_simulation",
+  "game_sports",
+  "game_strategy",
+  "game_trivia",
+  "game_word"
+]
