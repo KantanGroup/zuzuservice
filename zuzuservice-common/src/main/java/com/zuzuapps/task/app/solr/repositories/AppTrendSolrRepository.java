@@ -10,9 +10,15 @@ import java.util.List;
  * @author tuanta17
  */
 public interface AppTrendSolrRepository extends SolrCrudRepository<AppTrendSolr, String> {
+    List<AppTrendSolr> findByCountryCodeAndCategoryAndCollectionAndAppId(@Param("countryCode") String countryCode, @Param("category") String category, @Param("collection") String collection, @Param("appId") String appId);
+
     List<AppTrendSolr> findByCountryCodeAndCategoryAndCollectionAndAppIdOrderByCreateAtDesc(@Param("countryCode") String countryCode, @Param("category") String category, @Param("collection") String collection, @Param("appId") String appId);
 
+    List<AppTrendSolr> findByCountryCodeAndAppId(@Param("countryCode") String countryCode, @Param("appId") String appId);
+
     List<AppTrendSolr> findByCountryCodeAndAppIdOrderByCreateAtDesc(@Param("countryCode") String countryCode, @Param("appId") String appId);
+
+    List<AppTrendSolr> findByCountryCodeAndCategoryAndCollectionAndIndex(@Param("countryCode") String countryCode, @Param("category") String category, @Param("collection") String collection, @Param("index") int index);
 
     List<AppTrendSolr> findByCountryCodeAndCategoryAndCollectionAndIndexOrderByCreateAtDesc(@Param("countryCode") String countryCode, @Param("category") String category, @Param("collection") String collection, @Param("index") int index);
 }
