@@ -2,10 +2,13 @@ package com.zuzuapps.task.app.export.solr.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.zuzuapps.task.app.common.CommonUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.Indexed;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -119,7 +122,17 @@ public class AppTrendSolr {
     }
 
     public Date getCreateAt() {
-        return createAt;
+        String[] data =  id.split("_");
+        String idCreateAt = data[data.length - 1];
+        if (CommonUtils.getTimeBy(createAt, "yyyyMMdd").equals(idCreateAt)) {
+            return createAt;
+        } else {
+            try {
+                return new SimpleDateFormat("yyyyMMdd").parse(idCreateAt);
+            } catch (ParseException e) {
+                return createAt;
+            }
+        }
     }
 
     public void setCreateAt(Date[] createAt) {
