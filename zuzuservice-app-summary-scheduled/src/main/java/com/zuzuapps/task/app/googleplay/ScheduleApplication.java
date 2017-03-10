@@ -27,12 +27,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.Date;
 
 @SpringBootApplication
 @Import({AppstoreCommonConfiguration.class})
+@EnableScheduling
 public class ScheduleApplication {
     final Log logger = LogFactory.getLog("ScheduleApplication");
     @Value("${process.daily.service:/false}")
@@ -73,6 +76,15 @@ public class ScheduleApplication {
     private AppScreenshotIndexService appScreenshotIndexService;
     @Autowired
     private AppService appService;
+
+    @Bean
+    public TaskExecutor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(25);
+        return executor;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(ScheduleApplication.class, args);
