@@ -27,6 +27,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -34,6 +35,7 @@ import java.util.Date;
 
 @SpringBootApplication
 @Import({AppstoreCommonConfiguration.class})
+@EnableScheduling
 public class ScheduleApplication {
     final Log logger = LogFactory.getLog("ScheduleApplication");
     @Value("${process.daily.service:/false}")
