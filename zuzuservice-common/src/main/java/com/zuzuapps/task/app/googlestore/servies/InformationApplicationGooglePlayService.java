@@ -1,5 +1,6 @@
 package com.zuzuapps.task.app.googlestore.servies;
 
+import com.zuzuapps.task.app.common.CommonService;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googlestore.models.ApplicationGooglePlay;
@@ -19,34 +20,34 @@ import org.springframework.web.client.ResourceAccessException;
  */
 @Service
 public class InformationApplicationGooglePlayService {
-    private final Log logger = LogFactory.getLog("InformationApplicationPlayService");
+    private final Log logger = LogFactory.getLog("InformationApplicationGooglePlayService");
 
     @Value("${app.information.site.path:\"http://localhost:5000\"}")
     private String sitePath;
 
     @Autowired
-    private CommonService<ApplicationGooglePlay> applicationPlaysCommonService;
+    private CommonService<ApplicationGooglePlay> applicationGooglePlayCommonService;
 
     public ApplicationGooglePlay getInformationApplications(String appId, String language) throws GooglePlayRuntimeException {
         try {
-            StringBuilder url = new StringBuilder(sitePath + "/api/apps");
+            StringBuilder url = new StringBuilder(sitePath + "/googlestore/apps");
             url = url.append("/").append(appId);
             url = url.append("/?lang=").append(language);
             logger.info("URL request: " + url.toString());
-            ResponseEntity<ApplicationGooglePlay> responseEntity = applicationPlaysCommonService.get(url.toString(), ApplicationGooglePlay.class);
+            ResponseEntity<ApplicationGooglePlay> responseEntity = applicationGooglePlayCommonService.get(url.toString(), ApplicationGooglePlay.class);
             if (responseEntity == null) {
                 throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, "Can't get data from url " + url.toString());
             }
             HttpStatus statusCode = responseEntity.getStatusCode(); // (2)
             if (!statusCode.is2xxSuccessful()) {
-                throw new GooglePlayRuntimeException(ExceptionCodes.GOOGLE_PLAY_SERVER_EXCEPTION, "Get app " + appId + " . HTTP Status: " + statusCode.value() + " HTTP Message: " + statusCode.getReasonPhrase());
+                throw new GooglePlayRuntimeException(ExceptionCodes.REMOTE_SERVER_EXCEPTION, "Get app " + appId + " . HTTP Status: " + statusCode.value() + " HTTP Message: " + statusCode.getReasonPhrase());
             }
             HttpHeaders header = responseEntity.getHeaders(); // (3)
-            ApplicationGooglePlay applicationPlay = responseEntity.getBody(); // (4)
-            if (applicationPlay == null) {
-                throw new GooglePlayRuntimeException(ExceptionCodes.GOOGLE_PLAY_SERVER_EXCEPTION, "App " + appId + " not found");
+            ApplicationGooglePlay application = responseEntity.getBody(); // (4)
+            if (application == null) {
+                throw new GooglePlayRuntimeException(ExceptionCodes.REMOTE_SERVER_EXCEPTION, "App " + appId + " not found");
             } else {
-                return applicationPlay;
+                return application;
             }
         } catch (ResourceAccessException ex) {
             throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);

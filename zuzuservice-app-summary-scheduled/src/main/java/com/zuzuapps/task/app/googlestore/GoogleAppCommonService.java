@@ -53,11 +53,11 @@ public class GoogleAppCommonService {
     protected final Log logger = LogFactory.getLog("GoogleAppCommonService");
     protected final ObjectMapper mapper = new ObjectMapper();
 
-    @Value("${data.root.path:/tmp}")
-    protected String rootPath;
+    @Value("${google.data.root.path:/tmp/googlestore}")
+    protected String googleRootPath;
 
-    @Value("${data.image.path:/tmp}")
-    protected String imageStore;
+    @Value("${google.data.image.path:/tmp/googlestore/imagestore}")
+    protected String googleImageStore;
 
     @Value("${time.get.app.information:2000}")
     protected long timeGetAppInformation;
@@ -101,7 +101,7 @@ public class GoogleAppCommonService {
         for (SummaryApplicationGooglePlay summaryApplicationPlay : summaryApplicationPlays) {
             try {
                 if (checkAppInformationSolr(summaryApplicationPlay.getAppId() + "_" + languageCode)) {
-                    StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, information.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+                    StringBuilder path = new StringBuilder(CommonUtils.folderBy(googleRootPath, information.name(), DataTypeEnum.queue.name()).getAbsolutePath());
                     path.append("/").append(countryCode).append(REGEX_3_UNDER_LINE);
                     path.append(languageCode).append(REGEX_3_UNDER_LINE);
                     path.append(summaryApplicationPlay.getAppId()).append(JSON_FILE_EXTENSION);
@@ -238,9 +238,9 @@ public class GoogleAppCommonService {
     protected StringBuilder createAppInformationJSONPath(String appId, String languageCode, boolean isDaily) {
         StringBuilder path;
         if (isDaily) {
-            path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.app_daily.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+            path = new StringBuilder(CommonUtils.folderBy(googleRootPath, DataServiceEnum.app_daily.name(), DataTypeEnum.queue.name()).getAbsolutePath());
         } else {
-            path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+            path = new StringBuilder(CommonUtils.folderBy(googleRootPath, DataServiceEnum.app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath());
         }
         path.append("/");
         path.append(languageCode).append(REGEX_3_UNDER_LINE);
@@ -295,10 +295,10 @@ public class GoogleAppCommonService {
                         logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     } else if (ex.getCode() == ExceptionCodes.APP_NOT_FOUND) {
                         extractEmptyAppInformation(appId, languageCode);
-                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.not_found.name()).getAbsolutePath());
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.information.name(), DataTypeEnum.not_found.name()).getAbsolutePath());
                         logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     } else {
-                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name()).getAbsolutePath());
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name()).getAbsolutePath());
                         if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
                             logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
                         } else {
@@ -307,7 +307,7 @@ public class GoogleAppCommonService {
                     }
                 } catch (Exception ex) {
                     logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name()).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name()).getAbsolutePath());
                 }
             } else {
                 FileUtils.deleteQuietly(json);
@@ -328,7 +328,7 @@ public class GoogleAppCommonService {
                     GoogleAppScreenshotSolr screenshotObject = appScreenshotSolrService.findOne(appId);
                     if (screenshotObject == null || isTimeToUpdate(screenshotObject.getCreateAt())) {
                         // Remove all old screenshot
-                        CommonUtils.deleteDirectory(CommonUtils.folderBy(imageStore, ImageTypeEnum.screenshot.name(), appId));
+                        CommonUtils.deleteDirectory(CommonUtils.folderBy(googleImageStore, ImageTypeEnum.screenshot.name(), appId));
                         ScreenshotGooglePlays screenshotPlays = mapper.readValue(json, ScreenshotGooglePlays.class);
                         List<ScreenshotGooglePlay> screenshotObjects = new ArrayList<ScreenshotGooglePlay>();
                         AppScreenshotMaster appScreenshotMaster = new AppScreenshotMaster();
@@ -346,14 +346,14 @@ public class GoogleAppCommonService {
                         appScreenshotMaster.setData(mapper.writeValueAsString(screenshotObjects));
                         appScreenshotMasterRepository.save(appScreenshotMaster);
                         appScreenshotSolrService.save(appScreenshotSolr);
-                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.log.name()).getAbsolutePath());
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.log.name()).getAbsolutePath());
                     }
                     FileUtils.deleteQuietly(json);
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
                         logger.info("[Screenshot Store][" + appId + "]Error " + ex.getMessage());
                     } else {
-                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.error.name()).getAbsolutePath());
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.error.name()).getAbsolutePath());
                         if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
                             logger.error("[Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
                         } else {
@@ -362,7 +362,7 @@ public class GoogleAppCommonService {
                     }
                 } catch (Exception ex) {
                     logger.error("[Screenshot Store][" + appId + "]Error " + ex.getMessage(), ex);
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.error.name()).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.error.name()).getAbsolutePath());
                 }
             } else {
                 FileUtils.deleteQuietly(json);

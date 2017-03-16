@@ -22,7 +22,7 @@ public class GoogleAppScreenshotSummaryService extends GoogleAppCommonService {
     public void processAppScreenshotUpdate() {
         while (true) {
             // something that should execute on weekdays only
-            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath();
+            String dirPath = CommonUtils.folderBy(googleRootPath, DataServiceEnum.screenshot_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath();
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {

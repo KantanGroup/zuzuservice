@@ -23,7 +23,7 @@ public class GoogleAppSummaryStoreService extends GoogleAppCommonService {
     public void summaryAppIndexUpdate() {
         while (true) {
             // something that should execute on weekdays only
-            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath();
+            String dirPath = CommonUtils.folderBy(googleRootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath();
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
@@ -49,8 +49,8 @@ public class GoogleAppSummaryStoreService extends GoogleAppCommonService {
             if (data.length >= 4) {
                 String countryCode = data[0];
                 String languageCode = data[1];
-                CategoryEnum category = CategoryEnum.valueOf(data[2].toUpperCase());
-                CollectionEnum collection = CollectionEnum.valueOf(data[3]);
+                GooogleCategoryEnum category = GooogleCategoryEnum.valueOf(data[2].toUpperCase());
+                GoogleCollectionEnum collection = GoogleCollectionEnum.valueOf(data[3]);
                 try {
                     SummaryApplicationGooglePlays apps = mapper.readValue(json, SummaryApplicationGooglePlays.class);
                     // Create app info json
@@ -59,7 +59,7 @@ public class GoogleAppSummaryStoreService extends GoogleAppCommonService {
                     FileUtils.deleteQuietly(json);
                 } catch (Exception ex) {
                     logger.error("[Application Summary --> Information][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
                 }
             } else {
                 FileUtils.deleteQuietly(json);

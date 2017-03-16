@@ -22,13 +22,13 @@ public class GoogleAppSummaryService extends GoogleAppCommonService {
 
     public void generateAppSummaryStore() {
         logger.info("[Application Summary Generation]Task start at: " + new Date());
-        String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.generate.name()).getAbsolutePath();
+        String dirPath = CommonUtils.folderBy(googleRootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.generate.name()).getAbsolutePath();
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
         if (files == null || files.length == 0) {
-            for (CollectionEnum collection : CollectionEnum.values()) {
-                CommonUtils.createFile(Paths.get(dirPath, collection.name() + REGEX_3_UNDER_LINE + CategoryEnum.ALL.name().toLowerCase() + JSON_FILE_EXTENSION));
-                for (CategoryEnum category : CategoryEnum.values()) {
+            for (GoogleCollectionEnum collection : GoogleCollectionEnum.values()) {
+                CommonUtils.createFile(Paths.get(dirPath, collection.name() + REGEX_3_UNDER_LINE + GooogleCategoryEnum.ALL.name().toLowerCase() + JSON_FILE_EXTENSION));
+                for (GooogleCategoryEnum category : GooogleCategoryEnum.values()) {
                     CommonUtils.createFile(Paths.get(dirPath, collection.name() + REGEX_3_UNDER_LINE + category.name().toLowerCase() + JSON_FILE_EXTENSION));
                 }
             }
@@ -39,7 +39,7 @@ public class GoogleAppSummaryService extends GoogleAppCommonService {
     public void processAppSummaryStoreData() {
         while (true) {
             // something that should execute on weekdays only
-            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.generate.name()).getAbsolutePath();
+            String dirPath = CommonUtils.folderBy(googleRootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.generate.name()).getAbsolutePath();
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
@@ -65,8 +65,8 @@ public class GoogleAppSummaryService extends GoogleAppCommonService {
             String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 2) {
-                CollectionEnum collection = CollectionEnum.valueOf(data[0]);
-                CategoryEnum category = CategoryEnum.valueOf(data[1].replaceAll(JSON_FILE_EXTENSION, "").toUpperCase());
+                GoogleCollectionEnum collection = GoogleCollectionEnum.valueOf(data[0]);
+                GooogleCategoryEnum category = GooogleCategoryEnum.valueOf(data[1].replaceAll(JSON_FILE_EXTENSION, "").toUpperCase());
                 int page = 1;
                 while (true) {
                     long startTime = System.currentTimeMillis();
@@ -97,8 +97,8 @@ public class GoogleAppSummaryService extends GoogleAppCommonService {
         logger.info("[Application Summary Store]Cronjob end at: " + new Date());
     }
 
-    private StringBuilder queueAppSummaryJSONPath(String time, CollectionEnum collection, CategoryEnum category, int page) {
-        StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+    private StringBuilder queueAppSummaryJSONPath(String time, GoogleCollectionEnum collection, GooogleCategoryEnum category, int page) {
+        StringBuilder path = new StringBuilder(CommonUtils.folderBy(googleRootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath());
         path.append("/");
         path.append(COUNTRY_CODE_DEFAULT).append(REGEX_3_UNDER_LINE);
         path.append(LANGUAGE_CODE_DEFAULT).append(REGEX_3_UNDER_LINE);

@@ -3,7 +3,7 @@ package com.zuzuapps.task.app.common;
 /**
  * @author tuanta17
  */
-public enum CategoryEnum {
+public enum GooogleCategoryEnum {
     ALL,
     ANDROID_WEAR,
     ART_AND_DESIGN,

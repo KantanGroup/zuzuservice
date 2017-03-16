@@ -1,4 +1,4 @@
-package com.zuzuapps.task.app.solr.googlestore.models;
+package com.zuzuapps.task.app.solr.appstore.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.Indexed;
@@ -9,45 +9,38 @@ import java.util.Date;
 /**
  * @author tuanta17
  */
-@SolrDocument(solrCoreName = "app-trend-index")
-public class GoogleAppTrendSolr {
+@SolrDocument(solrCoreName = "apple-app-trend-index")
+public class AppleAppTrendSolr {
     @Indexed
     @Id
-    private String id;
-    private int index;
+    private String tId;
+    private long id;
     @Indexed(name = "app_id")
     private String appId;
+    private int index;
     @Indexed(name = "country_code")
     private String countryCode;
     @Indexed(type = "string")
     private String category;
     @Indexed(type = "string")
     private String collection;
-    @Indexed(type = "double")
-    private float point;
-    @Indexed(type = "double")
-    private float score;
-    @Indexed(type = "boolean")
-    private boolean free;
-    @Indexed(type = "string")
-    private String price;
     @Indexed(name = "create_at", type = "date")
     private Date createAt;
 
-    public String getId() {
+    public String gettId() {
+        return tId;
+    }
+
+    public void settId(String tId) {
+        this.tId = tId;
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
     }
 
     public String getAppId() {
@@ -56,6 +49,14 @@ public class GoogleAppTrendSolr {
 
     public void setAppId(String appId) {
         this.appId = appId;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public String getCountryCode() {
@@ -80,40 +81,6 @@ public class GoogleAppTrendSolr {
 
     public void setCollection(String collection) {
         this.collection = collection;
-    }
-
-    public void setPoint(float point) {
-        if (point != 0.0)
-            this.point = point;
-    }
-
-    public float getPoint() {
-        return point;
-    }
-
-    public float getScore() {
-        return score;
-    }
-
-    public void setScore(float score) {
-        this.score = score;
-        setPoint(score);
-    }
-
-    public boolean isFree() {
-        return free;
-    }
-
-    public void setFree(boolean free) {
-        this.free = free;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
     }
 
     public Date getCreateAt() {

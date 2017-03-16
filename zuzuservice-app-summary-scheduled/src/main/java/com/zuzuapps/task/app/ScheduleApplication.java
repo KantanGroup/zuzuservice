@@ -38,24 +38,22 @@ import java.util.Date;
 @EnableScheduling
 public class ScheduleApplication {
     final Log logger = LogFactory.getLog("ScheduleApplication");
-    @Value("${google.process.daily.service:/false}")
+    @Value("${google.process.daily.service:false}")
     protected boolean isProcessDailyService;
-    @Value("${google.process.daily.screen:/false}")
+    @Value("${google.process.daily.screen:false}")
     protected boolean isProcessDailyScreen;
-    @Value("${google.process.daily.generate:/false}")
+    @Value("${google.process.daily.generate:false}")
     protected boolean isProcessDailyGenerate;
-    @Value("${google.process.daily.app:/false}")
+    @Value("${google.process.daily.app:false}")
     protected boolean isProcessDailyApp;
-    @Value("${google.process.summary.service:/false}")
+    @Value("${google.process.summary.service:false}")
     protected boolean isProcessSummaryService;
-    @Value("${google.process.summary.screen:/false}")
+    @Value("${google.process.summary.screen:false}")
     protected boolean isProcessSummaryScreen;
-    @Value("${google.process.summary.generate:/false}")
+    @Value("${google.process.summary.generate:false}")
     protected boolean isProcessSummaryGenerate;
-    @Value("${google.process.summary.app:/false}")
+    @Value("${google.process.summary.app:false}")
     protected boolean isProcessSummaryApp;
-    @Value("${google.data.root.path:/tmp}")
-    private String rootPath;
     @Autowired
     private GoogleAppCommonService googleAppCommonService;
     @Autowired

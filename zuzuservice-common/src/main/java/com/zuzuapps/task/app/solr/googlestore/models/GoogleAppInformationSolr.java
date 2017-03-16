@@ -15,15 +15,15 @@ public class GoogleAppInformationSolr {
     @Indexed
     @Id
     private String id;
-    @Indexed(name = "app_id", type = "string")
+    @Indexed(name = "app_id")
     private String appId;
     @Indexed(type = "string")
     private String title;
     @Indexed(type = "string")
     private String summary;
-    @Indexed(name = "developer_id", type = "string")
+    @Indexed(name = "developer_id")
     private String developerId;
-    @Indexed(name = "development_url", type = "string")
+    @Indexed(name = "development_url")
     private String developerUrl;
     @Indexed(type = "string")
     private String icon;
@@ -35,35 +35,35 @@ public class GoogleAppInformationSolr {
     private String price;
     @Indexed(type = "boolean")
     private boolean free;
-    @Indexed(name = "developer_email", type = "string")
+    @Indexed(name = "developer_email")
     private String developerEmail;
-    @Indexed(name = "developer_website", type = "string")
+    @Indexed(name = "developer_website")
     private String developerWebsite;
     @Indexed(type = "string")
     private String updated;
     @Indexed(type = "string")
     private String version;
-    @Indexed(name = "min_installs", type = "long")
+    @Indexed(name = "min_installs")
     private long minInstalls;
-    @Indexed(name = "max_installs", type = "long")
+    @Indexed(name = "max_installs")
     private long maxInstalls;
     @Indexed(type = "string")
     private String genre;
-    @Indexed(name = "description_html", type = "string")
+    @Indexed(name = "description_html")
     private String descriptionHTML;
-    @Indexed(name = "family_genre", type = "string")
+    @Indexed(name = "family_genre")
     private String familyGenre;
-    @Indexed(name = "android_version_text", type = "string")
+    @Indexed(name = "android_version_text")
     private String androidVersionText;
-    @Indexed(name = "android_version", type = "string")
+    @Indexed(name = "android_version")
     private String androidVersion;
-    @Indexed(name = "content_rating", type = "string")
+    @Indexed(name = "content_rating")
     private String contentRating;
     @Indexed
     private List<String> screenshots;
     @Indexed(type = "string")
     private String video;
-    @Indexed(name = "playstore_url", type = "string")
+    @Indexed(name = "playstore_url")
     private String playstoreUrl;
     @Indexed(name = "create_at", type = "date")
     private Date createAt;

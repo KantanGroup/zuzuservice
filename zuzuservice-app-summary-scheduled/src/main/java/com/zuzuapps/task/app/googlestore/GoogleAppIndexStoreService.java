@@ -31,7 +31,7 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
         while (true) {
             // something that should execute on weekdays only
             String time = CommonUtils.getDailyByTime();
-            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.queue.name(), time).getAbsolutePath();
+            String dirPath = CommonUtils.folderBy(googleRootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.queue.name(), time).getAbsolutePath();
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
@@ -65,8 +65,8 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
                 List<GoogleAppTrendSolr> appTrendSolr = new ArrayList<GoogleAppTrendSolr>();
                 String countryCode = data[0];
                 String languageCode = data[1];
-                CategoryEnum category = CategoryEnum.valueOf(data[2].toUpperCase());
-                CollectionEnum collection = CollectionEnum.valueOf(data[3]);
+                GooogleCategoryEnum category = GooogleCategoryEnum.valueOf(data[2].toUpperCase());
+                GoogleCollectionEnum collection = GoogleCollectionEnum.valueOf(data[3]);
                 String toDate = data[4];
                 try {
                     logger.debug("[Application Index Store]Convert json data to object");
@@ -92,7 +92,7 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
                     FileUtils.deleteQuietly(json);
                 } catch (Exception ex) {
                     logger.error("[Application Index Store][" + countryCode + "][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
                 }
             } else {
                 FileUtils.deleteQuietly(json);
@@ -102,7 +102,7 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
         logger.debug("[Application Index Store]Cronjob end at: " + new Date());
     }
 
-    private void createAppIndexMaster(List<AppIndexMaster> appIndexMasters, String countryCode, CategoryEnum category, CollectionEnum collection, short index, SummaryApplicationGooglePlay app) {
+    private void createAppIndexMaster(List<AppIndexMaster> appIndexMasters, String countryCode, GooogleCategoryEnum category, GoogleCollectionEnum collection, short index, SummaryApplicationGooglePlay app) {
         AppIndexMaster appIndexMaster = new AppIndexMaster();
         appIndexMaster.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + index);
         appIndexMaster.setAppId(app.getAppId());
@@ -118,7 +118,7 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
         appIndexMasters.add(appIndexMaster);
     }
 
-    private void createAppIndexInSearchEngine(List<GoogleAppIndexSolr> appIndexs, String countryCode, CategoryEnum category, CollectionEnum collection, int index, SummaryApplicationGooglePlay app) {
+    private void createAppIndexInSearchEngine(List<GoogleAppIndexSolr> appIndexs, String countryCode, GooogleCategoryEnum category, GoogleCollectionEnum collection, int index, SummaryApplicationGooglePlay app) {
         GoogleAppIndexSolr appIndex = new GoogleAppIndexSolr();
         appIndex.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + index);
         appIndex.setIndex(index);
@@ -136,7 +136,7 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
         appIndexs.add(appIndex);
     }
 
-    private void createAppTrendInSearchEngine(List<GoogleAppTrendSolr> appTrends, String countryCode, CategoryEnum category, CollectionEnum collection, int index, SummaryApplicationGooglePlay app, String toDate) {
+    private void createAppTrendInSearchEngine(List<GoogleAppTrendSolr> appTrends, String countryCode, GooogleCategoryEnum category, GoogleCollectionEnum collection, int index, SummaryApplicationGooglePlay app, String toDate) {
         GoogleAppTrendSolr appTrend = new GoogleAppTrendSolr();
         appTrend.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getAppId() + "_" + toDate);
         appTrend.setIndex(index);

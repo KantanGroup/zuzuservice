@@ -1,9 +1,9 @@
 package com.zuzuapps.task.app.appstore.services;
 
+import com.zuzuapps.task.app.appstore.models.ApplicationAppStore;
+import com.zuzuapps.task.app.common.CommonService;
+import com.zuzuapps.task.app.exceptions.AppStoreRuntimeException;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
-import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
-import com.zuzuapps.task.app.googlestore.models.ApplicationGooglePlay;
-import com.zuzuapps.task.app.googlestore.servies.CommonService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,41 +26,41 @@ public class InformationApplicationAppStoreService {
     private String sitePath;
 
     @Autowired
-    private CommonService<ApplicationGooglePlay> applicationPlaysCommonService;
+    private CommonService<ApplicationAppStore> applicationAppStoreCommonService;
 
-    public ApplicationGooglePlay getInformationApplications(String appId, String language) throws GooglePlayRuntimeException {
+    public ApplicationAppStore getInformationApplications(String appId, String countryCode) throws AppStoreRuntimeException {
         try {
-            StringBuilder url = new StringBuilder(sitePath + "/api/apps");
+            StringBuilder url = new StringBuilder(sitePath + "/appstore/apps");
             url = url.append("/").append(appId);
-            url = url.append("/?lang=").append(language);
+            url = url.append("/?country=").append(countryCode);
             logger.info("URL request: " + url.toString());
-            ResponseEntity<ApplicationGooglePlay> responseEntity = applicationPlaysCommonService.get(url.toString(), ApplicationGooglePlay.class);
+            ResponseEntity<ApplicationAppStore> responseEntity = applicationAppStoreCommonService.get(url.toString(), ApplicationAppStore.class);
             if (responseEntity == null) {
-                throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, "Can't get data from url " + url.toString());
+                throw new AppStoreRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, "Can't get data from url " + url.toString());
             }
             HttpStatus statusCode = responseEntity.getStatusCode(); // (2)
             if (!statusCode.is2xxSuccessful()) {
-                throw new GooglePlayRuntimeException(ExceptionCodes.GOOGLE_PLAY_SERVER_EXCEPTION, "Get app " + appId + " . HTTP Status: " + statusCode.value() + " HTTP Message: " + statusCode.getReasonPhrase());
+                throw new AppStoreRuntimeException(ExceptionCodes.REMOTE_SERVER_EXCEPTION, "Get app " + appId + " . HTTP Status: " + statusCode.value() + " HTTP Message: " + statusCode.getReasonPhrase());
             }
             HttpHeaders header = responseEntity.getHeaders(); // (3)
-            ApplicationGooglePlay applicationPlay = responseEntity.getBody(); // (4)
-            if (applicationPlay == null) {
-                throw new GooglePlayRuntimeException(ExceptionCodes.GOOGLE_PLAY_SERVER_EXCEPTION, "App " + appId + " not found");
+            ApplicationAppStore application = responseEntity.getBody(); // (4)
+            if (application == null) {
+                throw new AppStoreRuntimeException(ExceptionCodes.REMOTE_SERVER_EXCEPTION, "App " + appId + " not found");
             } else {
-                return applicationPlay;
+                return application;
             }
         } catch (ResourceAccessException ex) {
-            throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);
+            throw new AppStoreRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);
         } catch (HttpClientErrorException ex) {
             if (ex.getMessage().contains("400")) {
-                throw new GooglePlayRuntimeException(ExceptionCodes.APP_NOT_FOUND, ex);
+                throw new AppStoreRuntimeException(ExceptionCodes.APP_NOT_FOUND, ex);
             } else {
-                throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_LIMITED_EXCEPTION, ex);
+                throw new AppStoreRuntimeException(ExceptionCodes.NETWORK_LIMITED_EXCEPTION, ex);
             }
-        } catch (GooglePlayRuntimeException e) {
+        } catch (AppStoreRuntimeException e) {
             throw e;
         } catch (Exception e) {
-            throw new GooglePlayRuntimeException(ExceptionCodes.UNKNOWN_EXCEPTION, e);
+            throw new AppStoreRuntimeException(ExceptionCodes.UNKNOWN_EXCEPTION, e);
         }
     }
 }

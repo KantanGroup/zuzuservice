@@ -2,7 +2,6 @@ package com.zuzuapps.task.app;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.solr.repository.config.EnableSolrRepositories;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -15,7 +14,6 @@ import java.util.List;
  */
 @SpringBootApplication // same as @Configuration @EnableAutoConfiguration @ComponentScan
 @EnableSolrRepositories(basePackages = {"com.zuzuapps.task.app.solr.googlestore.repositories", "com.zuzuapps.task.app.solr.appstore.repositories"}, multicoreSupport = true)
-@EnableJpaRepositories
 public class AppstoreCommonConfiguration {
 
     @Bean

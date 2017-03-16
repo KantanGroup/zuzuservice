@@ -32,7 +32,7 @@ public class GoogleAppService extends GoogleAppCommonService {
     public void dailyAppUpdate() {
         while (true) {
             // something that should execute on weekdays only
-            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.app_daily.name(), DataTypeEnum.queue.name()).getAbsolutePath();
+            String dirPath = CommonUtils.folderBy(googleRootPath, DataServiceEnum.app_daily.name(), DataTypeEnum.queue.name()).getAbsolutePath();
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
@@ -53,7 +53,7 @@ public class GoogleAppService extends GoogleAppCommonService {
     public void summaryAppUpdate() {
         while (true) {
             // something that should execute on weekdays only
-            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath();
+            String dirPath = CommonUtils.folderBy(googleRootPath, DataServiceEnum.app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath();
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
@@ -91,18 +91,18 @@ public class GoogleAppService extends GoogleAppCommonService {
 
                     // 5. Create screenshot
                     queueAppScreenshot(app, screenshot);
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.log.name()).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.app.name(), DataTypeEnum.log.name()).getAbsolutePath());
                 } catch (GenericJDBCException ex) {
                     logger.error("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name()).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name()).getAbsolutePath());
                 } catch (Exception ex) {
                     logger.error("[Application Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
-                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name()).getAbsolutePath());
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name()).getAbsolutePath());
                 }
                 long delayTime = System.currentTimeMillis() - startTime;
                 CommonUtils.delay(timeGetAppInformation - delayTime);
             } else {
-                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(rootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name()).getAbsolutePath());
+                moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.app.name(), DataTypeEnum.error.name()).getAbsolutePath());
             }
         }
         logger.debug("[Application Store]Cronjob end at: " + new Date());
@@ -113,7 +113,7 @@ public class GoogleAppService extends GoogleAppCommonService {
             ScreenshotGooglePlays screenshotPlays = new ScreenshotGooglePlays();
             screenshotPlays.setAppId(app.getAppId());
             screenshotPlays.setScreenshots(app.getScreenshots());
-            StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, screenshot.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+            StringBuilder path = new StringBuilder(CommonUtils.folderBy(googleRootPath, screenshot.name(), DataTypeEnum.queue.name()).getAbsolutePath());
             path.append("/").append(app.getAppId()).append(REGEX_3_UNDER_LINE);
             path.append("screenshots").append(JSON_FILE_EXTENSION);
             logger.debug("[Image Store]Write screenshot of app " + app.getAppId().toLowerCase() + " to queue folder " + path.toString());

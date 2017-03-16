@@ -1,17 +1,16 @@
-package com.zuzuapps.task.app.googlestore.servies;
+package com.zuzuapps.task.app.appstore.services;
 
+import com.zuzuapps.task.app.appstore.models.ScreenshotAppStore;
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.ImageTypeEnum;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
-import com.zuzuapps.task.app.googlestore.models.ScreenshotGooglePlay;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
@@ -25,12 +24,11 @@ import java.util.Collections;
 /**
  * @author tuanta17
  */
-@Service
-public class ScreenshotApplicationGooglePlayService {
-    private final Log logger = LogFactory.getLog("ScreenshotApplicationGooglePlayService");
+public class ScreenshotApplicationAppStoreService {
+    private final Log logger = LogFactory.getLog("ScreenshotApplicationAppStoreService");
 
-    @Value("${google.data.image.path:/tmp}")
-    private String googleImageStore;
+    @Value("${apple.data.image.path:/tmp/appstore/imagestore}")
+    private String appleImageStore;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -50,7 +48,7 @@ public class ScreenshotApplicationGooglePlayService {
      * @return
      * @throws GooglePlayRuntimeException
      */
-    public ScreenshotGooglePlay extractOriginalIcon(String appId, String imageLink) throws GooglePlayRuntimeException {
+    public ScreenshotAppStore extractOriginalIcon(String appId, String imageLink) throws GooglePlayRuntimeException {
         return extractOriginalImage(appId, imageLink, ImageTypeEnum.icon);
     }
 
@@ -62,7 +60,7 @@ public class ScreenshotApplicationGooglePlayService {
      * @return
      * @throws GooglePlayRuntimeException
      */
-    public ScreenshotGooglePlay extractOriginalScreenshot(String appId, String imageLink) throws GooglePlayRuntimeException {
+    public ScreenshotAppStore extractOriginalScreenshot(String appId, String imageLink) throws GooglePlayRuntimeException {
         return extractOriginalImage(appId, imageLink, ImageTypeEnum.screenshot);
     }
 
@@ -75,22 +73,22 @@ public class ScreenshotApplicationGooglePlayService {
      * @return
      * @throws GooglePlayRuntimeException
      */
-    private ScreenshotGooglePlay extractOriginalImage(String appId, String imageLink, ImageTypeEnum type) throws GooglePlayRuntimeException {
+    private ScreenshotAppStore extractOriginalImage(String appId, String imageLink, ImageTypeEnum type) throws GooglePlayRuntimeException {
         try {
             if (imageLink.startsWith("//")) {
                 imageLink = "http:" + imageLink;
             }
             String folderName = type == ImageTypeEnum.screenshot ? ImageTypeEnum.screenshot.name() : ImageTypeEnum.icon.name();
             String appImageOriginPath = appId + (type == ImageTypeEnum.screenshot ? "/" + System.currentTimeMillis() + ".png" : "/icon.png");
-            CommonUtils.folderBy(googleImageStore, folderName, appId);
-            Path imagePath = Paths.get(googleImageStore, folderName, appImageOriginPath);
+            CommonUtils.folderBy(appleImageStore, folderName, appId);
+            Path imagePath = Paths.get(appleImageStore, folderName, appImageOriginPath);
             if (!imagePath.toFile().exists()) {
                 logger.info("[ScreenshotApplicationGooglePlayService][" + appId + "][" + folderName + "]Extract image from " + imageLink);
                 byte[] imageBytes = restTemplate.getForObject(imageLink, byte[].class, addHeaders());
                 logger.debug("[ScreenshotApplicationGooglePlayService][" + appId + "][]Write image to " + imagePath.toFile().getAbsolutePath());
                 Files.write(imagePath, imageBytes);
             }
-            ScreenshotGooglePlay screenshot = new ScreenshotGooglePlay();
+            ScreenshotAppStore screenshot = new ScreenshotAppStore();
             screenshot.setAppId(appId);
             screenshot.setOriginal(appImageOriginPath);
             screenshot.setSource(imageLink);

@@ -1,47 +1,44 @@
-package com.zuzuapps.task.app.googlestore.servies;
+package com.zuzuapps.task.app.appstore.services;
 
-import com.zuzuapps.task.app.common.GooogleCategoryEnum;
-import com.zuzuapps.task.app.common.GoogleCollectionEnum;
+import com.zuzuapps.task.app.appstore.models.SummaryApplicationAppStores;
 import com.zuzuapps.task.app.common.CommonService;
+import com.zuzuapps.task.app.common.GoogleCollectionEnum;
+import com.zuzuapps.task.app.common.GooogleCategoryEnum;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
-import com.zuzuapps.task.app.googlestore.models.SummaryApplicationGooglePlays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 /**
  * @author tuanta17
  */
-@Service
-public class SummaryApplicationGooglePlayService {
+public class SummaryApplicationAppStoreService {
     private final Log logger = LogFactory.getLog("SummaryApplicationGooglePlayService");
 
     @Value("${app.summary.site.path:\"http://localhost:5000\"}")
     private String sitePath;
 
     @Autowired
-    private CommonService<SummaryApplicationGooglePlays> summaryApplicationGooglePlaysCommonService;
+    private CommonService<SummaryApplicationAppStores> summaryApplicationAppStoresCommonService;
 
-    public SummaryApplicationGooglePlays getSummaryApplications(GooogleCategoryEnum category, GoogleCollectionEnum collection, String language, String country, int page) throws GooglePlayRuntimeException {
+    public SummaryApplicationAppStores getSummaryApplications(GooogleCategoryEnum category, GoogleCollectionEnum collection, String country, int page) throws GooglePlayRuntimeException {
         try {
-            StringBuilder url = new StringBuilder(sitePath + "/googlestore/apps");
+            StringBuilder url = new StringBuilder(sitePath + "/appstore/apps");
             url = url.append("?start=").append(page);
-            url = url.append("&num=120");
+            url = url.append("&num=100");
             if (category != GooogleCategoryEnum.ALL) {
                 url = url.append("&category=").append(category.name());
             }
             url = url.append("&collection=").append(collection.name());
             url = url.append("&country=").append(country);
-            url = url.append("&lang=").append(language);
             logger.info("[SummaryApplicationGooglePlayService]URL request: " + url.toString());
-            ResponseEntity<SummaryApplicationGooglePlays> responseEntity = summaryApplicationGooglePlaysCommonService.get(url.toString(), SummaryApplicationGooglePlays.class);
+            ResponseEntity<SummaryApplicationAppStores> responseEntity = summaryApplicationAppStoresCommonService.get(url.toString(), SummaryApplicationAppStores.class);
             if (responseEntity == null) {
                 throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, "Can't get data from url " + url.toString());
             }
@@ -49,11 +46,11 @@ public class SummaryApplicationGooglePlayService {
             if (!statusCode.is2xxSuccessful()) {
                 throw new GooglePlayRuntimeException(ExceptionCodes.REMOTE_SERVER_EXCEPTION, "Get apps from page " + (page + 1) + " . HTTP Status: " + statusCode.value() + " HTTP Message: " + statusCode.getReasonPhrase());
             }
-            SummaryApplicationGooglePlays applications = responseEntity.getBody(); // (4)
-            if (applications == null) {
+            SummaryApplicationAppStores applicationPlays = responseEntity.getBody(); // (4)
+            if (applicationPlays == null) {
                 throw new GooglePlayRuntimeException(ExceptionCodes.REMOTE_SERVER_EXCEPTION, "Apps not found");
             } else {
-                return applications;
+                return applicationPlays;
             }
         } catch (ResourceAccessException ex) {
             throw new GooglePlayRuntimeException(ExceptionCodes.NETWORK_CONNECT_EXCEPTION, ex);
@@ -69,5 +66,4 @@ public class SummaryApplicationGooglePlayService {
             throw new GooglePlayRuntimeException(ExceptionCodes.UNKNOWN_EXCEPTION, e);
         }
     }
-
 }

@@ -26,15 +26,15 @@ public class GoogleAppIndexService extends GoogleAppCommonService {
     public void generateAppIndexStore() {
         logger.info("[Application Index Generation]Task start at: " + new Date());
         String time = CommonUtils.getDailyByTime();
-        String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.generate.name(), time).getAbsolutePath();
+        String dirPath = CommonUtils.folderBy(googleRootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.generate.name(), time).getAbsolutePath();
         File dir = new File(dirPath);
         File[] files = dir.listFiles();
         if (files == null || files.length == 0) {
             List<CountryMaster> countries = getCountries();
             for (CountryMaster countryMaster : countries) {
-                for (CollectionEnum collection : CollectionEnum.values()) {
-                    CommonUtils.createFile(Paths.get(dirPath, countryMaster.getCountryCode() + REGEX_3_UNDER_LINE + countryMaster.getLanguageCode() + REGEX_3_UNDER_LINE + collection.name() + REGEX_3_UNDER_LINE + CategoryEnum.ALL.name().toLowerCase() + REGEX_3_UNDER_LINE + time + JSON_FILE_EXTENSION));
-                    for (CategoryEnum category : CategoryEnum.values()) {
+                for (GoogleCollectionEnum collection : GoogleCollectionEnum.values()) {
+                    CommonUtils.createFile(Paths.get(dirPath, countryMaster.getCountryCode() + REGEX_3_UNDER_LINE + countryMaster.getLanguageCode() + REGEX_3_UNDER_LINE + collection.name() + REGEX_3_UNDER_LINE + GooogleCategoryEnum.ALL.name().toLowerCase() + REGEX_3_UNDER_LINE + time + JSON_FILE_EXTENSION));
+                    for (GooogleCategoryEnum category : GooogleCategoryEnum.values()) {
                         CommonUtils.createFile(Paths.get(dirPath, countryMaster.getCountryCode() + REGEX_3_UNDER_LINE + countryMaster.getLanguageCode() + REGEX_3_UNDER_LINE + collection.name() + REGEX_3_UNDER_LINE + category.name().toLowerCase() + REGEX_3_UNDER_LINE + time + JSON_FILE_EXTENSION));
                     }
                 }
@@ -50,7 +50,7 @@ public class GoogleAppIndexService extends GoogleAppCommonService {
         while (true) {
             // something that should execute on weekdays only
             String time = CommonUtils.getDailyByTime();
-            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.generate.name(), time).getAbsolutePath();
+            String dirPath = CommonUtils.folderBy(googleRootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.generate.name(), time).getAbsolutePath();
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {
@@ -76,8 +76,8 @@ public class GoogleAppIndexService extends GoogleAppCommonService {
             if (data.length >= 4) {
                 String countryCode = data[0];
                 String languageCode = data[1];
-                CollectionEnum collection = CollectionEnum.valueOf(data[2]);
-                CategoryEnum category = CategoryEnum.valueOf(data[3].toUpperCase());
+                GoogleCollectionEnum collection = GoogleCollectionEnum.valueOf(data[2]);
+                GooogleCategoryEnum category = GooogleCategoryEnum.valueOf(data[3].toUpperCase());
                 long startTime = System.currentTimeMillis();
                 try {
                     SummaryApplicationGooglePlays summaryApplicationPlays
@@ -113,8 +113,8 @@ public class GoogleAppIndexService extends GoogleAppCommonService {
     }
 
 
-    private StringBuilder queueAppIndexJSONPath(String time, String countryCode, String languageCode, CollectionEnum collection, CategoryEnum category) {
-        StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.queue.name(), time).getAbsolutePath());
+    private StringBuilder queueAppIndexJSONPath(String time, String countryCode, String languageCode, GoogleCollectionEnum collection, GooogleCategoryEnum category) {
+        StringBuilder path = new StringBuilder(CommonUtils.folderBy(googleRootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.queue.name(), time).getAbsolutePath());
         path.append("/");
         path.append(countryCode).append(REGEX_3_UNDER_LINE);
         path.append(languageCode).append(REGEX_3_UNDER_LINE);

@@ -1,42 +1,61 @@
-package com.zuzuapps.task.app.appstore.models;
+package com.zuzuapps.task.app.solr.appstore.models;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.solr.core.mapping.Indexed;
+import org.springframework.data.solr.core.mapping.SolrDocument;
 
 import java.util.List;
 
 /**
  * @author tuanta17
  */
-public class ApplicationAppStore {
+@SolrDocument(solrCoreName = "app-information-index")
+public class AppleAppInformationSolr {
+    @Indexed
+    @Id
     private long id;
+    @Indexed(name = "app_id")
     private String appId;
     private String title;
     private String description;
     private String icon;
     private List<String> genres;
+    @Indexed(name = "genres_ids")
     private List<Integer> genreIds;
+    @Indexed(name = "primary_genre")
     private String primaryGenre;
-    private int primaryGenreId;
-    private String contentRating;
+    @Indexed(name = "primary_genre_id")
+    private String primaryGenreId;
     private List<String> languages;
-    private String size;//
+    private long size;
+    @Indexed(name = "required_os_version")
     private String requiredOsVersion;
     private String released;
     private String updated;
-    private String releaseNotes;
     private String version;
     private float price;
     private String currency;
     private boolean free;
+    @Indexed(name = "developer_id")
     private String developerId;
     private String developer;
+    @Indexed(name = "developer_url")
     private String developerUrl;
+    @Indexed(name = "developer_website")
     private String developerWebsite;
     private float score;
+    @Indexed(name = "current_version_score")
     private String currentVersionScore;
+    @Indexed(name = "current_version_reviews")
     private int currentVersionReviews;
     private List<String> screenshots;
+    @Indexed(name = "ipad_screenshots")
     private List<String> ipadScreenshots;
+    @Indexed(name = "appletv_screenshots")
     private List<String> appletvScreenshots;
+    @Indexed(name = "supported_devices")
     private List<String> supportedDevices;
+    @Indexed(name = "playstore_url")
     private String playstoreUrl;
 
     public long getId() {
@@ -103,20 +122,12 @@ public class ApplicationAppStore {
         this.primaryGenre = primaryGenre;
     }
 
-    public int getPrimaryGenreId() {
+    public String getPrimaryGenreId() {
         return primaryGenreId;
     }
 
-    public void setPrimaryGenreId(int primaryGenreId) {
+    public void setPrimaryGenreId(String primaryGenreId) {
         this.primaryGenreId = primaryGenreId;
-    }
-
-    public String getContentRating() {
-        return contentRating;
-    }
-
-    public void setContentRating(String contentRating) {
-        this.contentRating = contentRating;
     }
 
     public List<String> getLanguages() {
@@ -127,11 +138,11 @@ public class ApplicationAppStore {
         this.languages = languages;
     }
 
-    public String getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(String size) {
+    public void setSize(long size) {
         this.size = size;
     }
 
@@ -157,14 +168,6 @@ public class ApplicationAppStore {
 
     public void setUpdated(String updated) {
         this.updated = updated;
-    }
-
-    public String getReleaseNotes() {
-        return releaseNotes;
-    }
-
-    public void setReleaseNotes(String releaseNotes) {
-        this.releaseNotes = releaseNotes;
     }
 
     public String getVersion() {

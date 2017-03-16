@@ -12,7 +12,6 @@ public class GoogleAppIndexSolr {
     @Indexed
     @Id
     private String id;
-    @Indexed(type = "string")
     private int index;
     @Indexed(type = "string")
     private String title;

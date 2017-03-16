@@ -3,7 +3,7 @@ package com.zuzuapps.task.app.common;
 /**
  * @author tuanta17
  */
-public enum CollectionEnum {
+public enum GoogleCollectionEnum {
     topselling_free,
     topselling_new_free,
     topselling_paid,

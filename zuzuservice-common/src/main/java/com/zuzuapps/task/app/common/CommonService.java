@@ -1,4 +1,4 @@
-package com.zuzuapps.task.app.googlestore.servies;
+package com.zuzuapps.task.app.common;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
