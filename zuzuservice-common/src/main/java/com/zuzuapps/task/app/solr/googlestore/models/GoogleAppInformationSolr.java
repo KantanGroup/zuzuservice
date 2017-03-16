@@ -17,37 +17,37 @@ public class GoogleAppInformationSolr {
     private String id;
     @Indexed(name = "app_id")
     private String appId;
-    @Indexed(type = "string")
+    @Indexed
     private String title;
-    @Indexed(type = "string")
+    @Indexed
     private String summary;
     @Indexed(name = "developer_id")
     private String developerId;
     @Indexed(name = "development_url")
     private String developerUrl;
-    @Indexed(type = "string")
+    @Indexed
     private String icon;
-    @Indexed(type = "double")
+    @Indexed
     private float point;
-    @Indexed(type = "double")
+    @Indexed
     private float score;
-    @Indexed(type = "string")
+    @Indexed
     private String price;
-    @Indexed(type = "boolean")
+    @Indexed
     private boolean free;
     @Indexed(name = "developer_email")
     private String developerEmail;
     @Indexed(name = "developer_website")
     private String developerWebsite;
-    @Indexed(type = "string")
+    @Indexed
     private String updated;
-    @Indexed(type = "string")
+    @Indexed
     private String version;
     @Indexed(name = "min_installs")
     private long minInstalls;
     @Indexed(name = "max_installs")
     private long maxInstalls;
-    @Indexed(type = "string")
+    @Indexed
     private String genre;
     @Indexed(name = "description_html")
     private String descriptionHTML;
@@ -61,7 +61,7 @@ public class GoogleAppInformationSolr {
     private String contentRating;
     @Indexed
     private List<String> screenshots;
-    @Indexed(type = "string")
+    @Indexed
     private String video;
     @Indexed(name = "playstore_url")
     private String playstoreUrl;

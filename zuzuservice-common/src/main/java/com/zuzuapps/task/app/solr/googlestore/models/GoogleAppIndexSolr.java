@@ -12,28 +12,29 @@ public class GoogleAppIndexSolr {
     @Indexed
     @Id
     private String id;
+    @Indexed
     private int index;
-    @Indexed(type = "string")
+    @Indexed
     private String title;
     @Indexed(name = "app_id", type = "string")
     private String appId;
     @Indexed(name = "country_code", type = "string")
     private String countryCode;
-    @Indexed(type = "string")
+    @Indexed
     private String category;
-    @Indexed(type = "string")
+    @Indexed
     private String collection;
-    @Indexed(type = "string")
+    @Indexed
     private String icon;
     @Indexed(name = "developer_id", type = "string")
     private String developerId;
-    @Indexed(type = "double")
+    @Indexed
     private float point;
-    @Indexed(type = "double")
+    @Indexed
     private float score;
-    @Indexed(type = "boolean")
+    @Indexed
     private boolean free;
-    @Indexed(type = "string")
+    @Indexed
     private String price;
 
     public String getId() {

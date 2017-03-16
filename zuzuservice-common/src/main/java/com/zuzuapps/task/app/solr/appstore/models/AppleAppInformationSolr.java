@@ -13,12 +13,18 @@ import java.util.List;
 public class AppleAppInformationSolr {
     @Indexed
     @Id
-    private long id;
+    private String id;
+    @Indexed
+    private long aid;
     @Indexed(name = "app_id")
     private String appId;
+    @Indexed
     private String title;
+    @Indexed
     private String description;
+    @Indexed
     private String icon;
+    @Indexed
     private List<String> genres;
     @Indexed(name = "genres_ids")
     private List<Integer> genreIds;
@@ -26,15 +32,23 @@ public class AppleAppInformationSolr {
     private String primaryGenre;
     @Indexed(name = "primary_genre_id")
     private String primaryGenreId;
+    @Indexed
     private List<String> languages;
+    @Indexed
     private long size;
     @Indexed(name = "required_os_version")
     private String requiredOsVersion;
+    @Indexed
     private String released;
+    @Indexed
     private String updated;
+    @Indexed
     private String version;
+    @Indexed
     private float price;
+    @Indexed
     private String currency;
+    @Indexed
     private boolean free;
     @Indexed(name = "developer_id")
     private String developerId;
@@ -43,11 +57,13 @@ public class AppleAppInformationSolr {
     private String developerUrl;
     @Indexed(name = "developer_website")
     private String developerWebsite;
+    @Indexed
     private float score;
     @Indexed(name = "current_version_score")
     private String currentVersionScore;
     @Indexed(name = "current_version_reviews")
     private int currentVersionReviews;
+    @Indexed
     private List<String> screenshots;
     @Indexed(name = "ipad_screenshots")
     private List<String> ipadScreenshots;
@@ -58,12 +74,20 @@ public class AppleAppInformationSolr {
     @Indexed(name = "playstore_url")
     private String playstoreUrl;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public long getAid() {
+        return aid;
+    }
+
+    public void setAid(long aid) {
+        this.aid = aid;
     }
 
     public String getAppId() {

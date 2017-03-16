@@ -11,29 +11,46 @@ import org.springframework.data.solr.core.mapping.SolrDocument;
 public class AppleAppIndexSolr {
     @Indexed
     @Id
-    private long id;
+    private String id;
+    @Indexed
+    private long aid;
     @Indexed(name = "app_id")
     private String appId;
+    @Indexed
     private int index;
     @Indexed(name = "country_code")
     private String countryCode;
-    @Indexed(type = "string")
+    @Indexed
     private String category;
-    @Indexed(type = "string")
+    @Indexed
     private String collection;
+    @Indexed
     private String title;
+    @Indexed
     private String icon;
+    @Indexed
     private float price;
+    @Indexed
     private String currency;
+    @Indexed
     private boolean free;
+    @Indexed
     private String developer;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public long getAid() {
+        return aid;
+    }
+
+    public void setAid(long aid) {
+        this.aid = aid;
     }
 
     public String getAppId() {

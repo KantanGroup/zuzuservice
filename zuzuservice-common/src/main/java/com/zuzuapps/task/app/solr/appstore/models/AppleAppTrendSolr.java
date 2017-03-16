@@ -13,34 +13,35 @@ import java.util.Date;
 public class AppleAppTrendSolr {
     @Indexed
     @Id
-    private String tId;
-    private long id;
+    private String id;
+    @Indexed
+    private long aid;
     @Indexed(name = "app_id")
     private String appId;
     private int index;
     @Indexed(name = "country_code")
     private String countryCode;
-    @Indexed(type = "string")
+    @Indexed
     private String category;
-    @Indexed(type = "string")
+    @Indexed
     private String collection;
     @Indexed(name = "create_at", type = "date")
     private Date createAt;
 
-    public String gettId() {
-        return tId;
-    }
-
-    public void settId(String tId) {
-        this.tId = tId;
-    }
-
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public long getAid() {
+        return aid;
+    }
+
+    public void setAid(long aid) {
+        this.aid = aid;
     }
 
     public String getAppId() {
