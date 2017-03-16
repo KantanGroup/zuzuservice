@@ -13,7 +13,7 @@ import java.io.File;
  * @author tuanta17
  */
 @Service
-public class AppInformationDailyService extends AppCommonService {
+public class GoogleAppInformationDailyService extends GoogleAppCommonService {
     final Log logger = LogFactory.getLog("AppInformationDailyService");
 
     /**

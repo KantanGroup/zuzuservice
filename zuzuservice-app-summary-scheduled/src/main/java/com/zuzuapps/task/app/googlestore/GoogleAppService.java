@@ -23,7 +23,7 @@ import java.util.Date;
  * @author tuanta17
  */
 @Service
-public class AppService extends AppCommonService {
+public class GoogleAppService extends GoogleAppCommonService {
     final Log logger = LogFactory.getLog("AppService");
 
     /**

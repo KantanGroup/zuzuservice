@@ -43,7 +43,7 @@ import java.util.*;
  * @author tuanta17
  */
 @Service
-public class AppCommonService {
+public class GoogleAppCommonService {
     protected static final String JSON_FILE_EXTENSION = ".json";
     protected static final String GZ_FILE_EXTENSION = ".gz";
     protected static final String ZERO_NUMBER = "0";

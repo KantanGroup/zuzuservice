@@ -21,7 +21,7 @@ import java.util.List;
  * @author tuanta17
  */
 @Service
-public class AppIndexStoreService extends AppCommonService {
+public class GoogleAppIndexStoreService extends GoogleAppCommonService {
     final Log logger = LogFactory.getLog("AppIndexStoreService");
 
     /**

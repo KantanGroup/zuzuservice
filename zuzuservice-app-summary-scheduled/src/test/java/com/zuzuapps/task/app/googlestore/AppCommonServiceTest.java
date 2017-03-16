@@ -20,7 +20,7 @@ import java.nio.file.StandardCopyOption;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AppCommonServiceTest {
     @Autowired
-    AppCommonService appCommonService;
+    GoogleAppCommonService appCommonService;
 
     @Test
     public void zipFile() throws IOException {

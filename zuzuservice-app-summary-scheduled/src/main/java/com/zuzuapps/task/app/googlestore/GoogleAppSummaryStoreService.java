@@ -14,7 +14,7 @@ import java.util.Date;
  * @author tuanta17
  */
 @Service
-public class AppSummaryStoreService extends AppCommonService {
+public class GoogleAppSummaryStoreService extends GoogleAppCommonService {
     final Log logger = LogFactory.getLog("AppSummaryStoreService");
 
     /**

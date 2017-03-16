@@ -13,16 +13,16 @@ import java.io.File;
  * @author tuanta17
  */
 @Service
-public class AppScreenshotSummaryService extends AppCommonService {
+public class GoogleAppScreenshotIndexService extends GoogleAppCommonService {
     final Log logger = LogFactory.getLog("AppScreenshotService");
 
     /**
      * Split app summary to apps
      */
-    public void processAppScreenshotUpdate() {
+    public void processAppScreenshotIndexUpdate() {
         while (true) {
             // something that should execute on weekdays only
-            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath();
+            String dirPath = CommonUtils.folderBy(rootPath, DataServiceEnum.screenshot_daily.name(), DataTypeEnum.queue.name()).getAbsolutePath();
             File dir = new File(dirPath);
             File[] files = dir.listFiles();
             if (files != null && files.length != 0) {

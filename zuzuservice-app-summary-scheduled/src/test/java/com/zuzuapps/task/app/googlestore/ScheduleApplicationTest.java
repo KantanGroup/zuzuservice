@@ -34,11 +34,11 @@ public class ScheduleApplicationTest {
     @Value("${data.root.path:/tmp}")
     private String rootPath;
     @Autowired
-    private AppIndexStoreService scheduleService;
+    private GoogleAppIndexStoreService scheduleService;
     @Autowired
-    private AppIndexService topScheduleService;
+    private GoogleAppIndexService topScheduleService;
     @Autowired
-    private AppSummaryService appSummaryService;
+    private GoogleAppSummaryService appSummaryService;
 
     @Test
     public void appTop() {

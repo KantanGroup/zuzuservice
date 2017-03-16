@@ -20,7 +20,7 @@ import java.util.List;
  * @author tuanta17
  */
 @Service
-public class AppIndexService extends AppCommonService {
+public class GoogleAppIndexService extends GoogleAppCommonService {
     final Log logger = LogFactory.getLog("AppIndexService");
 
     public void generateAppIndexStore() {
