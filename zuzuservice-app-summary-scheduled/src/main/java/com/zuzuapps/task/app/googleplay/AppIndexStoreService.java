@@ -67,6 +67,7 @@ public class AppIndexStoreService extends AppCommonService {
                 String languageCode = data[1];
                 CategoryEnum category = CategoryEnum.valueOf(data[2].toUpperCase());
                 CollectionEnum collection = CollectionEnum.valueOf(data[3]);
+                String toDate = data[4];
                 try {
                     logger.debug("[Application Index Store]Convert json data to object");
                     SummaryApplicationPlays apps = mapper.readValue(json, SummaryApplicationPlays.class);
@@ -74,12 +75,12 @@ public class AppIndexStoreService extends AppCommonService {
                     for (SummaryApplicationPlay app : apps.getResults()) {
                         createAppIndexMaster(appIndexDatabase, countryCode, category, collection, index, app);
                         createAppIndexInSearchEngine(appIndexSolr, countryCode, category, collection, index, app);
-                        createAppTrendInSearchEngine(appTrendSolr, countryCode, category, collection, index, app);
+                        createAppTrendInSearchEngine(appTrendSolr, countryCode, category, collection, index, app, toDate);
                         index++;
                     }
                     // Add data to mysql
-                    logger.debug("[Application Index Store]Store to database");
-                    appIndexDatabaseService.save(appIndexDatabase);
+                    //logger.debug("[Application Index Store]Store to database");
+                    //appIndexDatabaseService.save(appIndexDatabase);
                     // Add data to Apache Solr
                     logger.debug("[Application Index Store]Index to search engine");
                     appIndexService.save(appIndexSolr);
@@ -135,9 +136,9 @@ public class AppIndexStoreService extends AppCommonService {
         appIndexs.add(appIndex);
     }
 
-    private void createAppTrendInSearchEngine(List<AppTrendSolr> appTrends, String countryCode, CategoryEnum category, CollectionEnum collection, int index, SummaryApplicationPlay app) {
+    private void createAppTrendInSearchEngine(List<AppTrendSolr> appTrends, String countryCode, CategoryEnum category, CollectionEnum collection, int index, SummaryApplicationPlay app, String toDate) {
         AppTrendSolr appTrend = new AppTrendSolr();
-        appTrend.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getAppId() + "_" + CommonUtils.getTimeBy(new Date(), "yyyyMMdd"));
+        appTrend.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getAppId() + "_" + toDate);
         appTrend.setIndex(index);
         appTrend.setAppId(app.getAppId());
         appTrend.setCategory(category.name().toLowerCase());
@@ -147,7 +148,7 @@ public class AppIndexStoreService extends AppCommonService {
         appTrend.setFree(app.isFree());
         appTrend.setPrice(app.getPrice());
         appTrend.setScore(app.getScore());
-        appTrend.setCreateAt(new Date());
+        appTrend.setCreateAt(CommonUtils.toDate(toDate));
         appTrends.add(appTrend);
     }
 }
