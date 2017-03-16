@@ -1,9 +1,8 @@
-package com.zuzuapps.task.app.appstore.services;
+package com.zuzuapps.task.app.googlestore.servies;
 
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googlestore.models.ApplicationGooglePlay;
-import com.zuzuapps.task.app.googlestore.servies.CommonService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +18,8 @@ import org.springframework.web.client.ResourceAccessException;
  * @author tuanta17
  */
 @Service
-public class InformationApplicationAppStoreService {
-    private final Log logger = LogFactory.getLog("InformationApplicationAppStoreService");
+public class InformationApplicationGooglePlayService {
+    private final Log logger = LogFactory.getLog("InformationApplicationPlayService");
 
     @Value("${app.information.site.path:\"http://localhost:5000\"}")
     private String sitePath;

@@ -14,7 +14,7 @@ import java.util.List;
  * @author tuanta17
  */
 @SpringBootApplication // same as @Configuration @EnableAutoConfiguration @ComponentScan
-@EnableSolrRepositories(basePackages = {"com.zuzuapps.task.app.solr.repositories"}, multicoreSupport = true)
+@EnableSolrRepositories(basePackages = {"com.zuzuapps.task.app.solr.googlestore.repositories", "com.zuzuapps.task.app.solr.appstore.repositories"}, multicoreSupport = true)
 @EnableJpaRepositories
 public class AppstoreCommonConfiguration {
 
