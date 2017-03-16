@@ -18,7 +18,7 @@ import java.util.Date;
  */
 @Service
 public class GoogleAppSummaryService extends GoogleAppCommonService {
-    final Log logger = LogFactory.getLog("AppSummaryService");
+    final Log logger = LogFactory.getLog("GoogleAppSummaryService");
 
     public void generateAppSummaryStore() {
         logger.info("[Application Summary Generation]Task start at: " + new Date());

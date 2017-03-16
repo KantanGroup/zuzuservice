@@ -50,7 +50,7 @@ public class GoogleAppCommonService {
     protected static final String REGEX_3_UNDER_LINE = "___";
     protected static final String COUNTRY_CODE_DEFAULT = "us";
     protected static final String LANGUAGE_CODE_DEFAULT = "en";
-    protected final Log logger = LogFactory.getLog("AppCommonService");
+    protected final Log logger = LogFactory.getLog("GoogleAppCommonService");
     protected final ObjectMapper mapper = new ObjectMapper();
 
     @Value("${data.root.path:/tmp}")

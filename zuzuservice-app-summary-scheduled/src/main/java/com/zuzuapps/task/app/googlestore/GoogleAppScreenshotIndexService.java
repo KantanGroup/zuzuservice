@@ -14,7 +14,7 @@ import java.io.File;
  */
 @Service
 public class GoogleAppScreenshotIndexService extends GoogleAppCommonService {
-    final Log logger = LogFactory.getLog("AppScreenshotService");
+    final Log logger = LogFactory.getLog("GoogleAppScreenshotIndexService");
 
     /**
      * Split app summary to apps

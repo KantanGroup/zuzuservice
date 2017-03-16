@@ -29,7 +29,7 @@ import java.util.Collections;
 public class ScreenshotApplicationGooglePlayService {
     private final Log logger = LogFactory.getLog("ScreenshotApplicationPlayService");
 
-    @Value("${data.image.path:/tmp}")
+    @Value("${google.data.image.path:/tmp}")
     private String imageStore;
 
     @Autowired

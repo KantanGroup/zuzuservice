@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Service
 public class GoogleAppIndexStoreService extends GoogleAppCommonService {
-    final Log logger = LogFactory.getLog("AppIndexStoreService");
+    final Log logger = LogFactory.getLog("GoogleAppIndexStoreService");
 
     /**
      * Daily app index update

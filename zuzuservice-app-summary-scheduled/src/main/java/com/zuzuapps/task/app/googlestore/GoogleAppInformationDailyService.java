@@ -14,7 +14,7 @@ import java.io.File;
  */
 @Service
 public class GoogleAppInformationDailyService extends GoogleAppCommonService {
-    final Log logger = LogFactory.getLog("AppInformationDailyService");
+    final Log logger = LogFactory.getLog("GoogleAppInformationDailyService");
 
     /**
      * Daily app information update

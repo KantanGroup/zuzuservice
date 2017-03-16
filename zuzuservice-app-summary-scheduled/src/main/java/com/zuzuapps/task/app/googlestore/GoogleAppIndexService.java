@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Service
 public class GoogleAppIndexService extends GoogleAppCommonService {
-    final Log logger = LogFactory.getLog("AppIndexService");
+    final Log logger = LogFactory.getLog("GoogleAppIndexService");
 
     public void generateAppIndexStore() {
         logger.info("[Application Index Generation]Task start at: " + new Date());

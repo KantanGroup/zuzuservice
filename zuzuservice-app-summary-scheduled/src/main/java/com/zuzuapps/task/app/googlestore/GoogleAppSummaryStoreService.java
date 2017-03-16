@@ -15,7 +15,7 @@ import java.util.Date;
  */
 @Service
 public class GoogleAppSummaryStoreService extends GoogleAppCommonService {
-    final Log logger = LogFactory.getLog("AppSummaryStoreService");
+    final Log logger = LogFactory.getLog("GoogleAppSummaryStoreService");
 
     /**
      * Daily app summary update

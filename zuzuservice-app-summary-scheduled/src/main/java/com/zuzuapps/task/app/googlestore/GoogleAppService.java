@@ -24,7 +24,7 @@ import java.util.Date;
  */
 @Service
 public class GoogleAppService extends GoogleAppCommonService {
-    final Log logger = LogFactory.getLog("AppService");
+    final Log logger = LogFactory.getLog("GoogleAppService");
 
     /**
      * Daily app update

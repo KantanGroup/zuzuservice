@@ -14,7 +14,7 @@ import java.io.File;
  */
 @Service
 public class GoogleAppInformationSummaryService extends GoogleAppCommonService {
-    final Log logger = LogFactory.getLog("AppInformationSummaryService");
+    final Log logger = LogFactory.getLog("GoogleAppInformationSummaryService");
 
     /**
      * Summary app information update
