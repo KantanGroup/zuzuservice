@@ -56,11 +56,11 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
      * @param files File data
      */
     public void processIndexUpdate(File[] files) throws Exception {
-        logger.debug("[Application Index Store]Cronjob start at: " + new Date());
+        logger.debug("[GoogleAppIndexStoreService][Index Store]Cronjob start at: " + new Date());
         // something that should execute on weekdays only
         String time = CommonUtils.getDailyByTime();
         for (File json : files) {
-            logger.info("[Application Index Store]File " + json.getAbsolutePath());
+            logger.info("[GoogleAppIndexStoreService][Index Store]File " + json.getAbsolutePath());
             String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 4) {
@@ -73,29 +73,29 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
                 GoogleCollectionEnum collection = GoogleCollectionEnum.valueOf(data[3]);
                 String toDate = data[4];
                 try {
-                    logger.debug("[Application Index Store]Convert json data to object");
+                    logger.debug("[GoogleAppIndexStoreService][Index Store]Convert json data to object");
                     SummaryApplicationGooglePlays apps = mapper.readValue(json, SummaryApplicationGooglePlays.class);
                     short index = 1;
                     for (SummaryApplicationGooglePlay app : apps.getResults()) {
-                        createAppIndexMaster(appIndexDatabase, countryCode, category, collection, index, app);
+                        // createAppIndexMaster(appIndexDatabase, countryCode, category, collection, index, app);
                         createAppIndexInSearchEngine(appIndexSolr, countryCode, category, collection, index, app);
                         createAppTrendInSearchEngine(appTrendSolr, countryCode, category, collection, index, app, toDate);
                         index++;
                     }
                     // Add data to mysql
-                    //logger.debug("[Application Index Store]Store to database");
+                    //logger.debug("[GoogleAppIndexStoreService][Index Store]Store to database");
                     //appIndexDatabaseService.save(appIndexDatabase);
                     // Add data to Apache Solr
-                    logger.debug("[Application Index Store]Index to search engine");
-                    appIndexService.save(appIndexSolr);
-                    logger.debug("[Application Index Store]Trend to search engine");
-                    appTrendService.save(appTrendSolr);
+                    logger.debug("[GoogleAppIndexStoreService][Index Store]Index to search engine");
+                    googleAppIndexSolrService.save(appIndexSolr);
+                    logger.debug("[GoogleAppIndexStoreService][Index Store]Trend to search engine");
+                    googleAppTrendSolrService.save(appTrendSolr);
                     // Create app info json
                     queueAppInformation(apps.getResults(), countryCode, languageCode, DataServiceEnum.information_daily);
                     // Remove data
                     FileUtils.deleteQuietly(json);
                 } catch (Exception ex) {
-                    logger.error("[Application Index Store][" + countryCode + "][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
+                    logger.error("[GoogleAppIndexStoreService][Index Store][" + countryCode + "][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage(), ex);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.top_app_daily.name(), DataTypeEnum.error.name(), time).getAbsolutePath());
                 }
             } else {
@@ -103,7 +103,7 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
             }
             CommonUtils.delay(5);
         }
-        logger.debug("[Application Index Store]Cronjob end at: " + new Date());
+        logger.debug("[GoogleAppIndexStoreService][Index Store]Cronjob end at: " + new Date());
     }
 
     private void createAppIndexMaster(List<AppIndexMaster> appIndexMasters, String countryCode, GoogleCategoryEnum category, GoogleCollectionEnum collection, short index, SummaryApplicationGooglePlay app) {
@@ -125,7 +125,6 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
     private void createAppIndexInSearchEngine(List<GoogleAppIndexSolr> appIndexs, String countryCode, GoogleCategoryEnum category, GoogleCollectionEnum collection, int index, SummaryApplicationGooglePlay app) {
         GoogleAppIndexSolr appIndex = new GoogleAppIndexSolr();
         appIndex.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + index);
-        appIndex.setIndex(index);
         appIndex.setTitle(app.getTitle());
         appIndex.setAppId(app.getAppId());
         appIndex.setCategory(category.name().toLowerCase());
@@ -143,7 +142,6 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
     private void createAppTrendInSearchEngine(List<GoogleAppTrendSolr> appTrends, String countryCode, GoogleCategoryEnum category, GoogleCollectionEnum collection, int index, SummaryApplicationGooglePlay app, String toDate) {
         GoogleAppTrendSolr appTrend = new GoogleAppTrendSolr();
         appTrend.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getAppId() + "_" + toDate);
-        appTrend.setIndex(index);
         appTrend.setAppId(app.getAppId());
         appTrend.setCategory(category.name().toLowerCase());
         appTrend.setCollection(collection.name());

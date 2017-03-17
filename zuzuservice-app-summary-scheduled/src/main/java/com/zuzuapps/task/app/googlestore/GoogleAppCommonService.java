@@ -2,10 +2,6 @@ package com.zuzuapps.task.app.googlestore;
 
 import com.zuzuapps.task.app.AppCommonService;
 import com.zuzuapps.task.app.appstore.models.AppScreenshotMaster;
-import com.zuzuapps.task.app.appstore.repositories.AppIndexMasterRepository;
-import com.zuzuapps.task.app.appstore.repositories.AppLanguageMasterRepository;
-import com.zuzuapps.task.app.appstore.repositories.AppMasterRepository;
-import com.zuzuapps.task.app.appstore.repositories.AppScreenshotMasterRepository;
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
@@ -52,35 +48,27 @@ public class GoogleAppCommonService extends AppCommonService {
     protected String googleImageStore;
 
     @Autowired
-    protected SummaryApplicationGooglePlayService summaryApplicationPlayService;
+    protected GoogleAppIndexSolrRepository googleAppIndexSolrService;
     @Autowired
-    protected AppIndexMasterRepository appIndexDatabaseService;
+    protected GoogleAppTrendSolrRepository googleAppTrendSolrService;
     @Autowired
-    protected AppMasterRepository appMasterRepository;
+    protected GoogleAppInformationSolrRepository googleAppInformationService;
     @Autowired
-    protected AppLanguageMasterRepository appLanguageMasterRepository;
-    @Autowired
-    protected AppScreenshotMasterRepository appScreenshotMasterRepository;
-    @Autowired
-    protected GoogleAppIndexSolrRepository appIndexService;
-    @Autowired
-    protected GoogleAppTrendSolrRepository appTrendService;
-    @Autowired
-    protected GoogleAppInformationSolrRepository appInformationService;
-    @Autowired
-    protected GoogleAppScreenshotSolrRepository appScreenshotSolrService;
+    protected GoogleAppScreenshotSolrRepository googleAppScreenshotSolrService;
     @Autowired
     protected InformationApplicationGooglePlayService informationApplicationPlayService;
+    @Autowired
+    protected SummaryApplicationGooglePlayService summaryApplicationPlayService;
 
-    protected void queueAppInformation(List<SummaryApplicationGooglePlay> summaryApplicationPlays, String countryCode, String languageCode, DataServiceEnum information) {
-        for (SummaryApplicationGooglePlay summaryApplicationPlay : summaryApplicationPlays) {
+    protected void queueAppInformation(List<SummaryApplicationGooglePlay> summaryApplicationGooglePlays, String countryCode, String languageCode, DataServiceEnum information) {
+        for (SummaryApplicationGooglePlay summaryApplication : summaryApplicationGooglePlays) {
             try {
-                if (checkAppInformationSolr(summaryApplicationPlay.getAppId() + "_" + languageCode)) {
+                if (checkAppInformationSolr(summaryApplication.getAppId() + "_" + languageCode)) {
                     StringBuilder path = new StringBuilder(CommonUtils.folderBy(googleRootPath, information.name(), DataTypeEnum.queue.name()).getAbsolutePath());
                     path.append("/").append(countryCode).append(REGEX_3_UNDER_LINE);
                     path.append(languageCode).append(REGEX_3_UNDER_LINE);
-                    path.append(summaryApplicationPlay.getAppId()).append(JSON_FILE_EXTENSION);
-                    Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlay));
+                    path.append(summaryApplication.getAppId()).append(JSON_FILE_EXTENSION);
+                    Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplication));
                 }
             } catch (Exception ex) {
                 logger.error("Write summary of app error " + ex.getMessage(), ex);
@@ -92,7 +80,7 @@ public class GoogleAppCommonService extends AppCommonService {
      * Check app information avaiable or not
      */
     private boolean checkAppInformationSolr(String id) {
-        GoogleAppInformationSolr app = appInformationService.findOne(id);
+        GoogleAppInformationSolr app = googleAppInformationService.findOne(id);
         if (app == null || isTimeToUpdate(app.getCreateAt())) {
             return true;
         } else {
@@ -165,7 +153,7 @@ public class GoogleAppCommonService extends AppCommonService {
         // Get app information
         GoogleAppInformationSolr app = createAppInformation(applicationPlay, languageCode);
         // Index to Solr
-        appInformationService.save(app);
+        googleAppInformationService.save(app);
         // 4. Create icon
         screenshotApplicationPlayService.extractOriginalIcon(googleImageStore, app.getAppId(), app.getIcon());
     }
@@ -179,7 +167,7 @@ public class GoogleAppCommonService extends AppCommonService {
         // Update current data
         app.setCreateAt(new Date());
         // Index to Solr
-        appInformationService.save(app);
+        googleAppInformationService.save(app);
     }
 
     protected void processAppInformation(File[] files, boolean isDaily) throws Exception {
@@ -237,7 +225,7 @@ public class GoogleAppCommonService extends AppCommonService {
             if (data.length >= 2) {
                 String appId = data[0];
                 try {
-                    GoogleAppScreenshotSolr screenshotObject = appScreenshotSolrService.findOne(appId);
+                    GoogleAppScreenshotSolr screenshotObject = googleAppScreenshotSolrService.findOne(appId);
                     if (screenshotObject == null || isTimeToUpdate(screenshotObject.getCreateAt())) {
                         // Remove all old screenshot
                         CommonUtils.deleteDirectory(CommonUtils.folderBy(googleImageStore, ImageTypeEnum.screenshot.name(), appId));
@@ -256,8 +244,10 @@ public class GoogleAppCommonService extends AppCommonService {
                             CommonUtils.delay(timeGetAppScreenshot);
                         }
                         appScreenshotMaster.setData(mapper.writeValueAsString(screenshotObjects));
-                        appScreenshotMasterRepository.save(appScreenshotMaster);
-                        appScreenshotSolrService.save(appScreenshotSolr);
+                        // Store to database
+                        // appScreenshotMasterRepository.save(appScreenshotMaster);
+                        // Store to Apache Solr
+                        googleAppScreenshotSolrService.save(appScreenshotSolr);
                         moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.screenshot.name(), DataTypeEnum.log.name()).getAbsolutePath());
                     }
                     FileUtils.deleteQuietly(json);

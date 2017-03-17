@@ -6,5 +6,5 @@ import org.springframework.data.solr.repository.SolrCrudRepository;
 /**
  * @author tuanta17
  */
-public interface AppleAppInformationSolrRepository extends SolrCrudRepository<AppleAppInformationSolr, Integer> {
+public interface AppleAppInformationSolrRepository extends SolrCrudRepository<AppleAppInformationSolr, String> {
 }

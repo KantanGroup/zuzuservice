@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.Indexed;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -73,6 +74,8 @@ public class AppleAppInformationSolr {
     private List<String> supportedDevices;
     @Indexed(name = "playstore_url")
     private String playstoreUrl;
+    @Indexed(name = "create_at", type = "date")
+    private Date createAt;
 
     public String getId() {
         return id;
@@ -320,5 +323,13 @@ public class AppleAppInformationSolr {
 
     public void setPlaystoreUrl(String playstoreUrl) {
         this.playstoreUrl = playstoreUrl;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
     }
 }
