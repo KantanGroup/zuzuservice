@@ -1,6 +1,8 @@
 package com.zuzuapps.task.app.googlestore;
 
 import com.zuzuapps.task.app.common.*;
+import com.zuzuapps.task.app.googlestore.common.GoogleCollectionEnum;
+import com.zuzuapps.task.app.googlestore.common.GoogleCategoryEnum;
 import com.zuzuapps.task.app.googlestore.models.SummaryApplicationGooglePlays;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -49,7 +51,7 @@ public class GoogleAppSummaryStoreService extends GoogleAppCommonService {
             if (data.length >= 4) {
                 String countryCode = data[0];
                 String languageCode = data[1];
-                GooogleCategoryEnum category = GooogleCategoryEnum.valueOf(data[2].toUpperCase());
+                GoogleCategoryEnum category = GoogleCategoryEnum.valueOf(data[2].toUpperCase());
                 GoogleCollectionEnum collection = GoogleCollectionEnum.valueOf(data[3]);
                 try {
                     SummaryApplicationGooglePlays apps = mapper.readValue(json, SummaryApplicationGooglePlays.class);

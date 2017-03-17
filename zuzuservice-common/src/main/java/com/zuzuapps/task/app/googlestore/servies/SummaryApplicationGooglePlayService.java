@@ -1,10 +1,10 @@
 package com.zuzuapps.task.app.googlestore.servies;
 
-import com.zuzuapps.task.app.common.GooogleCategoryEnum;
-import com.zuzuapps.task.app.common.GoogleCollectionEnum;
 import com.zuzuapps.task.app.common.CommonService;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
+import com.zuzuapps.task.app.googlestore.common.GoogleCategoryEnum;
+import com.zuzuapps.task.app.googlestore.common.GoogleCollectionEnum;
 import com.zuzuapps.task.app.googlestore.models.SummaryApplicationGooglePlays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,12 +29,12 @@ public class SummaryApplicationGooglePlayService {
     @Autowired
     private CommonService<SummaryApplicationGooglePlays> summaryApplicationGooglePlaysCommonService;
 
-    public SummaryApplicationGooglePlays getSummaryApplications(GooogleCategoryEnum category, GoogleCollectionEnum collection, String language, String country, int page) throws GooglePlayRuntimeException {
+    public SummaryApplicationGooglePlays getSummaryApplications(GoogleCategoryEnum category, GoogleCollectionEnum collection, String language, String country, int page) throws GooglePlayRuntimeException {
         try {
             StringBuilder url = new StringBuilder(sitePath + "/googlestore/apps");
             url = url.append("?start=").append(page);
             url = url.append("&num=120");
-            if (category != GooogleCategoryEnum.ALL) {
+            if (category != GoogleCategoryEnum.ALL) {
                 url = url.append("&category=").append(category.name());
             }
             url = url.append("&collection=").append(collection.name());

@@ -1,8 +1,8 @@
 package com.zuzuapps.task.app.appstore.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.zuzuapps.task.app.common.GooogleCategoryEnum;
-import com.zuzuapps.task.app.common.GoogleCollectionEnum;
+import com.zuzuapps.task.app.googlestore.common.GoogleCategoryEnum;
+import com.zuzuapps.task.app.googlestore.common.GoogleCollectionEnum;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -28,7 +28,7 @@ public class AppIndexMaster {
     @Column(name = "country_code", length = 2, nullable = false)
     private String countryCode;
     @Column(name = "category", length = 1, nullable = false)
-    private GooogleCategoryEnum category;
+    private GoogleCategoryEnum category;
     @Column(name = "collection", length = 1, nullable = false)
     private GoogleCollectionEnum collection;
     @Column(name = "app_index")
@@ -71,11 +71,11 @@ public class AppIndexMaster {
         this.countryCode = countryCode;
     }
 
-    public GooogleCategoryEnum getCategory() {
+    public GoogleCategoryEnum getCategory() {
         return category;
     }
 
-    public void setCategory(GooogleCategoryEnum category) {
+    public void setCategory(GoogleCategoryEnum category) {
         this.category = category;
     }
 

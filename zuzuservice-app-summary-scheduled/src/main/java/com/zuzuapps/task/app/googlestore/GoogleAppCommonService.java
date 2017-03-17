@@ -1,14 +1,15 @@
 package com.zuzuapps.task.app.googlestore;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zuzuapps.task.app.AppCommonService;
 import com.zuzuapps.task.app.appstore.models.AppScreenshotMaster;
-import com.zuzuapps.task.app.appstore.models.CountryMaster;
 import com.zuzuapps.task.app.appstore.repositories.AppIndexMasterRepository;
 import com.zuzuapps.task.app.appstore.repositories.AppLanguageMasterRepository;
 import com.zuzuapps.task.app.appstore.repositories.AppMasterRepository;
 import com.zuzuapps.task.app.appstore.repositories.AppScreenshotMasterRepository;
-import com.zuzuapps.task.app.common.*;
+import com.zuzuapps.task.app.common.CommonUtils;
+import com.zuzuapps.task.app.common.DataServiceEnum;
+import com.zuzuapps.task.app.common.DataTypeEnum;
+import com.zuzuapps.task.app.common.ImageTypeEnum;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googlestore.models.ApplicationGooglePlay;
@@ -32,47 +33,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author tuanta17
  */
 @Service
-public class GoogleAppCommonService {
-    protected static final String JSON_FILE_EXTENSION = ".json";
-    protected static final String GZ_FILE_EXTENSION = ".gz";
-    protected static final String ZERO_NUMBER = "0";
-    protected static final String REGEX_3_UNDER_LINE = "___";
-    protected static final String COUNTRY_CODE_DEFAULT = "us";
-    protected static final String LANGUAGE_CODE_DEFAULT = "en";
-    protected final Log logger = LogFactory.getLog("GoogleAppCommonService");
-    protected final ObjectMapper mapper = new ObjectMapper();
+public class GoogleAppCommonService extends AppCommonService {
+    final Log logger = LogFactory.getLog("GoogleAppCommonService");
 
     @Value("${google.data.root.path:/tmp/googlestore}")
     protected String googleRootPath;
 
     @Value("${google.data.image.path:/tmp/googlestore/imagestore}")
     protected String googleImageStore;
-
-    @Value("${time.get.app.information:2000}")
-    protected long timeGetAppInformation;
-
-    @Value("${time.get.app.summary:4000}")
-    protected long timeGetAppSummary;
-
-    @Value("${time.wait.runtime.local:200}")
-    protected long timeWaitRuntimeLocal;
-
-    @Value("${time.update.app.information:7}")
-    protected int timeUpdateAppInformation;
-
-    @Value("${time.get.app.screenshot:1000}")
-    protected int timeGetAppScreenshot;
 
     @Autowired
     protected SummaryApplicationGooglePlayService summaryApplicationPlayService;
@@ -124,69 +102,6 @@ public class GoogleAppCommonService {
             CommonUtils.delay(10);
             return false;
         }
-    }
-
-    protected void moveFile(String source, String destination) {
-        try {
-            Path src = Paths.get(source);
-            Path des = Paths.get(destination);
-            logger.debug("Move json file " + source + " to log folder " + destination);
-            Files.move(src, des.resolve(src.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-            Path inputFile = Paths.get(des.toFile().getAbsolutePath(), src.getFileName().toString());
-            Path zipFile = Paths.get(des.toFile().getAbsolutePath(), src.getFileName() + GZ_FILE_EXTENSION);
-            logger.debug("Zip json file " + inputFile + " to file " + zipFile);
-            new GZipUtil().gzip(inputFile.toFile().getAbsolutePath(), zipFile.toFile().getAbsolutePath());
-            logger.debug("Remove json file " + inputFile);
-            Files.delete(inputFile);
-        } catch (Exception ex) {
-            logger.info("Move json file error " + ex.getMessage());
-        }
-    }
-
-    /**
-     * Time to update
-     *
-     * @param appTime App time
-     */
-    protected boolean isTimeToUpdate(Date appTime) {
-        if (appTime == null) return true;
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -timeUpdateAppInformation);
-        return appTime.before(cal.getTime());
-    }
-
-    /**
-     * Get all countries from json
-     */
-    private List<CountryMaster> getAllCountries() {
-        try {
-            Path file = Paths.get("countries.json");
-            return mapper.readValue(file.toFile().getAbsoluteFile(), new TypeReference<List<CountryMaster>>() {
-            });
-        } catch (IOException e) {
-            return new ArrayList<CountryMaster>();
-        }
-    }
-
-    /**
-     * Get countries from json
-     */
-    protected List<CountryMaster> getCountries() {
-        List<CountryMaster> allCountries = getAllCountries();
-        List<CountryMaster> countries = new ArrayList<CountryMaster>();
-        for (CountryMaster country : allCountries) {
-            if (country.getType() != 0) {
-                countries.add(country);
-            }
-        }
-        Collections.sort(countries, new Comparator<CountryMaster>() {
-            public int compare(CountryMaster o1, CountryMaster o2) {
-                if (o1.getType() == o2.getType())
-                    return 0;
-                return o1.getType() > o2.getType() ? -1 : 1;
-            }
-        });
-        return countries;
     }
 
     protected GoogleAppInformationSolr createAppInformation(ApplicationGooglePlay applicationPlay, String languageCode) {

@@ -21,7 +21,7 @@ import java.util.List;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AppInformationSolrRepositoryTest {
+public class GoogleAppInformationSolrRepositoryTest {
     @Autowired
     GoogleAppInformationSolrRepository appInformationSolrRepository;
     @Autowired

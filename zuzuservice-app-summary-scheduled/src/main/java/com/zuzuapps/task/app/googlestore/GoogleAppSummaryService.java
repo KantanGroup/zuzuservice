@@ -2,6 +2,8 @@ package com.zuzuapps.task.app.googlestore;
 
 import com.zuzuapps.task.app.common.*;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
+import com.zuzuapps.task.app.googlestore.common.GoogleCollectionEnum;
+import com.zuzuapps.task.app.googlestore.common.GoogleCategoryEnum;
 import com.zuzuapps.task.app.googlestore.models.SummaryApplicationGooglePlays;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -27,8 +29,8 @@ public class GoogleAppSummaryService extends GoogleAppCommonService {
         File[] files = dir.listFiles();
         if (files == null || files.length == 0) {
             for (GoogleCollectionEnum collection : GoogleCollectionEnum.values()) {
-                CommonUtils.createFile(Paths.get(dirPath, collection.name() + REGEX_3_UNDER_LINE + GooogleCategoryEnum.ALL.name().toLowerCase() + JSON_FILE_EXTENSION));
-                for (GooogleCategoryEnum category : GooogleCategoryEnum.values()) {
+                CommonUtils.createFile(Paths.get(dirPath, collection.name() + REGEX_3_UNDER_LINE + GoogleCategoryEnum.ALL.name().toLowerCase() + JSON_FILE_EXTENSION));
+                for (GoogleCategoryEnum category : GoogleCategoryEnum.values()) {
                     CommonUtils.createFile(Paths.get(dirPath, collection.name() + REGEX_3_UNDER_LINE + category.name().toLowerCase() + JSON_FILE_EXTENSION));
                 }
             }
@@ -66,7 +68,7 @@ public class GoogleAppSummaryService extends GoogleAppCommonService {
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 2) {
                 GoogleCollectionEnum collection = GoogleCollectionEnum.valueOf(data[0]);
-                GooogleCategoryEnum category = GooogleCategoryEnum.valueOf(data[1].replaceAll(JSON_FILE_EXTENSION, "").toUpperCase());
+                GoogleCategoryEnum category = GoogleCategoryEnum.valueOf(data[1].replaceAll(JSON_FILE_EXTENSION, "").toUpperCase());
                 int page = 1;
                 while (true) {
                     long startTime = System.currentTimeMillis();
@@ -97,7 +99,7 @@ public class GoogleAppSummaryService extends GoogleAppCommonService {
         logger.info("[Application Summary Store]Cronjob end at: " + new Date());
     }
 
-    private StringBuilder queueAppSummaryJSONPath(String time, GoogleCollectionEnum collection, GooogleCategoryEnum category, int page) {
+    private StringBuilder queueAppSummaryJSONPath(String time, GoogleCollectionEnum collection, GoogleCategoryEnum category, int page) {
         StringBuilder path = new StringBuilder(CommonUtils.folderBy(googleRootPath, DataServiceEnum.top_app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath());
         path.append("/");
         path.append(COUNTRY_CODE_DEFAULT).append(REGEX_3_UNDER_LINE);

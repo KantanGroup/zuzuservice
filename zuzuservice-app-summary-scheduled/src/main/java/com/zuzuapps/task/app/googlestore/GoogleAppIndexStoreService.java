@@ -2,6 +2,8 @@ package com.zuzuapps.task.app.googlestore;
 
 import com.zuzuapps.task.app.appstore.models.AppIndexMaster;
 import com.zuzuapps.task.app.common.*;
+import com.zuzuapps.task.app.googlestore.common.GoogleCollectionEnum;
+import com.zuzuapps.task.app.googlestore.common.GoogleCategoryEnum;
 import com.zuzuapps.task.app.googlestore.models.SummaryApplicationGooglePlay;
 import com.zuzuapps.task.app.googlestore.models.SummaryApplicationGooglePlays;
 import com.zuzuapps.task.app.solr.googlestore.models.GoogleAppIndexSolr;
@@ -65,7 +67,7 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
                 List<GoogleAppTrendSolr> appTrendSolr = new ArrayList<GoogleAppTrendSolr>();
                 String countryCode = data[0];
                 String languageCode = data[1];
-                GooogleCategoryEnum category = GooogleCategoryEnum.valueOf(data[2].toUpperCase());
+                GoogleCategoryEnum category = GoogleCategoryEnum.valueOf(data[2].toUpperCase());
                 GoogleCollectionEnum collection = GoogleCollectionEnum.valueOf(data[3]);
                 String toDate = data[4];
                 try {
@@ -102,7 +104,7 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
         logger.debug("[Application Index Store]Cronjob end at: " + new Date());
     }
 
-    private void createAppIndexMaster(List<AppIndexMaster> appIndexMasters, String countryCode, GooogleCategoryEnum category, GoogleCollectionEnum collection, short index, SummaryApplicationGooglePlay app) {
+    private void createAppIndexMaster(List<AppIndexMaster> appIndexMasters, String countryCode, GoogleCategoryEnum category, GoogleCollectionEnum collection, short index, SummaryApplicationGooglePlay app) {
         AppIndexMaster appIndexMaster = new AppIndexMaster();
         appIndexMaster.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + index);
         appIndexMaster.setAppId(app.getAppId());
@@ -118,7 +120,7 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
         appIndexMasters.add(appIndexMaster);
     }
 
-    private void createAppIndexInSearchEngine(List<GoogleAppIndexSolr> appIndexs, String countryCode, GooogleCategoryEnum category, GoogleCollectionEnum collection, int index, SummaryApplicationGooglePlay app) {
+    private void createAppIndexInSearchEngine(List<GoogleAppIndexSolr> appIndexs, String countryCode, GoogleCategoryEnum category, GoogleCollectionEnum collection, int index, SummaryApplicationGooglePlay app) {
         GoogleAppIndexSolr appIndex = new GoogleAppIndexSolr();
         appIndex.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + index);
         appIndex.setIndex(index);
@@ -136,7 +138,7 @@ public class GoogleAppIndexStoreService extends GoogleAppCommonService {
         appIndexs.add(appIndex);
     }
 
-    private void createAppTrendInSearchEngine(List<GoogleAppTrendSolr> appTrends, String countryCode, GooogleCategoryEnum category, GoogleCollectionEnum collection, int index, SummaryApplicationGooglePlay app, String toDate) {
+    private void createAppTrendInSearchEngine(List<GoogleAppTrendSolr> appTrends, String countryCode, GoogleCategoryEnum category, GoogleCollectionEnum collection, int index, SummaryApplicationGooglePlay app, String toDate) {
         GoogleAppTrendSolr appTrend = new GoogleAppTrendSolr();
         appTrend.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getAppId() + "_" + toDate);
         appTrend.setIndex(index);

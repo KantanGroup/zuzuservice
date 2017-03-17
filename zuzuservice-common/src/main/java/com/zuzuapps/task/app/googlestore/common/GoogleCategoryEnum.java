@@ -1,9 +1,9 @@
-package com.zuzuapps.task.app.common;
+package com.zuzuapps.task.app.googlestore.common;
 
 /**
  * @author tuanta17
  */
-public enum GooogleCategoryEnum {
+public enum GoogleCategoryEnum {
     ALL,
     ANDROID_WEAR,
     ART_AND_DESIGN,

@@ -124,13 +124,13 @@ public class GoogleAppInformationSolr {
         this.icon = icon;
     }
 
+    public float getPoint() {
+        return point;
+    }
+
     public void setPoint(float point) {
         if (point != 0.0)
             this.point = point;
-    }
-
-    public float getPoint() {
-        return point;
     }
 
     public float getScore() {

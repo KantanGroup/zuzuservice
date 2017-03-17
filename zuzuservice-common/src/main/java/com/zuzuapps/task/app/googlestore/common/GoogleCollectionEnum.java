@@ -1,4 +1,4 @@
-package com.zuzuapps.task.app.common;
+package com.zuzuapps.task.app.googlestore.common;
 
 /**
  * @author tuanta17
