@@ -16,6 +16,9 @@
 
 package com.zuzuapps.task.app;
 
+import com.zuzuapps.task.app.appstore.AppleAppIndexService;
+import com.zuzuapps.task.app.appstore.AppleAppIndexStoreService;
+import com.zuzuapps.task.app.appstore.AppleAppInformationDailyService;
 import com.zuzuapps.task.app.googlestore.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,6 +60,25 @@ public class ScheduleApplication {
     @Value("${google.process.summary.app:false}")
     protected boolean isGoogleProcessSummaryApp;
 
+    // Apple daily app
+    @Value("${apple.process.daily.service:false}")
+    protected boolean isAppleProcessDailyService;
+    @Value("${apple.process.daily.screen:false}")
+    protected boolean isAppleProcessDailyScreen;
+    @Value("${apple.process.daily.generate:false}")
+    protected boolean isAppleProcessDailyGenerate;
+    @Value("${apple.process.daily.app:false}")
+    protected boolean isAppleProcessDailyApp;
+    // Apple summary app
+    @Value("${apple.process.summary.service:false}")
+    protected boolean isAppleProcessSummaryService;
+    @Value("${apple.process.summary.screen:false}")
+    protected boolean isAppleProcessSummaryScreen;
+    @Value("${apple.process.summary.generate:false}")
+    protected boolean isAppleProcessSummaryGenerate;
+    @Value("${apple.process.summary.app:false}")
+    protected boolean isAppleProcessSummaryApp;
+
     @Autowired
     private GoogleAppCommonService googleAppCommonService;
     @Autowired
@@ -78,6 +100,14 @@ public class ScheduleApplication {
     @Autowired
     private GoogleAppService googleAppService;
 
+    // Apple service
+    @Autowired
+    private AppleAppIndexService appleAppIndexService;
+    @Autowired
+    private AppleAppIndexStoreService appleAppIndexStoreService;
+    @Autowired
+    private AppleAppInformationDailyService appleAppInformationDailyService;
+
     public static void main(String[] args) {
         SpringApplication.run(ScheduleApplication.class, args);
     }
@@ -94,6 +124,7 @@ public class ScheduleApplication {
     public CommandLineRunner schedulingRunner(final TaskExecutor executor) {
         return new CommandLineRunner() {
             public void run(String... args) throws Exception {
+                // Google schedule daily runtime
                 if (isGoogleProcessDailyService) {
                     if (isGoogleProcessDailyGenerate) {
                         executor.execute(new GoogleGenerationIndexRunnable());
@@ -108,6 +139,8 @@ public class ScheduleApplication {
                     }
                     executor.execute(new GoogleProcessIndexStoreRunnable());
                 }
+
+                // Google schedule summary runtime
                 if (isGoogleProcessSummaryService) {
                     if (isGoogleProcessSummaryGenerate) {
                         executor.execute(new GoogleGenerationSummaryRunnable());
@@ -121,6 +154,22 @@ public class ScheduleApplication {
                         executor.execute(new GoogleProcessAppScreenshotIndexRunnable());
                     }
                     executor.execute(new GoogleProcessSummaryStoreRunnable());
+                }
+
+                // Apple schedule daily runtime
+                if (isAppleProcessDailyService) {
+                    if (isAppleProcessDailyGenerate) {
+                        executor.execute(new AppleGenerationIndexRunnable());
+                    }
+                    executor.execute(new AppleDailyIndexUpdateRunnable());
+                    executor.execute(new AppleDailyAppInformationUpdateRunnable());
+                    if (isAppleProcessDailyApp) {
+                        //executor.execute(new GoogleDailyAppUpdateRunnable());
+                    }
+                    if (isAppleProcessDailyScreen) {
+                        //executor.execute(new GoogleProcessAppScreenshotIndexRunnable());
+                    }
+                    executor.execute(new AppleProcessIndexStoreRunnable());
                 }
             }
         };
@@ -249,6 +298,41 @@ public class ScheduleApplication {
         public void run() {
             logger.info("[ScheduleApplication][GoogleProcessSummaryStoreRunnable]Start at " + new Date());
             googleAppSummaryService.processAppSummaryStoreData();
+        }
+    }
+
+    class AppleGenerationIndexRunnable implements Runnable {
+        @Override
+        public void run() {
+            logger.info("[ScheduleApplication][AppleGenerationIndexRunnable]Start at " + new Date());
+            appleAppIndexService.generateAppIndexStore();
+        }
+    }
+
+    class AppleDailyIndexUpdateRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            logger.info("[ScheduleApplication][AppleDailyIndexUpdateRunnable]Start at " + new Date());
+            appleAppIndexStoreService.dailyAppIndexUpdate();
+        }
+    }
+
+    class AppleDailyAppInformationUpdateRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            logger.info("[ScheduleApplication][AppleDailyAppInformationUpdateRunnable]Start at " + new Date());
+            appleAppInformationDailyService.dailyAppInformationUpdate();
+        }
+    }
+
+    class AppleProcessIndexStoreRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            logger.info("[ScheduleApplication][AppleProcessIndexStoreRunnable]Start at " + new Date());
+            appleAppIndexService.processAppIndexStoreData();
         }
     }
 }
