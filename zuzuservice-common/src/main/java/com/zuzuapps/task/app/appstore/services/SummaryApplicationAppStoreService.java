@@ -35,9 +35,9 @@ public class SummaryApplicationAppStoreService {
             url = url.append("?start=").append(page);
             url = url.append("&num=100");
             if (category != AppleCategoryEnum.ALL) {
-                url = url.append("&category=").append(category.name());
+                url = url.append("&category=").append(category.getCategory());
             }
-            url = url.append("&collection=").append(collection.name());
+            url = url.append("&collection=").append(collection.getCollection());
             url = url.append("&country=").append(country);
             logger.info("[SummaryApplicationApplePlayService]URL request: " + url.toString());
             ResponseEntity<SummaryApplicationAppStores> responseEntity = summaryApplicationAppStoresCommonService.get(url.toString(), SummaryApplicationAppStores.class);

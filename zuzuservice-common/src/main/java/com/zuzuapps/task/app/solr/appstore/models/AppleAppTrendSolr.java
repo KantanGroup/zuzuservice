@@ -23,7 +23,7 @@ public class AppleAppTrendSolr {
     @Indexed(name = "country_code")
     private String countryCode;
     @Indexed
-    private String category;
+    private int category;
     @Indexed
     private String collection;
     @Indexed(name = "create_at", type = "date")
@@ -69,11 +69,11 @@ public class AppleAppTrendSolr {
         this.countryCode = countryCode;
     }
 
-    public String getCategory() {
+    public int getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(int category) {
         this.category = category;
     }
 

@@ -128,11 +128,12 @@ public class GoogleAppCommonService extends AppCommonService {
      * @param appId        App id
      */
     protected ApplicationGooglePlay getAppInformationByLanguage(String languageCode, String appId, boolean isDaily) throws Exception {
-        ApplicationGooglePlay applicationPlay =
+        ApplicationGooglePlay application =
                 informationApplicationPlayService.getInformationApplications(appId, languageCode);
         StringBuilder path = createAppInformationJSONPath(appId, languageCode, isDaily);
-        Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
-        return applicationPlay;
+        // Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(application));
+        FileUtils.writeByteArrayToFile(new File(path.toString()), mapper.writeValueAsBytes(application));
+        return application;
     }
 
     protected StringBuilder createAppInformationJSONPath(String appId, String languageCode, boolean isDaily) {

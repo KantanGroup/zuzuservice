@@ -67,8 +67,8 @@ public class AppleAppIndexStoreService extends AppleAppCommonService {
                 List<AppleAppTrendSolr> appTrendSolr = new ArrayList<AppleAppTrendSolr>();
                 String countryCode = data[0];
                 String languageCode = data[1];
-                AppleCategoryEnum category = AppleCategoryEnum.valueOf(data[2].toUpperCase());
-                AppleCollectionEnum collection = AppleCollectionEnum.valueOf(data[3]);
+                AppleCategoryEnum category = AppleCategoryEnum.findByKey(data[2]);
+                AppleCollectionEnum collection = AppleCollectionEnum.findByKey(data[3]);
                 String toDate = data[4];
                 try {
                     logger.debug("[AppleAppIndexStoreService][Index Store]Convert json data to object");
@@ -106,12 +106,12 @@ public class AppleAppIndexStoreService extends AppleAppCommonService {
 
     private void createAppIndexInSearchEngine(List<AppleAppIndexSolr> appIndexs, String countryCode, AppleCategoryEnum category, AppleCollectionEnum collection, int index, SummaryApplicationAppStore app) {
         AppleAppIndexSolr appIndex = new AppleAppIndexSolr();
-        appIndex.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + index);
+        appIndex.setId(countryCode + "_" + category.getCategory() + "_" + collection.getCollection() + "_" + index);
         appIndex.setAid(app.getId());
         appIndex.setAppId(app.getAppId());
         appIndex.setTitle(app.getTitle());
-        appIndex.setCategory(category.name().toLowerCase());
-        appIndex.setCollection(collection.name());
+        appIndex.setCategory(category.getCategory());
+        appIndex.setCollection(collection.getCollection());
         appIndex.setCountryCode(countryCode);
         appIndex.setIndex(index);
         appIndex.setIcon(app.getIcon());
@@ -123,11 +123,11 @@ public class AppleAppIndexStoreService extends AppleAppCommonService {
 
     private void createAppTrendInSearchEngine(List<AppleAppTrendSolr> appTrends, String countryCode, AppleCategoryEnum category, AppleCollectionEnum collection, int index, SummaryApplicationAppStore app, String toDate) {
         AppleAppTrendSolr appTrend = new AppleAppTrendSolr();
-        appTrend.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getId() + "_" + toDate);
+        appTrend.setId(countryCode + "_" + category.getCategory() + "_" + collection.getCollection() + "_" + app.getId() + "_" + toDate);
         appTrend.setAid(app.getId());
         appTrend.setAppId(app.getAppId());
-        appTrend.setCategory(category.name().toLowerCase());
-        appTrend.setCollection(collection.name());
+        appTrend.setCategory(category.getCategory());
+        appTrend.setCollection(collection.getCollection());
         appTrend.setCountryCode(countryCode);
         appTrend.setIndex(index);
         appTrend.setCreateAt(CommonUtils.toDate(toDate));

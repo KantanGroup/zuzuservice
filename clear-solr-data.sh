@@ -4,3 +4,7 @@ curl "http://localhost:8983/solr/app-index/update?commit=true&stream.body=%3Cdel
 curl "http://localhost:8983/solr/app-trend-index/update?commit=true&stream.body=%3Cdelete%3E%3Cquery%3E*:*%3C/query%3E%3C/delete%3E"
 curl "http://localhost:8983/solr/app-information-index/update?commit=true&stream.body=%3Cdelete%3E%3Cquery%3E*:*%3C/query%3E%3C/delete%3E"
 curl "http://localhost:8983/solr/app-screenshot-index/update?commit=true&stream.body=%3Cdelete%3E%3Cquery%3E*:*%3C/query%3E%3C/delete%3E"
+
+curl "http://localhost:8983/solr/apple-app-index/update?commit=true&stream.body=%3Cdelete%3E%3Cquery%3E*:*%3C/query%3E%3C/delete%3E"
+curl "http://localhost:8983/solr/apple-app-trend-index/update?commit=true&stream.body=%3Cdelete%3E%3Cquery%3E*:*%3C/query%3E%3C/delete%3E"
+curl "http://localhost:8983/solr/apple-app-information-index/update?commit=true&stream.body=%3Cdelete%3E%3Cquery%3E*:*%3C/query%3E%3C/delete%3E"

@@ -37,9 +37,9 @@ public class AppleAppIndexService extends AppleAppCommonService {
             List<CountryMaster> countries = getCountries();
             for (CountryMaster countryMaster : countries) {
                 for (AppleCollectionEnum collection : AppleCollectionEnum.values()) {
-                    CommonUtils.createFile(Paths.get(dirPath, countryMaster.getCountryCode() + REGEX_3_UNDER_LINE + countryMaster.getLanguageCode() + REGEX_3_UNDER_LINE + collection.name() + REGEX_3_UNDER_LINE + AppleCategoryEnum.ALL.name().toLowerCase() + REGEX_3_UNDER_LINE + time + JSON_FILE_EXTENSION));
+                    CommonUtils.createFile(Paths.get(dirPath, countryMaster.getCountryCode() + REGEX_3_UNDER_LINE + countryMaster.getLanguageCode() + REGEX_3_UNDER_LINE + AppleCategoryEnum.ALL.getCategory() + REGEX_3_UNDER_LINE + time + JSON_FILE_EXTENSION));
                     for (AppleCategoryEnum category : AppleCategoryEnum.values()) {
-                        CommonUtils.createFile(Paths.get(dirPath, countryMaster.getCountryCode() + REGEX_3_UNDER_LINE + countryMaster.getLanguageCode() + REGEX_3_UNDER_LINE + collection.name() + REGEX_3_UNDER_LINE + category.name().toLowerCase() + REGEX_3_UNDER_LINE + time + JSON_FILE_EXTENSION));
+                        CommonUtils.createFile(Paths.get(dirPath, countryMaster.getCountryCode() + REGEX_3_UNDER_LINE + countryMaster.getLanguageCode() + REGEX_3_UNDER_LINE + collection.getCollection() + REGEX_3_UNDER_LINE + category.getCategory() + REGEX_3_UNDER_LINE + time + JSON_FILE_EXTENSION));
                     }
                 }
             }
@@ -80,8 +80,8 @@ public class AppleAppIndexService extends AppleAppCommonService {
             if (data.length >= 4) {
                 String countryCode = data[0];
                 String languageCode = data[1];
-                AppleCollectionEnum collection = AppleCollectionEnum.valueOf(data[2]);
-                AppleCategoryEnum category = AppleCategoryEnum.valueOf(data[3].toUpperCase());
+                AppleCollectionEnum collection = AppleCollectionEnum.findByKey(data[2]);
+                AppleCategoryEnum category = AppleCategoryEnum.findByKey(data[3]);
                 long startTime = System.currentTimeMillis();
                 try {
                     SummaryApplicationAppStores summaryApplicationPlays
@@ -122,8 +122,8 @@ public class AppleAppIndexService extends AppleAppCommonService {
         path.append("/");
         path.append(countryCode).append(REGEX_3_UNDER_LINE);
         path.append(languageCode).append(REGEX_3_UNDER_LINE);
-        path.append(category.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
-        path.append(collection.name().toLowerCase()).append(REGEX_3_UNDER_LINE);
+        path.append(category.getCategory()).append(REGEX_3_UNDER_LINE);
+        path.append(collection.getCollection()).append(REGEX_3_UNDER_LINE);
         path.append(time).append(REGEX_3_UNDER_LINE);
         path.append(ZERO_NUMBER).append(JSON_FILE_EXTENSION);
         return path;

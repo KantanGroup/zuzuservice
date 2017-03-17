@@ -7,7 +7,7 @@ import org.springframework.data.solr.core.mapping.SolrDocument;
 /**
  * @author tuanta17
  */
-@SolrDocument(solrCoreName = "appstore-app-index")
+@SolrDocument(solrCoreName = "apple-app-index")
 public class AppleAppIndexSolr {
     @Indexed
     @Id
@@ -21,7 +21,7 @@ public class AppleAppIndexSolr {
     @Indexed(name = "country_code")
     private String countryCode;
     @Indexed
-    private String category;
+    private int category;
     @Indexed
     private String collection;
     @Indexed
@@ -77,11 +77,11 @@ public class AppleAppIndexSolr {
         this.countryCode = countryCode;
     }
 
-    public String getCategory() {
+    public int getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(int category) {
         this.category = category;
     }
 

@@ -28,10 +28,10 @@ public class InformationApplicationAppStoreService {
     @Autowired
     private CommonService<ApplicationAppStore> applicationAppStoreCommonService;
 
-    public ApplicationAppStore getInformationApplications(String appId, String countryCode) throws AppStoreRuntimeException {
+    public ApplicationAppStore getInformationApplications(String aid, String countryCode) throws AppStoreRuntimeException {
         try {
             StringBuilder url = new StringBuilder(sitePath + "/appstore/apps");
-            url = url.append("/").append(appId);
+            url = url.append("/").append(aid);
             url = url.append("/?country=").append(countryCode);
             logger.info("URL request: " + url.toString());
             ResponseEntity<ApplicationAppStore> responseEntity = applicationAppStoreCommonService.get(url.toString(), ApplicationAppStore.class);
@@ -40,12 +40,12 @@ public class InformationApplicationAppStoreService {
             }
             HttpStatus statusCode = responseEntity.getStatusCode(); // (2)
             if (!statusCode.is2xxSuccessful()) {
-                throw new AppStoreRuntimeException(ExceptionCodes.REMOTE_SERVER_EXCEPTION, "Get app " + appId + " . HTTP Status: " + statusCode.value() + " HTTP Message: " + statusCode.getReasonPhrase());
+                throw new AppStoreRuntimeException(ExceptionCodes.REMOTE_SERVER_EXCEPTION, "Get app " + aid + " . HTTP Status: " + statusCode.value() + " HTTP Message: " + statusCode.getReasonPhrase());
             }
             HttpHeaders header = responseEntity.getHeaders(); // (3)
             ApplicationAppStore application = responseEntity.getBody(); // (4)
             if (application == null) {
-                throw new AppStoreRuntimeException(ExceptionCodes.REMOTE_SERVER_EXCEPTION, "App " + appId + " not found");
+                throw new AppStoreRuntimeException(ExceptionCodes.REMOTE_SERVER_EXCEPTION, "App " + aid + " not found");
             } else {
                 return application;
             }

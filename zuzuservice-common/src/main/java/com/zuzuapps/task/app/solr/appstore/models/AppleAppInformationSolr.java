@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author tuanta17
  */
-@SolrDocument(solrCoreName = "app-information-index")
+@SolrDocument(solrCoreName = "apple-app-information-index")
 public class AppleAppInformationSolr {
     @Indexed
     @Id

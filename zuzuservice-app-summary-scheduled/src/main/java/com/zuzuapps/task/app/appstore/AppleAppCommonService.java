@@ -1,5 +1,6 @@
 package com.zuzuapps.task.app.appstore;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zuzuapps.task.app.AppCommonService;
 import com.zuzuapps.task.app.appstore.models.ApplicationAppStore;
 import com.zuzuapps.task.app.appstore.models.SummaryApplicationAppStore;
@@ -8,8 +9,8 @@ import com.zuzuapps.task.app.appstore.services.SummaryApplicationAppStoreService
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
+import com.zuzuapps.task.app.exceptions.AppStoreRuntimeException;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
-import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.solr.appstore.models.AppleAppInformationSolr;
 import com.zuzuapps.task.app.solr.appstore.repositories.AppleAppIndexSolrRepository;
 import com.zuzuapps.task.app.solr.appstore.repositories.AppleAppInformationSolrRepository;
@@ -51,7 +52,7 @@ public class AppleAppCommonService extends AppCommonService {
     @Autowired
     protected InformationApplicationAppStoreService informationApplicationAppStoreService;
 
-    protected void queueAppInformation(List<SummaryApplicationAppStore> summaryApplicationAppStores, String countryCode, String languageCode, DataServiceEnum information) {
+    protected void queueAppInformation(List<SummaryApplicationAppStore> summaryApplicationAppStores, String countryCode, String languageCode, DataServiceEnum information) throws JsonProcessingException {
         for (SummaryApplicationAppStore summaryApplication : summaryApplicationAppStores) {
             try {
                 if (checkAppInformationSolr(summaryApplication.getId() + "_" + languageCode)) {
@@ -64,6 +65,7 @@ public class AppleAppCommonService extends AppCommonService {
             } catch (Exception ex) {
                 logger.error("Write summary of app error " + ex.getMessage(), ex);
             }
+            CommonUtils.delay(10);
         }
     }
 
@@ -87,10 +89,9 @@ public class AppleAppCommonService extends AppCommonService {
             logger.info("[AppleAppInformationDailyService][Information Store]File " + json.getAbsolutePath());
             String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
-            if (data.length >= 3) {
+            if (data.length >= 2) {
                 String countryCode = data[0];
-                //String languageCode = data[1];
-                String aid = data[2].replaceAll(JSON_FILE_EXTENSION, "");
+                String aid = data[1].replaceAll(JSON_FILE_EXTENSION, "");
                 logger.debug("[AppleAppInformationDailyService][Information Store]Get app " + aid + " by country " + countryCode + " in elastic search");
                 long startTime = System.currentTimeMillis();
                 try {
@@ -100,7 +101,7 @@ public class AppleAppCommonService extends AppCommonService {
                         CommonUtils.delay(timeGetAppInformation - delayTime);
                     }
                     FileUtils.deleteQuietly(json);
-                } catch (GooglePlayRuntimeException ex) {
+                } catch (AppStoreRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
                         logger.info("[AppleAppInformationDailyService][Information Store][" + aid + "][" + countryCode + "]Error " + ex.getMessage());
                     } else if (ex.getCode() == ExceptionCodes.APP_NOT_FOUND) {
@@ -126,8 +127,8 @@ public class AppleAppCommonService extends AppCommonService {
         logger.debug("[AppleAppInformationDailyService][Information Store]Task end at: " + new Date());
     }
 
-    protected void extractAppInformation(String countryCode, String appId, boolean isDaily) throws Exception {
-        ApplicationAppStore application = getAppInformationByLanguage(countryCode, appId, isDaily);
+    protected void extractAppInformation(String countryCode, String aid, boolean isDaily) throws Exception {
+        ApplicationAppStore application = getAppInformationByCountry(countryCode, aid, isDaily);
         // Get app information
         AppleAppInformationSolr app = createAppInformation(application, countryCode);
         // Index to Solr
@@ -136,11 +137,11 @@ public class AppleAppCommonService extends AppCommonService {
         screenshotApplicationPlayService.extractOriginalIcon(appleImageStore, app.getId(), app.getIcon());
     }
 
-    protected void extractEmptyAppInformation(String appId, String languageCode) throws Exception {
+    protected void extractEmptyAppInformation(String aid, String countryCode) throws Exception {
         // Get app information
         AppleAppInformationSolr app = new AppleAppInformationSolr();
-        app.setId(appId + "_" + languageCode);
-        app.setAppId(appId);
+        app.setId(aid + "_" + countryCode);
+        app.setAppId(aid);
         app.setDescription("App not found");
         // Update current data
         app.setCreateAt(new Date());
@@ -149,20 +150,23 @@ public class AppleAppCommonService extends AppCommonService {
     }
 
     /**
-     * Get app information by language
+     * Get app information by country
      *
      * @param countryCode Country code
-     * @param appId       App id
+     * @param aid       App id
      */
-    protected ApplicationAppStore getAppInformationByLanguage(String countryCode, String appId, boolean isDaily) throws Exception {
-        ApplicationAppStore applicationPlay =
-                informationApplicationAppStoreService.getInformationApplications(appId, countryCode);
-        StringBuilder path = createAppInformationJSONPath(appId, countryCode, isDaily);
-        Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
-        return applicationPlay;
+    protected ApplicationAppStore getAppInformationByCountry(String countryCode, String aid, boolean isDaily) throws Exception {
+        ApplicationAppStore application =
+                informationApplicationAppStoreService.getInformationApplications(aid, countryCode);
+        StringBuilder path = createAppInformationJSONPath(aid, countryCode, isDaily);
+        System.out.println(path);
+        System.out.println(mapper.writeValueAsString(application));
+        // Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(application));
+        FileUtils.writeByteArrayToFile(new File(path.toString()), mapper.writeValueAsBytes(application));
+        return application;
     }
 
-    protected StringBuilder createAppInformationJSONPath(String appId, String languageCode, boolean isDaily) {
+    protected StringBuilder createAppInformationJSONPath(String aid, String countryCode, boolean isDaily) {
         StringBuilder path;
         if (isDaily) {
             path = new StringBuilder(CommonUtils.folderBy(appleRootPath, DataServiceEnum.app_daily.name(), DataTypeEnum.queue.name()).getAbsolutePath());
@@ -170,8 +174,8 @@ public class AppleAppCommonService extends AppCommonService {
             path = new StringBuilder(CommonUtils.folderBy(appleRootPath, DataServiceEnum.app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath());
         }
         path.append("/");
-        path.append(languageCode).append(REGEX_3_UNDER_LINE);
-        path.append(appId).append(JSON_FILE_EXTENSION);
+        path.append(countryCode).append(REGEX_3_UNDER_LINE);
+        path.append(aid).append(JSON_FILE_EXTENSION);
         return path;
     }
 
