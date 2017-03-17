@@ -17,7 +17,7 @@ public class ApplicationAppStore {
     private int primaryGenreId;
     private String contentRating;
     private List<String> languages;
-    private String size;//
+    private long size;
     private String requiredOsVersion;
     private String released;
     private String updated;
@@ -127,11 +127,11 @@ public class ApplicationAppStore {
         this.languages = languages;
     }
 
-    public String getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(String size) {
+    public void setSize(long size) {
         this.size = size;
     }
 

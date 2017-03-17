@@ -1,22 +1,29 @@
 package com.zuzuapps.task.app.appstore;
 
 import com.zuzuapps.task.app.AppCommonService;
+import com.zuzuapps.task.app.appstore.models.ApplicationAppStore;
 import com.zuzuapps.task.app.appstore.models.SummaryApplicationAppStore;
+import com.zuzuapps.task.app.appstore.services.InformationApplicationAppStoreService;
 import com.zuzuapps.task.app.appstore.services.SummaryApplicationAppStoreService;
 import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
+import com.zuzuapps.task.app.exceptions.ExceptionCodes;
+import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.solr.appstore.models.AppleAppInformationSolr;
 import com.zuzuapps.task.app.solr.appstore.repositories.AppleAppIndexSolrRepository;
 import com.zuzuapps.task.app.solr.appstore.repositories.AppleAppInformationSolrRepository;
 import com.zuzuapps.task.app.solr.appstore.repositories.AppleAppTrendSolrRepository;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,6 +50,8 @@ public class AppleAppCommonService extends AppCommonService {
     protected AppleAppInformationSolrRepository appleAppInformationSolrService;
     @Autowired
     protected SummaryApplicationAppStoreService summaryApplicationAppStoreService;
+    @Autowired
+    protected InformationApplicationAppStoreService informationApplicationAppStoreService;
 
     protected void queueAppInformation(List<SummaryApplicationAppStore> summaryApplicationAppStores, String countryCode, String languageCode, DataServiceEnum information) {
         for (SummaryApplicationAppStore summaryApplication : summaryApplicationAppStores) {
@@ -71,5 +80,139 @@ public class AppleAppCommonService extends AppCommonService {
             CommonUtils.delay(10);
             return false;
         }
+    }
+
+    protected void processAppInformation(File[] files, boolean isDaily) throws Exception {
+        logger.debug("[Information Store]Task start at: " + new Date());
+        String time = CommonUtils.getDailyByTime();
+        for (File json : files) {
+            logger.info("[Information Store]File " + json.getAbsolutePath());
+            String filename = json.getName();
+            String[] data = filename.split(REGEX_3_UNDER_LINE);
+            if (data.length >= 3) {
+                String countryCode = data[0];
+                String languageCode = data[1];
+                String appId = data[2].replaceAll(JSON_FILE_EXTENSION, "");
+                logger.debug("[Information Store]Get app " + appId + " by language " + languageCode + " in elastic search");
+                long startTime = System.currentTimeMillis();
+                try {
+                    if (checkAppInformationSolr(appId + "_" + languageCode)) {
+                        extractAppInformation(languageCode, appId, isDaily);
+                        long delayTime = System.currentTimeMillis() - startTime;
+                        CommonUtils.delay(timeGetAppInformation - delayTime);
+                    }
+                    FileUtils.deleteQuietly(json);
+                } catch (GooglePlayRuntimeException ex) {
+                    if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
+                        logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                    } else if (ex.getCode() == ExceptionCodes.APP_NOT_FOUND) {
+                        extractEmptyAppInformation(appId, languageCode);
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(appleRootPath, DataServiceEnum.information.name(), DataTypeEnum.not_found.name()).getAbsolutePath());
+                        logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                    } else {
+                        moveFile(json.getAbsolutePath(), CommonUtils.folderBy(appleRootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name()).getAbsolutePath());
+                        if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
+                            logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
+                        } else {
+                            logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                        }
+                    }
+                } catch (Exception ex) {
+                    logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
+                    moveFile(json.getAbsolutePath(), CommonUtils.folderBy(appleRootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name()).getAbsolutePath());
+                }
+            } else {
+                FileUtils.deleteQuietly(json);
+            }
+        }
+        logger.debug("[Information Store]Task end at: " + new Date());
+    }
+
+    protected void extractAppInformation(String languageCode, String appId, boolean isDaily) throws Exception {
+        ApplicationAppStore application = getAppInformationByLanguage(languageCode, appId, isDaily);
+        // Get app information
+        AppleAppInformationSolr app = createAppInformation(application, languageCode);
+        // Index to Solr
+        appleAppInformationSolrService.save(app);
+        // 4. Create icon
+        screenshotApplicationPlayService.extractOriginalIcon(appleImageStore, app.getAppId(), app.getIcon());
+    }
+
+    protected void extractEmptyAppInformation(String appId, String languageCode) throws Exception {
+        // Get app information
+        AppleAppInformationSolr app = new AppleAppInformationSolr();
+        app.setId(appId + "_" + languageCode);
+        app.setAppId(appId);
+        app.setDescription("App not found");
+        // Update current data
+        app.setCreateAt(new Date());
+        // Index to Solr
+        appleAppInformationSolrService.save(app);
+    }
+
+    /**
+     * Get app information by language
+     *
+     * @param countryCode Country code
+     * @param appId       App id
+     */
+    protected ApplicationAppStore getAppInformationByLanguage(String countryCode, String appId, boolean isDaily) throws Exception {
+        ApplicationAppStore applicationPlay =
+                informationApplicationAppStoreService.getInformationApplications(appId, countryCode);
+        StringBuilder path = createAppInformationJSONPath(appId, countryCode, isDaily);
+        Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
+        return applicationPlay;
+    }
+
+    protected StringBuilder createAppInformationJSONPath(String appId, String languageCode, boolean isDaily) {
+        StringBuilder path;
+        if (isDaily) {
+            path = new StringBuilder(CommonUtils.folderBy(appleRootPath, DataServiceEnum.app_daily.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+        } else {
+            path = new StringBuilder(CommonUtils.folderBy(appleRootPath, DataServiceEnum.app_summary.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+        }
+        path.append("/");
+        path.append(languageCode).append(REGEX_3_UNDER_LINE);
+        path.append(appId).append(JSON_FILE_EXTENSION);
+        return path;
+    }
+
+
+    protected AppleAppInformationSolr createAppInformation(ApplicationAppStore application, String countryCode) {
+        AppleAppInformationSolr app = new AppleAppInformationSolr();
+        app.setId(application.getId() + "_" + countryCode);
+        app.setAid(application.getId());
+        app.setAppId(application.getAppId());
+        app.setTitle(application.getTitle());
+        app.setGenres(application.getGenres());
+        app.setGenreIds(application.getGenreIds());
+        app.setPrimaryGenre(application.getPrimaryGenre());
+        app.setPrimaryGenreId(application.getPrimaryGenreId());
+        app.setDescription(application.getDescription());
+        app.setDeveloperId(application.getDeveloper());
+        app.setDeveloper(application.getDeveloper());
+        app.setDeveloperUrl(application.getDeveloperUrl());
+        app.setDeveloperWebsite(application.getDeveloperWebsite());
+        app.setIcon(application.getIcon());
+        app.setScore(application.getScore());
+        app.setPrice(application.getPrice());
+        app.setCurrency(application.getCurrency());
+        app.setFree(application.isFree());
+        app.setContentRating(application.getContentRating());
+        app.setLanguages(application.getLanguages());
+        app.setSize(application.getSize());
+        app.setRequiredOsVersion(application.getRequiredOsVersion());
+        app.setReleased(application.getReleased());
+        app.setUpdated(application.getUpdated());
+        app.setVersion(application.getVersion());
+        app.setCurrentVersionScore(application.getCurrentVersionScore());
+        app.setCurrentVersionReviews(application.getCurrentVersionReviews());
+        app.setScreenshots(application.getScreenshots());
+        app.setIpadScreenshots(application.getIpadScreenshots());
+        app.setAppletvScreenshots(application.getAppletvScreenshots());
+        app.setSupportedDevices(application.getSupportedDevices());
+        // Update current data
+        app.setCreateAt(new Date());
+        return app;
     }
 }

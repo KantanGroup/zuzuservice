@@ -32,7 +32,9 @@ public class AppleAppInformationSolr {
     @Indexed(name = "primary_genre")
     private String primaryGenre;
     @Indexed(name = "primary_genre_id")
-    private String primaryGenreId;
+    private int primaryGenreId;
+    @Indexed(name = "content_rating")
+    private String contentRating;
     @Indexed
     private List<String> languages;
     @Indexed
@@ -41,6 +43,8 @@ public class AppleAppInformationSolr {
     private String requiredOsVersion;
     @Indexed
     private String released;
+    @Indexed(name = "release_notes")
+    private String releaseNotes;
     @Indexed
     private String updated;
     @Indexed
@@ -58,6 +62,8 @@ public class AppleAppInformationSolr {
     private String developerUrl;
     @Indexed(name = "developer_website")
     private String developerWebsite;
+    @Indexed
+    private float point;
     @Indexed
     private float score;
     @Indexed(name = "current_version_score")
@@ -149,11 +155,11 @@ public class AppleAppInformationSolr {
         this.primaryGenre = primaryGenre;
     }
 
-    public String getPrimaryGenreId() {
+    public int getPrimaryGenreId() {
         return primaryGenreId;
     }
 
-    public void setPrimaryGenreId(String primaryGenreId) {
+    public void setPrimaryGenreId(int primaryGenreId) {
         this.primaryGenreId = primaryGenreId;
     }
 
@@ -261,12 +267,22 @@ public class AppleAppInformationSolr {
         this.developerWebsite = developerWebsite;
     }
 
+    public float getPoint() {
+        return point;
+    }
+
+    public void setPoint(float point) {
+        if (point != 0.0)
+            this.point = point;
+    }
+
     public float getScore() {
         return score;
     }
 
     public void setScore(float score) {
         this.score = score;
+        setPoint(score);
     }
 
     public String getCurrentVersionScore() {
@@ -331,5 +347,21 @@ public class AppleAppInformationSolr {
 
     public void setCreateAt(Date createAt) {
         this.createAt = createAt;
+    }
+
+    public String getContentRating() {
+        return contentRating;
+    }
+
+    public void setContentRating(String contentRating) {
+        this.contentRating = contentRating;
+    }
+
+    public String getReleaseNotes() {
+        return releaseNotes;
+    }
+
+    public void setReleaseNotes(String releaseNotes) {
+        this.releaseNotes = releaseNotes;
     }
 }

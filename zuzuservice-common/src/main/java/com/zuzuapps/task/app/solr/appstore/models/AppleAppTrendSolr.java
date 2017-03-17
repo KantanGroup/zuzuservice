@@ -18,6 +18,7 @@ public class AppleAppTrendSolr {
     private long aid;
     @Indexed(name = "app_id")
     private String appId;
+    @Indexed
     private int index;
     @Indexed(name = "country_code")
     private String countryCode;

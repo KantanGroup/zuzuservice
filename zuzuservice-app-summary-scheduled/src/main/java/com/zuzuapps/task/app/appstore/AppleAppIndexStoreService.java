@@ -122,7 +122,7 @@ public class AppleAppIndexStoreService extends AppleAppCommonService {
 
     private void createAppTrendInSearchEngine(List<AppleAppTrendSolr> appTrends, String countryCode, AppleCategoryEnum category, AppleCollectionEnum collection, int index, SummaryApplicationAppStore app, String toDate) {
         AppleAppTrendSolr appTrend = new AppleAppTrendSolr();
-        appTrend.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getAppId() + "_" + toDate);
+        appTrend.setId(countryCode + "_" + category.name().toLowerCase() + "_" + collection.name() + "_" + app.getId() + "_" + toDate);
         appTrend.setAid(app.getId());
         appTrend.setAppId(app.getAppId());
         appTrend.setCategory(category.name().toLowerCase());
