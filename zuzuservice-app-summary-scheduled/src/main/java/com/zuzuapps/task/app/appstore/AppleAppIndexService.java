@@ -12,6 +12,7 @@ import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -22,6 +23,7 @@ import java.util.List;
 /**
  * @author tuanta17
  */
+@Service
 public class AppleAppIndexService extends AppleAppCommonService {
     final Log logger = LogFactory.getLog("AppleAppIndexService");
 

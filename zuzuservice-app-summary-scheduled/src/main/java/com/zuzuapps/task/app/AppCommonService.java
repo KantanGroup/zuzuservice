@@ -56,7 +56,7 @@ public class AppCommonService {
         return appTime.before(cal.getTime());
     }
 
-    protected void moveFile(String source, String destination) {
+    public void moveFile(String source, String destination) {
         try {
             Path src = Paths.get(source);
             Path des = Paths.get(destination);

@@ -85,8 +85,8 @@ public class GoogleAppService extends GoogleAppCommonService {
                     AppMaster appMaster = createAppMaster(app);
                     AppLanguageMaster appLanguageMaster = createAppLanguageMaster(app, languageCode, filename);
                     logger.debug("[Application Store]App " + appId + " info store to database");
-                    appLanguageMasterRepository.save(appLanguageMaster);
-                    appMasterRepository.save(appMaster);
+                    // appLanguageMasterRepository.save(appLanguageMaster);
+                    // appMasterRepository.save(appMaster);
                     // 3. Index data
 
                     // 5. Create screenshot

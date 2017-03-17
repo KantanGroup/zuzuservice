@@ -1,5 +1,6 @@
 package com.zuzuapps.task.app.googlestore;
 
+import com.zuzuapps.task.app.AppCommonService;
 import com.zuzuapps.task.app.common.CommonUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +21,7 @@ import java.nio.file.StandardCopyOption;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AppCommonServiceTest {
     @Autowired
-    GoogleAppCommonService appCommonService;
+    AppCommonService appCommonService;
 
     @Test
     public void zipFile() throws IOException {

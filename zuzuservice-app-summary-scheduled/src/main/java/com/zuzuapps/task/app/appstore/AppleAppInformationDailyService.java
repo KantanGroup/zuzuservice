@@ -5,12 +5,14 @@ import com.zuzuapps.task.app.common.DataServiceEnum;
 import com.zuzuapps.task.app.common.DataTypeEnum;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 
 /**
  * @author tuanta17
  */
+@Service
 public class AppleAppInformationDailyService extends AppleAppCommonService {
     final Log logger = LogFactory.getLog("AppleAppInformationDailyService");
 
