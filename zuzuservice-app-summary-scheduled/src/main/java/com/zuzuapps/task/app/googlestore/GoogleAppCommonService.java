@@ -13,12 +13,11 @@ import com.zuzuapps.task.app.common.ImageTypeEnum;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googlestore.models.ApplicationGooglePlay;
-import com.zuzuapps.task.app.googlestore.models.ScreenshotGooglePlay;
 import com.zuzuapps.task.app.googlestore.models.ScreenshotGooglePlays;
+import com.zuzuapps.task.app.googlestore.models.ScreenshotObject;
 import com.zuzuapps.task.app.googlestore.models.SummaryApplicationGooglePlay;
-import com.zuzuapps.task.app.googlestore.servies.InformationApplicationGooglePlayService;
-import com.zuzuapps.task.app.googlestore.servies.ScreenshotApplicationGooglePlayService;
-import com.zuzuapps.task.app.googlestore.servies.SummaryApplicationGooglePlayService;
+import com.zuzuapps.task.app.googlestore.services.InformationApplicationGooglePlayService;
+import com.zuzuapps.task.app.googlestore.services.SummaryApplicationGooglePlayService;
 import com.zuzuapps.task.app.solr.googlestore.models.GoogleAppInformationSolr;
 import com.zuzuapps.task.app.solr.googlestore.models.GoogleAppScreenshotSolr;
 import com.zuzuapps.task.app.solr.googlestore.repositories.GoogleAppIndexSolrRepository;
@@ -72,8 +71,6 @@ public class GoogleAppCommonService extends AppCommonService {
     protected GoogleAppScreenshotSolrRepository appScreenshotSolrService;
     @Autowired
     protected InformationApplicationGooglePlayService informationApplicationPlayService;
-    @Autowired
-    protected ScreenshotApplicationGooglePlayService screenshotApplicationPlayService;
 
     protected void queueAppInformation(List<SummaryApplicationGooglePlay> summaryApplicationPlays, String countryCode, String languageCode, DataServiceEnum information) {
         for (SummaryApplicationGooglePlay summaryApplicationPlay : summaryApplicationPlays) {
@@ -170,7 +167,7 @@ public class GoogleAppCommonService extends AppCommonService {
         // Index to Solr
         appInformationService.save(app);
         // 4. Create icon
-        screenshotApplicationPlayService.extractOriginalIcon(app.getAppId(), app.getIcon());
+        screenshotApplicationPlayService.extractOriginalIcon(googleImageStore, app.getAppId(), app.getIcon());
     }
 
     protected void extractEmptyAppInformation(String appId, String languageCode) throws Exception {
@@ -245,14 +242,14 @@ public class GoogleAppCommonService extends AppCommonService {
                         // Remove all old screenshot
                         CommonUtils.deleteDirectory(CommonUtils.folderBy(googleImageStore, ImageTypeEnum.screenshot.name(), appId));
                         ScreenshotGooglePlays screenshotPlays = mapper.readValue(json, ScreenshotGooglePlays.class);
-                        List<ScreenshotGooglePlay> screenshotObjects = new ArrayList<ScreenshotGooglePlay>();
+                        List<ScreenshotObject> screenshotObjects = new ArrayList<ScreenshotObject>();
                         AppScreenshotMaster appScreenshotMaster = new AppScreenshotMaster();
                         appScreenshotMaster.setAppId(appId);
                         GoogleAppScreenshotSolr appScreenshotSolr = new GoogleAppScreenshotSolr();
                         appScreenshotSolr.setId(appId);
                         for (String screenshotLink : screenshotPlays.getScreenshots()) {
                             // 5. Create screenshot
-                            ScreenshotGooglePlay screenshotPlay = screenshotApplicationPlayService.extractOriginalScreenshot(appId, screenshotLink);
+                            ScreenshotObject screenshotPlay = screenshotApplicationPlayService.extractOriginalScreenshot(googleImageStore, appId, screenshotLink);
                             screenshotObjects.add(screenshotPlay);
                             appScreenshotSolr.getScreenshotOrigins().add(screenshotPlay.getOriginal());
                             appScreenshotSolr.getScreenshotSources().add(screenshotPlay.getSource());

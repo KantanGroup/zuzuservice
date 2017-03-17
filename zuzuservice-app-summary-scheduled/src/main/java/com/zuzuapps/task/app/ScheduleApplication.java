@@ -75,16 +75,16 @@ public class ScheduleApplication {
     @Autowired
     private GoogleAppService googleAppService;
 
+    public static void main(String[] args) {
+        SpringApplication.run(ScheduleApplication.class, args);
+    }
+
     @Bean
     public TaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(5);
         executor.setMaxPoolSize(10);
         return executor;
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(ScheduleApplication.class, args);
     }
 
     @Bean

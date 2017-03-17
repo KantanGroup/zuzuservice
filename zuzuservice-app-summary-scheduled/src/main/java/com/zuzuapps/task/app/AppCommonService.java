@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuzuapps.task.app.appstore.models.CountryMaster;
 import com.zuzuapps.task.app.common.GZipUtil;
+import com.zuzuapps.task.app.services.ScreenshotObjectService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,29 +23,26 @@ import java.util.*;
  */
 @Service
 public class AppCommonService {
-    final Log logger = LogFactory.getLog("AppCommonService");
-
     protected static final String JSON_FILE_EXTENSION = ".json";
     protected static final String GZ_FILE_EXTENSION = ".gz";
     protected static final String ZERO_NUMBER = "0";
     protected static final String REGEX_3_UNDER_LINE = "___";
     protected static final String COUNTRY_CODE_DEFAULT = "us";
     protected static final String LANGUAGE_CODE_DEFAULT = "en";
-
-    @Value("${time.get.app.information:2000}")
+    protected final ObjectMapper mapper = new ObjectMapper();
+    final Log logger = LogFactory.getLog("AppCommonService");
+    @Value("${time.get.app.information:1000}")
     protected long timeGetAppInformation;
-
-    @Value("${time.get.app.summary:4000}")
+    @Value("${time.get.app.summary:1000}")
     protected long timeGetAppSummary;
-
-    @Value("${time.wait.runtime.local:200}")
+    @Value("${time.wait.runtime.local:100}")
     protected long timeWaitRuntimeLocal;
-
-    @Value("${time.update.app.information:7}")
-    protected int timeUpdateAppInformation;
-
     @Value("${time.get.app.screenshot:1000}")
     protected int timeGetAppScreenshot;
+    @Value("${time.update.app.information:7}")
+    protected int timeUpdateAppInformation;
+    @Autowired
+    protected ScreenshotObjectService screenshotApplicationPlayService;
 
     /**
      * Time to update
@@ -73,8 +72,6 @@ public class AppCommonService {
             logger.info("Move json file error " + ex.getMessage());
         }
     }
-
-    protected final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * Get all countries from json

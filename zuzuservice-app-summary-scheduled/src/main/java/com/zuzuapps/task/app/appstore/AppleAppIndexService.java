@@ -4,7 +4,10 @@ import com.zuzuapps.task.app.appstore.common.AppleCategoryEnum;
 import com.zuzuapps.task.app.appstore.common.AppleCollectionEnum;
 import com.zuzuapps.task.app.appstore.models.CountryMaster;
 import com.zuzuapps.task.app.appstore.models.SummaryApplicationAppStores;
-import com.zuzuapps.task.app.common.*;
+import com.zuzuapps.task.app.common.CommonUtils;
+import com.zuzuapps.task.app.common.DataServiceEnum;
+import com.zuzuapps.task.app.common.DataTypeEnum;
+import com.zuzuapps.task.app.exceptions.AppStoreRuntimeException;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -80,13 +83,13 @@ public class AppleAppIndexService extends AppleAppCommonService {
                 long startTime = System.currentTimeMillis();
                 try {
                     SummaryApplicationAppStores summaryApplicationPlays
-                            = summaryApplicationAppStoreService.getSummaryApplications(category, collection, languageCode, countryCode, 0);
+                            = summaryApplicationAppStoreService.getSummaryApplications(category, collection, countryCode, 0);
                     StringBuilder path = queueAppIndexJSONPath(time, countryCode, languageCode, collection, category);
                     logger.debug("[AppleAppIndexService][Application Index]Write app summary to json " + path.toString());
                     Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplicationPlays));
                     logger.debug("[AppleAppIndexService][Application Index]Delete file " + json.getAbsolutePath());
                     FileUtils.deleteQuietly(json);
-                } catch (ApplePlayRuntimeException ex) {
+                } catch (AppStoreRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
                         logger.info("[AppleAppIndexService][Application Index][" + category.name() + "][" + collection.name() + "]Error " + ex.getMessage());
                     } else {

@@ -1,4 +1,4 @@
-package com.zuzuapps.task.app.googlestore.servies;
+package com.zuzuapps.task.app.googlestore.services;
 
 import com.zuzuapps.task.app.services.CommonService;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
