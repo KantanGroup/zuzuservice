@@ -171,17 +171,17 @@ public class GoogleAppCommonService extends AppCommonService {
     }
 
     protected void processAppInformation(File[] files, boolean isDaily) throws Exception {
-        logger.debug("[Information Store]Task start at: " + new Date());
+        logger.debug("[GoogleAppInformationDailyService][Information Store]Task start at: " + new Date());
         String time = CommonUtils.getDailyByTime();
         for (File json : files) {
-            logger.info("[Information Store]File " + json.getAbsolutePath());
+            logger.info("[GoogleAppInformationDailyService][Information Store]File " + json.getAbsolutePath());
             String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 3) {
                 String countryCode = data[0];
                 String languageCode = data[1];
                 String appId = data[2].replaceAll(JSON_FILE_EXTENSION, "");
-                logger.debug("[Information Store]Get app " + appId + " by language " + languageCode + " in elastic search");
+                logger.debug("[GoogleAppInformationDailyService][Information Store]Get app " + appId + " by language " + languageCode + " in elastic search");
                 long startTime = System.currentTimeMillis();
                 try {
                     if (checkAppInformationSolr(appId + "_" + languageCode)) {
@@ -192,28 +192,28 @@ public class GoogleAppCommonService extends AppCommonService {
                     FileUtils.deleteQuietly(json);
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
-                        logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                        logger.info("[GoogleAppInformationDailyService][Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     } else if (ex.getCode() == ExceptionCodes.APP_NOT_FOUND) {
                         extractEmptyAppInformation(appId, languageCode);
                         moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.information.name(), DataTypeEnum.not_found.name()).getAbsolutePath());
-                        logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                        logger.info("[GoogleAppInformationDailyService][Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                     } else {
                         moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name()).getAbsolutePath());
                         if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
-                            logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
+                            logger.error("[GoogleAppInformationDailyService][Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
                         } else {
-                            logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                            logger.info("[GoogleAppInformationDailyService][Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
                         }
                     }
                 } catch (Exception ex) {
-                    logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
+                    logger.error("[GoogleAppInformationDailyService][Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(googleRootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name()).getAbsolutePath());
                 }
             } else {
                 FileUtils.deleteQuietly(json);
             }
         }
-        logger.debug("[Information Store]Task end at: " + new Date());
+        logger.debug("[GoogleAppInformationDailyService][Information Store]Task end at: " + new Date());
     }
 
     protected void processDailyAppScreenshots(File[] files) throws Exception {
