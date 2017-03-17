@@ -1,7 +1,7 @@
 package com.zuzuapps.task.app.appstore.services;
 
 import com.zuzuapps.task.app.appstore.models.ApplicationAppStore;
-import com.zuzuapps.task.app.common.CommonService;
+import com.zuzuapps.task.app.services.CommonService;
 import com.zuzuapps.task.app.exceptions.AppStoreRuntimeException;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import org.apache.commons.logging.Log;

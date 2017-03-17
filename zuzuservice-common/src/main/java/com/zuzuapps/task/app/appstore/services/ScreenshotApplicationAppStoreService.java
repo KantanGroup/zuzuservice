@@ -85,7 +85,7 @@ public class ScreenshotApplicationAppStoreService {
             if (!imagePath.toFile().exists()) {
                 logger.info("[ScreenshotApplicationGooglePlayService][" + appId + "][" + folderName + "]Extract image from " + imageLink);
                 byte[] imageBytes = restTemplate.getForObject(imageLink, byte[].class, addHeaders());
-                logger.debug("[ScreenshotApplicationGooglePlayService][" + appId + "][]Write image to " + imagePath.toFile().getAbsolutePath());
+                logger.debug("[ScreenshotApplicationGooglePlayService][" + appId + "]Write image to " + imagePath.toFile().getAbsolutePath());
                 Files.write(imagePath, imageBytes);
             }
             ScreenshotAppStore screenshot = new ScreenshotAppStore();

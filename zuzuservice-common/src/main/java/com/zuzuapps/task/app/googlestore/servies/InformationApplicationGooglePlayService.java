@@ -1,6 +1,6 @@
 package com.zuzuapps.task.app.googlestore.servies;
 
-import com.zuzuapps.task.app.common.CommonService;
+import com.zuzuapps.task.app.services.CommonService;
 import com.zuzuapps.task.app.exceptions.ExceptionCodes;
 import com.zuzuapps.task.app.exceptions.GooglePlayRuntimeException;
 import com.zuzuapps.task.app.googlestore.models.ApplicationGooglePlay;
