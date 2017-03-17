@@ -38,22 +38,25 @@ import java.util.Date;
 @EnableScheduling
 public class ScheduleApplication {
     final Log logger = LogFactory.getLog("ScheduleApplication");
+    // Google daily app
     @Value("${google.process.daily.service:false}")
-    protected boolean isProcessDailyService;
+    protected boolean isGoogleProcessDailyService;
     @Value("${google.process.daily.screen:false}")
-    protected boolean isProcessDailyScreen;
+    protected boolean isGoogleProcessDailyScreen;
     @Value("${google.process.daily.generate:false}")
-    protected boolean isProcessDailyGenerate;
+    protected boolean isGoogleProcessDailyGenerate;
     @Value("${google.process.daily.app:false}")
-    protected boolean isProcessDailyApp;
+    protected boolean isGoogleProcessDailyApp;
+    // Google summary app
     @Value("${google.process.summary.service:false}")
-    protected boolean isProcessSummaryService;
+    protected boolean isGoogleProcessSummaryService;
     @Value("${google.process.summary.screen:false}")
-    protected boolean isProcessSummaryScreen;
+    protected boolean isGoogleProcessSummaryScreen;
     @Value("${google.process.summary.generate:false}")
-    protected boolean isProcessSummaryGenerate;
+    protected boolean isGoogleProcessSummaryGenerate;
     @Value("${google.process.summary.app:false}")
-    protected boolean isProcessSummaryApp;
+    protected boolean isGoogleProcessSummaryApp;
+
     @Autowired
     private GoogleAppCommonService googleAppCommonService;
     @Autowired
@@ -91,30 +94,30 @@ public class ScheduleApplication {
     public CommandLineRunner schedulingRunner(final TaskExecutor executor) {
         return new CommandLineRunner() {
             public void run(String... args) throws Exception {
-                if (isProcessDailyService) {
-                    if (isProcessDailyGenerate) {
+                if (isGoogleProcessDailyService) {
+                    if (isGoogleProcessDailyGenerate) {
                         executor.execute(new GoogleGenerationIndexRunnable());
                     }
                     executor.execute(new GoogleDailyIndexUpdateRunnable());
                     executor.execute(new GoogleDailyAppInformationUpdateRunnable());
-                    if (isProcessDailyApp) {
+                    if (isGoogleProcessDailyApp) {
                         executor.execute(new GoogleDailyAppUpdateRunnable());
                     }
-                    if (isProcessDailyScreen) {
+                    if (isGoogleProcessDailyScreen) {
                         executor.execute(new GoogleProcessAppScreenshotIndexRunnable());
                     }
                     executor.execute(new GoogleProcessIndexStoreRunnable());
                 }
-                if (isProcessSummaryService) {
-                    if (isProcessSummaryGenerate) {
+                if (isGoogleProcessSummaryService) {
+                    if (isGoogleProcessSummaryGenerate) {
                         executor.execute(new GoogleGenerationSummaryRunnable());
                     }
                     executor.execute(new GoogleSummaryIndexUpdateRunnable());
                     executor.execute(new GoogleSummaryAppInformationUpdateRunnable());
-                    if (isProcessSummaryApp) {
+                    if (isGoogleProcessSummaryApp) {
                         executor.execute(new GoogleSummaryAppUpdateRunnable());
                     }
-                    if (isProcessSummaryScreen) {
+                    if (isGoogleProcessSummaryScreen) {
                         executor.execute(new GoogleProcessAppScreenshotIndexRunnable());
                     }
                     executor.execute(new GoogleProcessSummaryStoreRunnable());
@@ -136,7 +139,7 @@ public class ScheduleApplication {
      */
     @Scheduled(cron = "0 0 0 1 * *")
     public void scheduleGoogleAppSummary() {
-        if (isProcessSummaryGenerate) {
+        if (isGoogleProcessSummaryGenerate) {
             googleAppSummaryService.generateAppSummaryStore();
         }
     }
