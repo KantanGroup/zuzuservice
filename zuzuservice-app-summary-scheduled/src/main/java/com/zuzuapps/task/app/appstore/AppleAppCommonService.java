@@ -60,7 +60,7 @@ public class AppleAppCommonService extends AppCommonService {
                     StringBuilder path = new StringBuilder(CommonUtils.folderBy(appleRootPath, information.name(), DataTypeEnum.queue.name()).getAbsolutePath());
                     path.append("/").append(countryCode).append(REGEX_3_UNDER_LINE);
                     path.append(languageCode).append(REGEX_3_UNDER_LINE);
-                    path.append(summaryApplication.getAppId()).append(JSON_FILE_EXTENSION);
+                    path.append(summaryApplication.getId()).append(JSON_FILE_EXTENSION);
                     Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(summaryApplication));
                 }
             } catch (Exception ex) {
@@ -83,59 +83,59 @@ public class AppleAppCommonService extends AppCommonService {
     }
 
     protected void processAppInformation(File[] files, boolean isDaily) throws Exception {
-        logger.debug("[Information Store]Task start at: " + new Date());
+        logger.debug("[AppleAppInformationDailyService][Information Store]Task start at: " + new Date());
         String time = CommonUtils.getDailyByTime();
         for (File json : files) {
-            logger.info("[Information Store]File " + json.getAbsolutePath());
+            logger.info("[AppleAppInformationDailyService][Information Store]File " + json.getAbsolutePath());
             String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 3) {
                 String countryCode = data[0];
-                String languageCode = data[1];
-                String appId = data[2].replaceAll(JSON_FILE_EXTENSION, "");
-                logger.debug("[Information Store]Get app " + appId + " by language " + languageCode + " in elastic search");
+                //String languageCode = data[1];
+                String aid = data[2].replaceAll(JSON_FILE_EXTENSION, "");
+                logger.debug("[AppleAppInformationDailyService][Information Store]Get app " + aid + " by country " + countryCode + " in elastic search");
                 long startTime = System.currentTimeMillis();
                 try {
-                    if (checkAppInformationSolr(appId + "_" + languageCode)) {
-                        extractAppInformation(languageCode, appId, isDaily);
+                    if (checkAppInformationSolr(aid + "_" + countryCode)) {
+                        extractAppInformation(countryCode, aid, isDaily);
                         long delayTime = System.currentTimeMillis() - startTime;
                         CommonUtils.delay(timeGetAppInformation - delayTime);
                     }
                     FileUtils.deleteQuietly(json);
                 } catch (GooglePlayRuntimeException ex) {
                     if (ex.getCode() == ExceptionCodes.NETWORK_LIMITED_EXCEPTION) {
-                        logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                        logger.info("[AppleAppInformationDailyService][Information Store][" + aid + "][" + countryCode + "]Error " + ex.getMessage());
                     } else if (ex.getCode() == ExceptionCodes.APP_NOT_FOUND) {
-                        extractEmptyAppInformation(appId, languageCode);
+                        extractEmptyAppInformation(aid, countryCode);
                         moveFile(json.getAbsolutePath(), CommonUtils.folderBy(appleRootPath, DataServiceEnum.information.name(), DataTypeEnum.not_found.name()).getAbsolutePath());
-                        logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                        logger.info("[AppleAppInformationDailyService][Information Store][" + aid + "][" + countryCode + "]Error " + ex.getMessage());
                     } else {
                         moveFile(json.getAbsolutePath(), CommonUtils.folderBy(appleRootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name()).getAbsolutePath());
                         if (ex.getCode() == ExceptionCodes.UNKNOWN_EXCEPTION) {
-                            logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
+                            logger.error("[AppleAppInformationDailyService][Information Store][" + aid + "][" + countryCode + "]Error " + ex.getMessage(), ex);
                         } else {
-                            logger.info("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage());
+                            logger.info("[AppleAppInformationDailyService][Information Store][" + aid + "][" + countryCode + "]Error " + ex.getMessage());
                         }
                     }
                 } catch (Exception ex) {
-                    logger.error("[Information Store][" + appId + "][" + languageCode + "]Error " + ex.getMessage(), ex);
+                    logger.error("[AppleAppInformationDailyService][Information Store][" + aid + "][" + countryCode + "]Error " + ex.getMessage(), ex);
                     moveFile(json.getAbsolutePath(), CommonUtils.folderBy(appleRootPath, DataServiceEnum.information.name(), DataTypeEnum.error.name()).getAbsolutePath());
                 }
             } else {
                 FileUtils.deleteQuietly(json);
             }
         }
-        logger.debug("[Information Store]Task end at: " + new Date());
+        logger.debug("[AppleAppInformationDailyService][Information Store]Task end at: " + new Date());
     }
 
-    protected void extractAppInformation(String languageCode, String appId, boolean isDaily) throws Exception {
-        ApplicationAppStore application = getAppInformationByLanguage(languageCode, appId, isDaily);
+    protected void extractAppInformation(String countryCode, String appId, boolean isDaily) throws Exception {
+        ApplicationAppStore application = getAppInformationByLanguage(countryCode, appId, isDaily);
         // Get app information
-        AppleAppInformationSolr app = createAppInformation(application, languageCode);
+        AppleAppInformationSolr app = createAppInformation(application, countryCode);
         // Index to Solr
         appleAppInformationSolrService.save(app);
         // 4. Create icon
-        screenshotApplicationPlayService.extractOriginalIcon(appleImageStore, app.getAppId(), app.getIcon());
+        screenshotApplicationPlayService.extractOriginalIcon(appleImageStore, app.getId(), app.getIcon());
     }
 
     protected void extractEmptyAppInformation(String appId, String languageCode) throws Exception {

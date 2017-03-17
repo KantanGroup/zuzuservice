@@ -2,7 +2,6 @@ package com.zuzuapps.task.app.appstore;
 
 import com.zuzuapps.task.app.appstore.common.AppleCategoryEnum;
 import com.zuzuapps.task.app.appstore.common.AppleCollectionEnum;
-import com.zuzuapps.task.app.appstore.models.AppIndexMaster;
 import com.zuzuapps.task.app.appstore.models.SummaryApplicationAppStore;
 import com.zuzuapps.task.app.appstore.models.SummaryApplicationAppStores;
 import com.zuzuapps.task.app.common.CommonUtils;
@@ -61,7 +60,7 @@ public class AppleAppIndexStoreService extends AppleAppCommonService {
             String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
             if (data.length >= 4) {
-                List<AppIndexMaster> appIndexDatabase = new ArrayList<AppIndexMaster>();
+                // List<AppIndexMaster> appIndexDatabase = new ArrayList<AppIndexMaster>();
                 List<AppleAppIndexSolr> appIndexSolr = new ArrayList<AppleAppIndexSolr>();
                 List<AppleAppTrendSolr> appTrendSolr = new ArrayList<AppleAppTrendSolr>();
                 String countryCode = data[0];
