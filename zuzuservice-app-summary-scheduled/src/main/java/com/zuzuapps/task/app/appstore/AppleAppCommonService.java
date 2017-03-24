@@ -89,9 +89,9 @@ public class AppleAppCommonService extends AppCommonService {
             logger.info("[AppleAppInformationDailyService][Information Store]File " + json.getAbsolutePath());
             String filename = json.getName();
             String[] data = filename.split(REGEX_3_UNDER_LINE);
-            if (data.length >= 2) {
+            if (data.length >= 3) {
                 String countryCode = data[0];
-                String aid = data[1].replaceAll(JSON_FILE_EXTENSION, "");
+                String aid = data[2].replaceAll(JSON_FILE_EXTENSION, "");
                 logger.debug("[AppleAppInformationDailyService][Information Store]Get app " + aid + " by country " + countryCode + " in elastic search");
                 long startTime = System.currentTimeMillis();
                 try {
@@ -159,8 +159,6 @@ public class AppleAppCommonService extends AppCommonService {
         ApplicationAppStore application =
                 informationApplicationAppStoreService.getInformationApplications(aid, countryCode);
         StringBuilder path = createAppInformationJSONPath(aid, countryCode, isDaily);
-        System.out.println(path);
-        System.out.println(mapper.writeValueAsString(application));
         // Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(application));
         FileUtils.writeByteArrayToFile(new File(path.toString()), mapper.writeValueAsBytes(application));
         return application;
@@ -183,6 +181,7 @@ public class AppleAppCommonService extends AppCommonService {
     protected AppleAppInformationSolr createAppInformation(ApplicationAppStore application, String countryCode) {
         AppleAppInformationSolr app = new AppleAppInformationSolr();
         app.setId(application.getId() + "_" + countryCode);
+        app.setCountryCode(countryCode);
         app.setAid(application.getId());
         app.setAppId(application.getAppId());
         app.setTitle(application.getTitle());
@@ -191,7 +190,7 @@ public class AppleAppCommonService extends AppCommonService {
         app.setPrimaryGenre(application.getPrimaryGenre());
         app.setPrimaryGenreId(application.getPrimaryGenreId());
         app.setDescription(application.getDescription());
-        app.setDeveloperId(application.getDeveloper());
+        app.setDeveloperId(application.getDeveloperId());
         app.setDeveloper(application.getDeveloper());
         app.setDeveloperUrl(application.getDeveloperUrl());
         app.setDeveloperWebsite(application.getDeveloperWebsite());

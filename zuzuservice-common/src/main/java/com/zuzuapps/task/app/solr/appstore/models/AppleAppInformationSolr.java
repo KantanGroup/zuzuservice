@@ -15,6 +15,8 @@ public class AppleAppInformationSolr {
     @Indexed
     @Id
     private String id;
+    @Indexed(name = "country_code")
+    private String countryCode;
     @Indexed
     private long aid;
     @Indexed(name = "app_id")
@@ -76,8 +78,6 @@ public class AppleAppInformationSolr {
     private List<String> ipadScreenshots;
     @Indexed(name = "appletv_screenshots")
     private List<String> appletvScreenshots;
-    @Indexed(name = "supported_devices")
-    private List<String> supportedDevices;
     @Indexed(name = "playstore_url")
     private String playstoreUrl;
     @Indexed(name = "create_at", type = "date")
@@ -89,6 +89,14 @@ public class AppleAppInformationSolr {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public long getAid() {
@@ -323,14 +331,6 @@ public class AppleAppInformationSolr {
 
     public void setAppletvScreenshots(List<String> appletvScreenshots) {
         this.appletvScreenshots = appletvScreenshots;
-    }
-
-    public List<String> getSupportedDevices() {
-        return supportedDevices;
-    }
-
-    public void setSupportedDevices(List<String> supportedDevices) {
-        this.supportedDevices = supportedDevices;
     }
 
     public String getPlaystoreUrl() {
