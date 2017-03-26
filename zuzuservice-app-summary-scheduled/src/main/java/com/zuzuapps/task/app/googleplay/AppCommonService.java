@@ -53,6 +53,9 @@ public class AppCommonService {
     protected final Log logger = LogFactory.getLog("AppCommonService");
     protected final ObjectMapper mapper = new ObjectMapper();
 
+    @Value("${process.daily.app:/false}")
+    protected boolean isProcessDailyApp;
+
     @Value("${data.root.path:/tmp}")
     protected String rootPath;
 
@@ -230,8 +233,10 @@ public class AppCommonService {
     protected ApplicationPlay getAppInformationByLanguage(String languageCode, String appId, boolean isDaily) throws Exception {
         ApplicationPlay applicationPlay =
                 informationApplicationPlayService.getInformationApplications(appId, languageCode);
-        StringBuilder path = createAppInformationJSONPath(appId, languageCode, isDaily);
-        Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
+        if (isProcessDailyApp) {
+            StringBuilder path = createAppInformationJSONPath(appId, languageCode, isDaily);
+            Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
+        }
         return applicationPlay;
     }
 
