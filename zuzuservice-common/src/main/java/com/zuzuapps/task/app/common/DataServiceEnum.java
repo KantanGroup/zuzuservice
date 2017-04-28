@@ -10,6 +10,7 @@ public enum DataServiceEnum {
     top_app_daily,
     top_app_summary,
     app,
+    app_id,
     app_daily,
     app_summary,
     screenshot,

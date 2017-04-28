@@ -237,7 +237,16 @@ public class AppCommonService {
             StringBuilder path = createAppInformationJSONPath(appId, languageCode, isDaily);
             Files.write(Paths.get(path.toString()), mapper.writeValueAsBytes(applicationPlay));
         }
+        StringBuilder appPath = createAppIdPath(appId);
+        Files.write(Paths.get(appPath.toString()), mapper.writeValueAsBytes(applicationPlay.getTitle()));
         return applicationPlay;
+    }
+
+    protected StringBuilder createAppIdPath(String appId) {
+        StringBuilder path = new StringBuilder(CommonUtils.folderBy(rootPath, DataServiceEnum.app_id.name(), DataTypeEnum.queue.name()).getAbsolutePath());
+        path.append("/");
+        path.append(appId).append(JSON_FILE_EXTENSION);
+        return path;
     }
 
     protected StringBuilder createAppInformationJSONPath(String appId, String languageCode, boolean isDaily) {
