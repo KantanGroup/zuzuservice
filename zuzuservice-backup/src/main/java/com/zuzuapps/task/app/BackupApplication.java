@@ -5,7 +5,7 @@ import com.zuzuapps.task.app.common.CommonUtils;
 import com.zuzuapps.task.app.export.solr.repositories.AppIndexSolrRepository;
 import com.zuzuapps.task.app.export.solr.repositories.AppInformationSolrRepository;
 import com.zuzuapps.task.app.export.solr.repositories.AppTrendSolrRepository;
-import com.zuzuapps.task.app.googleplay.servies.CommonService;
+import com.zuzuapps.task.app.services.CommonService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;

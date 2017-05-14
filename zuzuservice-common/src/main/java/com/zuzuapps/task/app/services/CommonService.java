@@ -1,4 +1,4 @@
-package com.zuzuapps.task.app.googleplay.servies;
+package com.zuzuapps.task.app.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -17,9 +17,18 @@ public class CommonService<T> {
     @Autowired
     private RestTemplate restTemplate;
 
+    private HttpHeaders headers = new HttpHeaders();
+
+
     private HttpEntity<String> addHeaders() {
-        HttpHeaders headers = new HttpHeaders();
         return new HttpEntity<String>(headers);
+    }
+
+    public void addHeader(String headerName, String headerValue) {
+        if (headers == null) {
+            headers = new HttpHeaders();
+        }
+        headers.add(headerName, headerValue);
     }
 
     public ResponseEntity<T> get(String url, Class type) throws Exception {
