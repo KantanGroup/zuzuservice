@@ -84,8 +84,8 @@ public class AppIndexStoreService extends AppCommonService {
                     // Add data to Apache Solr
                     logger.debug("[Application Index Store]Index to search engine");
                     appIndexService.save(appIndexSolr);
-                    logger.debug("[Application Index Store]Trend to search engine");
-                    appTrendService.save(appTrendSolr);
+                    //logger.debug("[Application Index Store]Trend to search engine");
+                    //appTrendService.save(appTrendSolr);
                     // Create app info json
                     queueAppInformation(apps.getResults(), countryCode, languageCode, DataServiceEnum.information_daily);
                     // Remove data

@@ -267,7 +267,7 @@ public class AppCommonService {
         // Get app information
         AppInformationSolr app = createAppInformation(applicationPlay, languageCode);
         // Index to Solr
-        appInformationService.save(app);
+        // appInformationService.save(app);
         // 4. Create icon
         screenshotApplicationPlayService.extractOriginalIcon(app.getAppId(), app.getIcon());
     }
